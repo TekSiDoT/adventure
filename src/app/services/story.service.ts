@@ -124,6 +124,7 @@ export class StoryService {
       this.readerMode.set(true);
       localStorage.setItem(PIN_STORAGE_KEY, 'true');
       localStorage.setItem(READER_MODE_KEY, 'true');
+      this.notifyReaderLogin();
       return true;
     }
 
@@ -159,6 +160,25 @@ export class StoryService {
     // Update current node
     this.currentNodeId.set(choice.nextNode);
     localStorage.setItem(CURRENT_NODE_KEY, choice.nextNode);
+  }
+
+  private async notifyReaderLogin(): Promise<void> {
+    try {
+      await fetch('/.netlify/functions/notify-choice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fromNode: 'login',
+          fromTitle: 'Reader Login',
+          choiceId: 'reader-login',
+          choiceText: 'Ein Leser hat sich eingeloggt',
+          toNode: 'start',
+          timestamp: new Date().toISOString()
+        })
+      });
+    } catch (err) {
+      console.error('Failed to send reader login notification:', err);
+    }
   }
 
   private async notifyChoice(node: StoryNode, choice: Choice): Promise<void> {
