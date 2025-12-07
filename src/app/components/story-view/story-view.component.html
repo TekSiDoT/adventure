@@ -78,7 +78,9 @@
           }
         } @else if (node.choices.length > 0) {
           <div class="choices">
-            <p class="choices-prompt">Was machst du?</p>
+            @if (node.choices.length > 1) {
+              <p class="choices-prompt">Was machst du?</p>
+            }
             @for (choice of node.choices; track choice.id) {
               <button
                 class="choice-btn"

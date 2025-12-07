@@ -123,14 +123,19 @@
     margin-bottom: 1rem;
     text-indent: 1.5rem;
 
-    &:first-child::first-letter {
-      font-size: 2rem;
-      font-family: 'Cinzel', serif;
-      color: #b8860b;
-      float: left;
-      line-height: 1;
-      margin-right: 0.25rem;
-      margin-top: 0.1rem;
+    &:first-child {
+      text-indent: 0;
+
+      &::first-letter {
+        font-size: 2.5rem;
+        font-family: 'Cinzel', serif;
+        font-weight: 700;
+        color: #b8860b;
+        float: left;
+        line-height: 0.8;
+        padding-right: 0.15rem;
+        padding-top: 0.1rem;
+      }
     }
   }
 }
