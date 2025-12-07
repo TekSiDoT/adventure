@@ -21,5 +21,6 @@ export interface StoryNode {
 export interface Story {
   currentNode: string;
   pin: string;
+  readerPin?: string;
   nodes: Record<string, StoryNode>;
 }

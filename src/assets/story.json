@@ -1,6 +1,7 @@
 {
   "currentNode": "start",
   "pin": "1409",
+  "readerPin": "0904",
   "nodes": {
     "start": {
       "id": "start",

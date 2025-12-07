@@ -18,6 +18,7 @@ export class StoryViewComponent {
   readonly isLoading = this.storyService.isLoading;
   readonly error = this.storyService.error;
   readonly storyHistory = this.storyService.storyHistory;
+  readonly isReaderMode = this.storyService.isReaderMode;
 
   isChoosing = signal<boolean>(false);
   showHistory = signal<boolean>(false);

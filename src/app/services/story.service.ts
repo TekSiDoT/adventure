@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Story, StoryNode, Choice } from '../models/story.model';
 
 const PIN_STORAGE_KEY = 'adventure_pin_verified';
+const READER_MODE_KEY = 'adventure_reader_mode';
 const CURRENT_NODE_KEY = 'adventure_current_node';
 const HISTORY_KEY = 'adventure_history';
 
@@ -18,7 +19,9 @@ export class StoryService {
   private story = signal<Story | null>(null);
   private currentNodeId = signal<string>('start');
   private pinVerified = signal<boolean>(false);
+  private readerMode = signal<boolean>(false);
   private history = signal<HistoryEntry[]>([]);
+  private refreshInterval: ReturnType<typeof setInterval> | null = null;
 
   readonly isLoading = signal<boolean>(true);
   readonly error = signal<string | null>(null);
@@ -30,6 +33,7 @@ export class StoryService {
   });
 
   readonly isPinVerified = computed(() => this.pinVerified());
+  readonly isReaderMode = computed(() => this.readerMode());
 
   readonly storyHistory = computed(() => {
     const s = this.story();
@@ -50,6 +54,12 @@ export class StoryService {
     const stored = localStorage.getItem(PIN_STORAGE_KEY);
     if (stored === 'true') {
       this.pinVerified.set(true);
+    }
+
+    const isReader = localStorage.getItem(READER_MODE_KEY);
+    if (isReader === 'true') {
+      this.readerMode.set(true);
+      this.startAutoRefresh();
     }
 
     const savedNode = localStorage.getItem(CURRENT_NODE_KEY);
@@ -99,11 +109,27 @@ export class StoryService {
 
   verifyPin(pin: string): boolean {
     const s = this.story();
-    if (s && pin === s.pin) {
+    if (!s) return false;
+
+    // Check main PIN (chooser mode)
+    if (pin === s.pin) {
       this.pinVerified.set(true);
+      this.readerMode.set(false);
       localStorage.setItem(PIN_STORAGE_KEY, 'true');
+      localStorage.removeItem(READER_MODE_KEY);
       return true;
     }
+
+    // Check reader PIN (read-only mode)
+    if (s.readerPin && pin === s.readerPin) {
+      this.pinVerified.set(true);
+      this.readerMode.set(true);
+      localStorage.setItem(PIN_STORAGE_KEY, 'true');
+      localStorage.setItem(READER_MODE_KEY, 'true');
+      this.startAutoRefresh();
+      return true;
+    }
+
     return false;
   }
 
@@ -165,6 +191,46 @@ export class StoryService {
 
   logout(): void {
     this.pinVerified.set(false);
+    this.readerMode.set(false);
+    this.stopAutoRefresh();
     localStorage.removeItem(PIN_STORAGE_KEY);
+    localStorage.removeItem(READER_MODE_KEY);
+  }
+
+  private startAutoRefresh(): void {
+    if (this.refreshInterval) return;
+
+    // Poll for story updates every 30 seconds in reader mode
+    this.refreshInterval = setInterval(() => {
+      this.refreshStory();
+    }, 30000);
+  }
+
+  private stopAutoRefresh(): void {
+    if (this.refreshInterval) {
+      clearInterval(this.refreshInterval);
+      this.refreshInterval = null;
+    }
+  }
+
+  private refreshStory(): void {
+    this.http.get<Story>('/assets/story.json').subscribe({
+      next: (story) => {
+        const oldStory = this.story();
+        this.story.set(story);
+
+        // If we're in reader mode, sync to the story's current node and history
+        if (this.readerMode()) {
+          // Update current node to match the story's saved position
+          if (story.currentNode !== this.currentNodeId()) {
+            this.currentNodeId.set(story.currentNode);
+            localStorage.setItem(CURRENT_NODE_KEY, story.currentNode);
+          }
+        }
+      },
+      error: (err) => {
+        console.error('Failed to refresh story:', err);
+      }
+    });
   }
 }

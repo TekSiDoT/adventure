@@ -77,20 +77,28 @@
             }
           }
         } @else if (node.choices.length > 0) {
-          <div class="choices">
-            @if (node.choices.length > 1) {
-              <p class="choices-prompt">Was machst du?</p>
-            }
-            @for (choice of node.choices; track choice.id) {
-              <button
-                class="choice-btn"
-                (click)="onChoiceClick(choice)"
-                [disabled]="isChoosing()"
-              >
-                {{ choice.text }}
-              </button>
-            }
-          </div>
+          @if (isReaderMode()) {
+            <!-- Reader mode: show waiting message -->
+            <div class="reader-waiting">
+              <p class="waiting-text">Warte auf die nächste Entscheidung...</p>
+              <p class="waiting-subtext">Die Geschichte wird automatisch aktualisiert.</p>
+            </div>
+          } @else {
+            <div class="choices">
+              @if (node.choices.length > 1) {
+                <p class="choices-prompt">Was machst du?</p>
+              }
+              @for (choice of node.choices; track choice.id) {
+                <button
+                  class="choice-btn"
+                  (click)="onChoiceClick(choice)"
+                  [disabled]="isChoosing()"
+                >
+                  {{ choice.text }}
+                </button>
+              }
+            </div>
+          }
         } @else {
           <div class="story-end">
             <p>Ende</p>

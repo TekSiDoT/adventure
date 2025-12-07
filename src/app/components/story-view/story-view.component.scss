@@ -337,3 +337,27 @@
     font-style: italic;
   }
 }
+
+// Reader mode waiting message
+.reader-waiting {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(145deg, #e8dcc8, #ddd0bc);
+  border-radius: 0.5rem;
+  border: 2px dashed #8b4513;
+
+  .waiting-text {
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    color: #5d3a1a;
+    margin-bottom: 0.5rem;
+  }
+
+  .waiting-subtext {
+    font-family: 'Lora', serif;
+    font-size: 0.95rem;
+    color: #7d5a3a;
+    font-style: italic;
+  }
+}
