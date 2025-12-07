@@ -68,7 +68,7 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Adventure <onboarding@resend.dev>",
+        from: "Odos Abenteuer <noreply@odos-pfad.de>",
         to: [notifyEmail],
         subject: `Adventure Choice: "${choiceText}"`,
         html: `
