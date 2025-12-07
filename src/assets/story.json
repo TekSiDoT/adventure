@@ -7,11 +7,11 @@
       "title": "Der ungeplante Pfad",
       "text": "Es gibt Orte auf der Welt, von denen die meisten Menschen nichts wissen.\n\nDas ist keine Absicht. Diese Orte verstecken sich nicht. Sie liegen einfach dort, wo niemand hinschaut – zwischen den großen Straßen, hinter den Hügeln, die man für gewöhnlich und langweilig hält. Wer dort lebt, ist zufrieden damit. Wer dort nicht lebt, vermisst nichts.\n\nEiner dieser Orte heißt das Auenland.\n\nEs liegt im Westen der großen Welt, die manche Mittelerde nennen, eingebettet zwischen sanften Hügeln und kleinen Flüssen, die sich durch Wiesen schlängeln, als hätten sie alle Zeit der Welt. Und das haben sie auch. Im Auenland hat alles Zeit.\n\nDie Sonne geht auf über Feldern voller Gerste und Weizen. Sie wandert langsam über Obstgärten, in denen Äpfel und Birnen reifen. Sie scheint auf kleine Brücken über plätschernde Bäche, auf Windmühlen, die sich träge drehen, auf Wege, die sich zwischen Hecken hindurchschlängeln. Und wenn sie untergeht, färbt sie den Himmel orange und rosa und gold, und überall gehen kleine Lichter an in den Hügeln.\n\nDenn in diesem Land leben die Hobbits. Und Hobbits leben in Hügeln.",
       "media": {
-        "image": null,
+        "image": "/assets/images/01-1-sunset.png",
         "audio": null
       },
       "choices": [
-        { "id": "hobbits", "text": "Mehr über die Hobbits erfahren", "nextNode": "hobbits" }
+        { "id": "hobbits", "text": "Weiter", "nextNode": "hobbits" }
       ]
     },
     "hobbits": {
@@ -23,7 +23,7 @@
         "audio": null
       },
       "choices": [
-        { "id": "tuks", "text": "Von den Tuks hören", "nextNode": "tuks" }
+        { "id": "tuks", "text": "Weiter", "nextNode": "tuks" }
       ]
     },
     "tuks": {
@@ -35,7 +35,7 @@
         "audio": null
       },
       "choices": [
-        { "id": "tuckberge", "text": "Die Tuckberge erkunden", "nextNode": "tuckberge" }
+        { "id": "tuckberge", "text": "Weiter", "nextNode": "tuckberge" }
       ]
     },
     "tuckberge": {
@@ -43,11 +43,11 @@
       "title": "Die Tuckberge",
       "text": "Die Tuckberge selbst sind ein Wunder.\n\nVon außen sieht man nur einen Hügel. Größer als die anderen, ja, mit einer prächtigen grünen Tür und Fenstern, die in der Sonne glänzen. Aber eben ein Hügel.\n\nVon innen ist es eine Stadt.\n\nGenerationen von Tuks haben hier gegraben, gebaut, erweitert. Tunnel führen in alle Richtungen, manche breit genug für drei Hobbits nebeneinander, manche so schmal, dass man sich seitwärts hindurchzwängen muss. Es gibt Zimmer für jeden Zweck: Schlafzimmer und Wohnzimmer, Küchen und Vorratskammern, Bibliotheken und Spielzimmer, Räume für Feste und Räume für Stille.\n\nEs gibt Treppen, die nach oben führen, bis fast zur Spitze des Hügels, wo kleine Fenster einen Blick über das ganze Auenland bieten. Es gibt Treppen, die nach unten führen, tiefer, als ein Hobbithaus eigentlich gehen sollte, in kühle Keller, in denen Fässer mit Wein und Käseräder lagern.\n\nUnd es gibt Türen.\n\nHunderte von Türen. Runde Türen und eckige Türen, große Türen und kleine Türen, Türen mit Messingklinken und Türen mit Holzriegeln. Manche stehen immer offen. Manche sind immer geschlossen. Und manche – mehr als man denken würde – hat seit Jahrzehnten niemand mehr geöffnet.\n\nDie Tuckberge sind so alt, dass niemand mehr genau weiß, wo alles ist. Es gibt Karten, natürlich, gezeichnet von verschiedenen Tuks zu verschiedenen Zeiten. Aber die Karten widersprechen sich. Gänge, die auf einer Karte eingezeichnet sind, existieren auf einer anderen nicht. Räume tauchen auf und verschwinden. Entweder haben die Kartenzeichner Fehler gemacht, oder die Tuckberge verändern sich.\n\nDie Hobbits, die dort leben, denken nicht viel darüber nach. Man kennt die Wege, die man braucht, und die anderen Wege sind eben die anderen Wege. So ist das nun mal.",
       "media": {
-        "image": null,
+        "image": "/assets/images/01-2-raeume.png",
         "audio": null
       },
       "choices": [
-        { "id": "familie", "text": "Die Familie kennenlernen", "nextNode": "familie" }
+        { "id": "familie", "text": "Weiter", "nextNode": "familie" }
       ]
     },
     "familie": {
@@ -59,7 +59,7 @@
         "audio": null
       },
       "choices": [
-        { "id": "odo", "text": "Mehr über Odo erfahren", "nextNode": "odo" }
+        { "id": "odo", "text": "Weiter", "nextNode": "odo" }
       ]
     },
     "odo": {
@@ -71,7 +71,7 @@
         "audio": null
       },
       "choices": [
-        { "id": "gabe", "text": "Von Odos Gabe hören", "nextNode": "gabe" }
+        { "id": "gabe", "text": "Weiter", "nextNode": "gabe" }
       ]
     },
     "gabe": {
@@ -83,7 +83,7 @@
         "audio": null
       },
       "choices": [
-        { "id": "taschen", "text": "Von Odos Taschen hören", "nextNode": "taschen" }
+        { "id": "taschen", "text": "Weiter", "nextNode": "taschen" }
       ]
     },
     "taschen": {
@@ -95,7 +95,7 @@
         "audio": null
       },
       "choices": [
-        { "id": "herbst", "text": "Weiter zur Geschichte", "nextNode": "herbst" }
+        { "id": "herbst", "text": "Weiter", "nextNode": "herbst" }
       ]
     },
     "herbst": {
@@ -107,7 +107,7 @@
         "audio": null
       },
       "choices": [
-        { "id": "zimmer", "text": "Odos Zimmer besuchen", "nextNode": "zimmer" }
+        { "id": "zimmer", "text": "Weiter", "nextNode": "zimmer" }
       ]
     },
     "zimmer": {
@@ -119,7 +119,7 @@
         "audio": null
       },
       "choices": [
-        { "id": "entdeckung", "text": "Die Entdeckung", "nextNode": "entdeckung" }
+        { "id": "entdeckung", "text": "Weiter", "nextNode": "entdeckung" }
       ]
     },
     "entdeckung": {
@@ -127,7 +127,7 @@
       "title": "Die Entdeckung",
       "text": "Es ist später Nachmittag, und der Regen trommelt gegen das Fenster.\n\nOdo liegt auf seinem Bett und zählt die Risse in der Decke. Das macht er manchmal, wenn ihm langweilig ist. Es gibt siebenundzwanzig Risse, wenn man die ganz kleinen mitzählt. Er kennt jeden einzelnen.\n\nIm Gang hört er Largos Schritte, schwer und eilig wie immer. Wahrscheinlich auf dem Weg zur Küche. Dann Stille. Nur der Regen.\n\nOdo dreht sich auf die Seite und schaut die Wand an. Das Regal mit seinen Fundstücken. Die Vogelfeder, die sich im Luftzug bewegt…\n\nEr runzelt die Stirn.\n\nIm Luftzug?\n\nDas Fenster ist geschlossen. Die Tür ist zu. Es gibt keinen Luftzug in seinem Zimmer. Es gibt nie einen Luftzug in seinem Zimmer. Hobbithöhlen sind so gebaut, dass es keine Zugluft gibt.\n\nAber die Feder bewegt sich. Ganz leicht. Ein Zittern.\n\nOdo setzt sich auf.\n\nEr schaut zum Fenster. Geschlossen, der Riegel vorgeschoben.\n\nEr schaut zur Tür. Zu, ein Streifen Licht darunter, aber kein Spalt.\n\nEr schaut zum Regal.\n\nDie Feder zittert immer noch.\n\nLangsam steht Odo auf. Er geht zum Regal, beugt sich vor, hält sein Gesicht neben die Feder. Und da spürt er es: einen Hauch von Luft. Kühl. Nicht von oben, nicht von unten.\n\nVon der Wand.\n\nVon der Wand hinter dem Regal.\n\nOdo legt seine Hand flach auf den Stein. Es ist kaum zu spüren, aber es ist da. Ein Hauch. Ein Luftzug, der aus der Wand kommt.\n\nDas ist unmöglich.\n\nHinter dieser Wand ist die Abstellkammer. Odo war dort, hundertmal. Ein Raum voller alter Stühle und kaputter Truhen und Lampen, die nicht mehr funktionieren. Eine Außenwand. Dahinter ist der Hügel, ist Erde und Stein.\n\nAber die Luft kommt irgendwoher.\n\nUnd zum ersten Mal seit Wochen spürt Odo dieses Kribbeln. Dieses Gefühl, das er bekommt, wenn er etwas sieht, das niemand sonst sieht. Dieses Gefühl, das wie eine Frage ist und wie ein Versprechen zugleich.\n\nEr lächelt.",
       "media": {
-        "image": null,
+        "image": "/assets/images/01-3-luftzug.png",
         "audio": null
       },
       "choices": [
