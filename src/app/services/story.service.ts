@@ -2,10 +2,10 @@ import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Story, StoryNode, Choice } from '../models/story.model';
 
-const PIN_STORAGE_KEY = 'adventure_pin_verified';
-const READER_MODE_KEY = 'adventure_reader_mode';
-const CURRENT_NODE_KEY = 'adventure_current_node';
-const HISTORY_KEY = 'adventure_history';
+const PIN_STORAGE_KEY = 'adventure_v2_pin_verified';
+const READER_MODE_KEY = 'adventure_v2_reader_mode';
+const CURRENT_NODE_KEY = 'adventure_v2_current_node';
+const HISTORY_KEY = 'adventure_v2_history';
 
 interface HistoryEntry {
   nodeId: string;
