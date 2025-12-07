@@ -21,7 +21,6 @@ export class StoryService {
   private pinVerified = signal<boolean>(false);
   private readerMode = signal<boolean>(false);
   private history = signal<HistoryEntry[]>([]);
-  private refreshInterval: ReturnType<typeof setInterval> | null = null;
 
   readonly isLoading = signal<boolean>(true);
   readonly error = signal<string | null>(null);
@@ -59,7 +58,6 @@ export class StoryService {
     const isReader = localStorage.getItem(READER_MODE_KEY);
     if (isReader === 'true') {
       this.readerMode.set(true);
-      this.startAutoRefresh();
     }
 
     const savedNode = localStorage.getItem(CURRENT_NODE_KEY);
@@ -126,7 +124,6 @@ export class StoryService {
       this.readerMode.set(true);
       localStorage.setItem(PIN_STORAGE_KEY, 'true');
       localStorage.setItem(READER_MODE_KEY, 'true');
-      this.startAutoRefresh();
       return true;
     }
 
@@ -192,45 +189,7 @@ export class StoryService {
   logout(): void {
     this.pinVerified.set(false);
     this.readerMode.set(false);
-    this.stopAutoRefresh();
     localStorage.removeItem(PIN_STORAGE_KEY);
     localStorage.removeItem(READER_MODE_KEY);
-  }
-
-  private startAutoRefresh(): void {
-    if (this.refreshInterval) return;
-
-    // Poll for story updates every 30 seconds in reader mode
-    this.refreshInterval = setInterval(() => {
-      this.refreshStory();
-    }, 30000);
-  }
-
-  private stopAutoRefresh(): void {
-    if (this.refreshInterval) {
-      clearInterval(this.refreshInterval);
-      this.refreshInterval = null;
-    }
-  }
-
-  private refreshStory(): void {
-    this.http.get<Story>('/assets/story.json').subscribe({
-      next: (story) => {
-        const oldStory = this.story();
-        this.story.set(story);
-
-        // If we're in reader mode, sync to the story's current node and history
-        if (this.readerMode()) {
-          // Update current node to match the story's saved position
-          if (story.currentNode !== this.currentNodeId()) {
-            this.currentNodeId.set(story.currentNode);
-            localStorage.setItem(CURRENT_NODE_KEY, story.currentNode);
-          }
-        }
-      },
-      error: (err) => {
-        console.error('Failed to refresh story:', err);
-      }
-    });
   }
 }
