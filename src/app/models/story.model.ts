@@ -9,12 +9,18 @@ export interface Media {
   audio: string | null;
 }
 
+export interface OpenQuestion {
+  prompt: string;
+  nextNode: string;
+}
+
 export interface StoryNode {
   id: string;
   title?: string;
   text: string;
   media?: Media;
   choices: Choice[];
+  openQuestion?: OpenQuestion;
   pending?: boolean;
 }
 

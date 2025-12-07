@@ -1,6 +1,6 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Story, StoryNode, Choice } from '../models/story.model';
+import { Story, StoryNode, Choice, OpenQuestion } from '../models/story.model';
 
 const PIN_STORAGE_KEY = 'adventure_v2_pin_verified';
 const READER_MODE_KEY = 'adventure_v2_reader_mode';
@@ -162,6 +162,52 @@ export class StoryService {
     // Update current node
     this.currentNodeId.set(choice.nextNode);
     localStorage.setItem(CURRENT_NODE_KEY, choice.nextNode);
+  }
+
+  async submitOpenAnswer(question: OpenQuestion, answer: string): Promise<void> {
+    const current = this.currentNode();
+    if (!current) return;
+
+    // Send notification (open answers always notify, unless reader mode)
+    if (!this.readerMode()) {
+      try {
+        await this.notifyOpenAnswer(current, question, answer);
+      } catch (err) {
+        console.error('Failed to send notification:', err);
+      }
+    }
+
+    // Update history
+    const currentHistory = this.history();
+    if (currentHistory.length > 0) {
+      const updatedHistory = [...currentHistory];
+      updatedHistory[updatedHistory.length - 1] = {
+        ...updatedHistory[updatedHistory.length - 1],
+        choiceText: answer
+      };
+      updatedHistory.push({ nodeId: question.nextNode });
+      this.history.set(updatedHistory);
+      this.saveHistory();
+    }
+
+    // Update current node
+    this.currentNodeId.set(question.nextNode);
+    localStorage.setItem(CURRENT_NODE_KEY, question.nextNode);
+  }
+
+  private async notifyOpenAnswer(node: StoryNode, question: OpenQuestion, answer: string): Promise<void> {
+    await fetch('/.netlify/functions/notify-choice', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fromNode: node.id,
+        fromTitle: node.title || node.id,
+        choiceId: 'open-answer',
+        choiceText: `[${question.prompt}] ${answer}`,
+        toNode: question.nextNode,
+        timestamp: new Date().toISOString()
+      })
+    });
   }
 
   private async notifyReaderLogin(): Promise<void> {

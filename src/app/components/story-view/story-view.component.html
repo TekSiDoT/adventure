@@ -76,6 +76,29 @@
               </div>
             }
           }
+        } @else if (node.openQuestion) {
+          <!-- Open question -->
+          <div class="open-question">
+            <p class="question-prompt">{{ node.openQuestion.prompt }}</p>
+            @if (isReaderMode()) {
+              <p class="reader-waiting-text">Warte auf die Antwort...</p>
+            } @else {
+              <textarea
+                class="answer-input"
+                [(ngModel)]="openAnswer"
+                placeholder="Schreibe deine Antwort..."
+                rows="3"
+                [disabled]="isChoosing()"
+              ></textarea>
+              <button
+                class="submit-btn"
+                (click)="onOpenAnswerSubmit(node.openQuestion)"
+                [disabled]="isChoosing() || !openAnswer().trim()"
+              >
+                Antwort senden
+              </button>
+            }
+          </div>
         } @else if (node.choices.length > 0) {
           <div class="choices">
             @if (node.choices.length > 1) {
