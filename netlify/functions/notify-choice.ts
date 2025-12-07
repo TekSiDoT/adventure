@@ -39,7 +39,11 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
     console.error("Missing RESEND_API_KEY or NOTIFY_EMAIL environment variable");
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Email not configured" }),
+      body: JSON.stringify({
+        error: "Email not configured",
+        hasApiKey: !!resendApiKey,
+        hasEmail: !!notifyEmail
+      }),
     };
   }
 
@@ -100,7 +104,7 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
       console.error("Resend API error:", error);
       return {
         statusCode: 500,
-        body: JSON.stringify({ error: "Failed to send email" }),
+        body: JSON.stringify({ error: "Failed to send email", details: error }),
       };
     }
 
