@@ -1,0 +1,44 @@
+<div class="pin-gate">
+  <div class="scroll-container">
+    <h1 class="title">Enter the Secret Code</h1>
+
+    <div class="pin-display" [class.shake]="shake()" [class.error]="error()">
+      @for (i of [0, 1, 2, 3]; track i) {
+        <span class="pin-dot" [class.filled]="pin().length > i"></span>
+      }
+    </div>
+
+    @if (error()) {
+      <p class="error-message">That's not quite right. Try again!</p>
+    }
+
+    <div class="keypad">
+      @for (digit of ['1', '2', '3', '4', '5', '6', '7', '8', '9']; track digit) {
+        <button
+          class="key"
+          (click)="onDigitClick(digit)"
+          [disabled]="pin().length >= 4"
+        >
+          {{ digit }}
+        </button>
+      }
+      <button class="key key-action" (click)="onClear()">C</button>
+      <button
+        class="key"
+        (click)="onDigitClick('0')"
+        [disabled]="pin().length >= 4"
+      >
+        0
+      </button>
+      <button class="key key-action" (click)="onBackspace()">&larr;</button>
+    </div>
+
+    <button
+      class="enter-btn"
+      [disabled]="pin().length !== 4"
+      (click)="onSubmit()"
+    >
+      Enter the Adventure
+    </button>
+  </div>
+</div>

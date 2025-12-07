@@ -1,0 +1,41 @@
+{
+  "currentNode": "start",
+  "pin": "1234",
+  "nodes": {
+    "start": {
+      "id": "start",
+      "title": "The Enchanted Forest",
+      "text": "You wake up in a magical forest. The trees shimmer with golden leaves, and you can hear the sound of a stream nearby. A friendly owl hoots from a branch above you.\n\nTwo paths stretch out before you...",
+      "media": {
+        "image": null,
+        "audio": null
+      },
+      "choices": [
+        { "id": "stream", "text": "Follow the sound of the stream", "nextNode": "stream" },
+        { "id": "owl", "text": "Talk to the owl", "nextNode": "owl" }
+      ]
+    },
+    "stream": {
+      "id": "stream",
+      "title": "The Crystal Stream",
+      "text": "Coming soon...",
+      "media": {
+        "image": null,
+        "audio": null
+      },
+      "choices": [],
+      "pending": true
+    },
+    "owl": {
+      "id": "owl",
+      "title": "The Wise Owl",
+      "text": "Coming soon...",
+      "media": {
+        "image": null,
+        "audio": null
+      },
+      "choices": [],
+      "pending": true
+    }
+  }
+}

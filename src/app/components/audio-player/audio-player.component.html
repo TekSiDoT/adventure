@@ -1,0 +1,25 @@
+@if (src) {
+  <div class="audio-player">
+    <audio
+      #audioElement
+      [src]="src"
+      (loadeddata)="onLoaded()"
+      (ended)="onEnded()"
+    ></audio>
+
+    <button
+      class="play-btn"
+      (click)="togglePlay()"
+      [class.playing]="isPlaying()"
+      [disabled]="!isLoaded()"
+    >
+      @if (isPlaying()) {
+        <span class="icon">&#9724;</span>
+        <span class="label">Stop</span>
+      } @else {
+        <span class="icon">&#9654;</span>
+        <span class="label">Listen</span>
+      }
+    </button>
+  </div>
+}

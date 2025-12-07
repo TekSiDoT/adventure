@@ -1,0 +1,65 @@
+<div class="story-view">
+  @if (isLoading()) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Opening the storybook...</p>
+    </div>
+  } @else if (error()) {
+    <div class="error-box">
+      <p>{{ error() }}</p>
+      <button class="retry-btn" (click)="onRestart()">Try Again</button>
+    </div>
+  } @else {
+    @if (currentNode(); as node) {
+      <article class="story-card">
+        @if (node.title) {
+          <h1 class="story-title">{{ node.title }}</h1>
+        }
+
+        @if (node.media?.image) {
+          <div class="story-image">
+            <img [src]="node.media!.image!" [alt]="node.title || 'Story illustration'" />
+          </div>
+        }
+
+        <div class="story-text">
+          @for (paragraph of node.text.split('\n\n'); track $index) {
+            <p>{{ paragraph }}</p>
+          }
+        </div>
+
+        @if (node.media?.audio) {
+          <app-audio-player [src]="node.media!.audio!" />
+        }
+
+        @if (node.pending) {
+          <div class="pending-message">
+            <div class="hourglass">&#9203;</div>
+            <p>To be continued...</p>
+            <p class="subtext">Check back soon for the next part of your adventure!</p>
+          </div>
+        } @else if (node.choices.length > 0) {
+          <div class="choices">
+            <p class="choices-prompt">What do you do?</p>
+            @for (choice of node.choices; track choice.id) {
+              <button
+                class="choice-btn"
+                (click)="onChoiceClick(choice)"
+                [disabled]="isChoosing()"
+              >
+                {{ choice.text }}
+              </button>
+            }
+          </div>
+        } @else {
+          <div class="story-end">
+            <p>The End</p>
+            <button class="restart-btn" (click)="onRestart()">
+              Start a New Adventure
+            </button>
+          </div>
+        }
+      </article>
+    }
+  }
+</div>
