@@ -27,6 +27,7 @@ export class StoryViewComponent {
     this.isChoosing.set(true);
     await this.storyService.makeChoice(choice);
     this.isChoosing.set(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   onRestart(): void {
