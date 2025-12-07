@@ -22,14 +22,16 @@
           </div>
         }
 
-        <div class="story-text">
-          @for (paragraph of node.text.split('\n\n'); track $index) {
-            <p>{{ paragraph }}</p>
-          }
-        </div>
+        @if (!node.pending) {
+          <div class="story-text">
+            @for (paragraph of node.text.split('\n\n'); track $index) {
+              <p>{{ paragraph }}</p>
+            }
+          </div>
 
-        @if (node.media?.audio) {
-          <app-audio-player [src]="node.media!.audio!" />
+          @if (node.media?.audio) {
+            <app-audio-player [src]="node.media!.audio!" />
+          }
         }
 
         @if (node.pending) {
