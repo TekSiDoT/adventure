@@ -11,7 +11,6 @@ export interface Media {
 
 export interface OpenQuestion {
   prompt: string;
-  nextNode: string;
 }
 
 export interface StoryNode {

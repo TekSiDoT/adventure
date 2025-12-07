@@ -80,7 +80,13 @@
           <!-- Open question -->
           <div class="open-question">
             <p class="question-prompt">{{ node.openQuestion.prompt }}</p>
-            @if (isReaderMode()) {
+            @if (isCurrentNodeAnswered()) {
+              <div class="pending-message">
+                <div class="hourglass">&#9203;</div>
+                <p>Deine Antwort wurde gesendet!</p>
+                <p class="subtext">Schau bald wieder vorbei für die Fortsetzung...</p>
+              </div>
+            } @else if (isReaderMode()) {
               <p class="reader-waiting-text">Warte auf die Antwort...</p>
             } @else {
               <textarea

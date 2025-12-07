@@ -6,6 +6,7 @@ const PIN_STORAGE_KEY = 'adventure_v2_pin_verified';
 const READER_MODE_KEY = 'adventure_v2_reader_mode';
 const CURRENT_NODE_KEY = 'adventure_v2_current_node';
 const HISTORY_KEY = 'adventure_v2_history';
+const ANSWERED_KEY = 'adventure_v2_answered';
 
 interface HistoryEntry {
   nodeId: string;
@@ -21,6 +22,7 @@ export class StoryService {
   private pinVerified = signal<boolean>(false);
   private readerMode = signal<boolean>(false);
   private history = signal<HistoryEntry[]>([]);
+  private answeredNodes = signal<Set<string>>(new Set());
 
   readonly isLoading = signal<boolean>(true);
   readonly error = signal<string | null>(null);
@@ -33,6 +35,7 @@ export class StoryService {
 
   readonly isPinVerified = computed(() => this.pinVerified());
   readonly isReaderMode = computed(() => this.readerMode());
+  readonly isCurrentNodeAnswered = computed(() => this.answeredNodes().has(this.currentNodeId()));
 
   readonly storyHistory = computed(() => {
     const s = this.story();
@@ -71,6 +74,15 @@ export class StoryService {
         this.history.set(JSON.parse(savedHistory));
       } catch {
         this.history.set([]);
+      }
+    }
+
+    const savedAnswered = localStorage.getItem(ANSWERED_KEY);
+    if (savedAnswered) {
+      try {
+        this.answeredNodes.set(new Set(JSON.parse(savedAnswered)));
+      } catch {
+        this.answeredNodes.set(new Set());
       }
     }
   }
@@ -177,7 +189,13 @@ export class StoryService {
       }
     }
 
-    // Update history
+    // Mark this node as answered (stays on same node, shows pending)
+    const newAnswered = new Set(this.answeredNodes());
+    newAnswered.add(current.id);
+    this.answeredNodes.set(newAnswered);
+    localStorage.setItem(ANSWERED_KEY, JSON.stringify([...newAnswered]));
+
+    // Update history with the answer
     const currentHistory = this.history();
     if (currentHistory.length > 0) {
       const updatedHistory = [...currentHistory];
@@ -185,14 +203,9 @@ export class StoryService {
         ...updatedHistory[updatedHistory.length - 1],
         choiceText: answer
       };
-      updatedHistory.push({ nodeId: question.nextNode });
       this.history.set(updatedHistory);
       this.saveHistory();
     }
-
-    // Update current node
-    this.currentNodeId.set(question.nextNode);
-    localStorage.setItem(CURRENT_NODE_KEY, question.nextNode);
   }
 
   private async notifyOpenAnswer(node: StoryNode, question: OpenQuestion, answer: string): Promise<void> {
@@ -204,7 +217,7 @@ export class StoryService {
         fromTitle: node.title || node.id,
         choiceId: 'open-answer',
         choiceText: `[${question.prompt}] ${answer}`,
-        toNode: question.nextNode,
+        toNode: '(waiting for response)',
         timestamp: new Date().toISOString()
       })
     });

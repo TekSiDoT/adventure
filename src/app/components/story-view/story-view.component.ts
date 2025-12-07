@@ -20,6 +20,7 @@ export class StoryViewComponent {
   readonly error = this.storyService.error;
   readonly storyHistory = this.storyService.storyHistory;
   readonly isReaderMode = this.storyService.isReaderMode;
+  readonly isCurrentNodeAnswered = this.storyService.isCurrentNodeAnswered;
 
   isChoosing = signal<boolean>(false);
   showHistory = signal<boolean>(false);
@@ -51,6 +52,5 @@ export class StoryViewComponent {
     await this.storyService.submitOpenAnswer(question, answer);
     this.openAnswer.set('');
     this.isChoosing.set(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
