@@ -87,7 +87,7 @@ export class StoryService {
       },
       error: (err) => {
         console.error('Failed to load story:', err);
-        this.error.set('Failed to load the adventure. Please refresh!');
+        this.error.set('Das Abenteuer konnte nicht geladen werden. Bitte neu laden!');
         this.isLoading.set(false);
       }
     });

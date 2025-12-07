@@ -2,12 +2,12 @@
   @if (isLoading()) {
     <div class="loading">
       <div class="spinner"></div>
-      <p>Opening the storybook...</p>
+      <p>Das Abenteuerbuch wird geöffnet...</p>
     </div>
   } @else if (error()) {
     <div class="error-box">
       <p>{{ error() }}</p>
-      <button class="retry-btn" (click)="onRestart()">Try Again</button>
+      <button class="retry-btn" (click)="onRestart()">Nochmal versuchen</button>
     </div>
   } @else {
     @if (currentNode(); as node) {
@@ -37,17 +37,17 @@
         @if (node.pending) {
           <div class="pending-message">
             <div class="hourglass">&#9203;</div>
-            <p>To be continued...</p>
-            <p class="subtext">Check back soon for the next part of your adventure!</p>
+            <p>Fortsetzung folgt...</p>
+            <p class="subtext">Schau bald wieder vorbei für den nächsten Teil deines Abenteuers!</p>
           </div>
 
           <!-- Story so far button -->
           @if (storyHistory().length > 1) {
             <button class="history-toggle" (click)="toggleHistory()">
               @if (showHistory()) {
-                <span>&#9650; Hide the story so far</span>
+                <span>&#9650; Geschichte ausblenden</span>
               } @else {
-                <span>&#9660; Read the story so far</span>
+                <span>&#9660; Die Geschichte bisher lesen</span>
               }
             </button>
 
@@ -66,7 +66,7 @@
                       </div>
                       @if (entry.choiceText) {
                         <div class="history-choice">
-                          <span class="choice-label">You chose:</span>
+                          <span class="choice-label">Du hast gewählt:</span>
                           <span class="choice-text">"{{ entry.choiceText }}"</span>
                         </div>
                       }
@@ -78,7 +78,7 @@
           }
         } @else if (node.choices.length > 0) {
           <div class="choices">
-            <p class="choices-prompt">What do you do?</p>
+            <p class="choices-prompt">Was machst du?</p>
             @for (choice of node.choices; track choice.id) {
               <button
                 class="choice-btn"
@@ -91,9 +91,9 @@
           </div>
         } @else {
           <div class="story-end">
-            <p>The End</p>
+            <p>Ende</p>
             <button class="restart-btn" (click)="onRestart()">
-              Start a New Adventure
+              Ein neues Abenteuer starten
             </button>
           </div>
         }

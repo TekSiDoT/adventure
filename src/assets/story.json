@@ -4,21 +4,143 @@
   "nodes": {
     "start": {
       "id": "start",
-      "title": "The Enchanted Forest",
-      "text": "You wake up in a magical forest. The trees shimmer with golden leaves, and you can hear the sound of a stream nearby. A friendly owl hoots from a branch above you.\n\nTwo paths stretch out before you...",
+      "title": "Der ungeplante Pfad",
+      "text": "Es gibt Orte auf der Welt, von denen die meisten Menschen nichts wissen.\n\nDas ist keine Absicht. Diese Orte verstecken sich nicht. Sie liegen einfach dort, wo niemand hinschaut – zwischen den großen Straßen, hinter den Hügeln, die man für gewöhnlich und langweilig hält. Wer dort lebt, ist zufrieden damit. Wer dort nicht lebt, vermisst nichts.\n\nEiner dieser Orte heißt das Auenland.\n\nEs liegt im Westen der großen Welt, die manche Mittelerde nennen, eingebettet zwischen sanften Hügeln und kleinen Flüssen, die sich durch Wiesen schlängeln, als hätten sie alle Zeit der Welt. Und das haben sie auch. Im Auenland hat alles Zeit.\n\nDie Sonne geht auf über Feldern voller Gerste und Weizen. Sie wandert langsam über Obstgärten, in denen Äpfel und Birnen reifen. Sie scheint auf kleine Brücken über plätschernde Bäche, auf Windmühlen, die sich träge drehen, auf Wege, die sich zwischen Hecken hindurchschlängeln. Und wenn sie untergeht, färbt sie den Himmel orange und rosa und gold, und überall gehen kleine Lichter an in den Hügeln.\n\nDenn in diesem Land leben die Hobbits. Und Hobbits leben in Hügeln.",
       "media": {
         "image": null,
         "audio": null
       },
       "choices": [
-        { "id": "stream", "text": "Follow the sound of the stream", "nextNode": "stream" },
-        { "id": "owl", "text": "Talk to the owl", "nextNode": "owl" }
+        { "id": "hobbits", "text": "Mehr über die Hobbits erfahren", "nextNode": "hobbits" }
       ]
     },
-    "stream": {
-      "id": "stream",
-      "title": "The Crystal Stream",
-      "text": "Coming soon...",
+    "hobbits": {
+      "id": "hobbits",
+      "title": "Die Hobbits",
+      "text": "Hobbits sind ein merkwürdiges Volk, wenn man sie von außen betrachtet. Aber da sie fast nie von außen betrachtet werden, macht ihnen das nichts aus.\n\nSie sind kleiner als Menschen – ein großer Hobbit reicht einem durchschnittlichen Menschen etwa bis zur Brust. Aber das fällt den Hobbits selbst nicht auf, weil sie fast nie Menschen treffen. Für einen Hobbit ist ein Hobbit genau die richtige Größe.\n\nIhre Füße sind groß und pelzig, mit dickem Fell auf der Oberseite, das sie warm hält. Schuhe sind im Auenland praktisch unbekannt. Wozu auch? Hobbit-Füße sind zäher als jedes Leder und bequemer als jeder Stiefel.\n\nIhre Bäuche sind rund und gemütlich, und das aus gutem Grund: Hobbits essen gern. Nicht aus Gier, sondern aus Überzeugung. Ein ordentliches Frühstück, so sagen die Hobbits, ist die Grundlage eines ordentlichen Tages. Und nach dem Frühstück kommt das zweite Frühstück. Und dann der Imbiss am Vormittag. Und dann das Mittagessen. Und der Nachmittagstee. Und das Abendessen. Und das späte Abendbrot.\n\nEin Hobbit, der nur dreimal am Tag isst, gilt als krank oder traurig oder beides.\n\nAber das Wichtigste an den Hobbits sind nicht ihre Füße und nicht ihre Bäuche. Das Wichtigste ist das hier: Hobbits sind zufrieden.\n\nZufrieden mit ihrem Land. Zufrieden mit ihren Hügeln. Zufrieden mit ihrem Leben, das sich dreht wie die Jahreszeiten, vorhersehbar und verlässlich. Frühling heißt Pflanzen. Sommer heißt Wachsen. Herbst heißt Ernten. Winter heißt Geschichten am Feuer und Warten auf den Frühling.\n\nEin guter Tag ist ein Tag, der genauso verläuft wie der Tag davor. Ein gutes Jahr ist ein Jahr, in dem nichts Unerwartetes passiert. Abenteuer sind etwas für andere Leute – für Menschen, Elben, Zwerge, für alle, die nicht das Glück haben, im Auenland geboren zu sein.\n\nSo denken die Hobbits. Und meistens haben sie damit recht.\n\nMeistens.",
+      "media": {
+        "image": null,
+        "audio": null
+      },
+      "choices": [
+        { "id": "tuks", "text": "Von den Tuks hören", "nextNode": "tuks" }
+      ]
+    },
+    "tuks": {
+      "id": "tuks",
+      "title": "Die Tuks",
+      "text": "Aber selbst im Auenland gibt es Unterschiede.\n\nIm Osten, wo der Brandywein-Fluss sich breit und träge durch die Landschaft zieht, wohnen die Brandybocks. Sie sind bekannt dafür, Boote zu besitzen – Boote! – und manche von ihnen können sogar schwimmen. Die anderen Hobbits finden das beunruhigend, aber da die Brandybocks freundlich sind und gutes Bier brauen, redet man nicht allzu viel darüber.\n\nIm Süden, wo die Hügel sanft auslaufen und die Felder besonders fruchtbar sind, leben die Beutlins. Eine durch und durch respektable Familie, sagen alle. Verlässlich. Bodenständig. Keine Überraschungen.\n\nUnd im Westen, wo der größte Hügel des Auenlands steht, leben die Tuks.\n\nDie Tuks sind… nun ja. Die Tuks sind die Tuks.\n\nEs heißt, vor vielen Generationen habe ein Tuk eine Elbin geheiratet. Das ist natürlich Unsinn, sagen die anderen Hobbits. Vollkommener Unsinn. Elben sind groß und geheimnisvoll und leben irgendwo weit weg, wo alles magisch ist und niemand vernünftiges Essen kocht. Kein Elb würde einen Hobbit heiraten. Kein Hobbit würde einen Elben heiraten wollen. Die Geschichte ist erfunden, eine Legende, ein Märchen.\n\nAber die Hobbits erzählen sie trotzdem.\n\nVielleicht, weil sie erklären würde, warum die Tuks so sind, wie sie sind. Diese Unruhe in manchen von ihnen. Diese Angewohnheit, Fragen zu stellen, auf die es keine Antworten gibt. Diese Art, manchmal in die Ferne zu schauen, als würden sie etwas sehen, das sonst niemand sieht.\n\nNicht alle Tuks sind so. Die meisten sind so respektabel und gemütlich wie jede andere Hobbit-Familie. Aber in jeder Generation gibt es einen oder zwei, die anders sind. Die mehr wollen. Die über den Rand der Landkarte schauen und sich fragen, was dahinter liegt.\n\nMeistens wächst sich das aus. Sie werden älter, heiraten, bekommen Kinder, und die Unruhe legt sich wie Staub auf einem alten Buch. Aber manchmal, ganz selten, legt sie sich nicht.\n\nManchmal verschwindet ein Tuk.\n\nGeht einfach los, eines Morgens, mit einem Bündel über der Schulter und einem Lächeln im Gesicht. Manche kommen zurück, nach Jahren, mit grauen Haaren und Geschichten, die niemand glaubt. Manche kommen nicht zurück.\n\nDie Familie redet nicht darüber. Es gehört sich nicht. Aber tief in den Tuckbergen, in einem Raum, den nur die ältesten Tuks kennen, hängen Bilder an der Wand. Bilder von Hobbits, die gegangen sind. Die den Rand der Karte überquert haben.\n\nEs sind mehr, als man denken würde.",
+      "media": {
+        "image": null,
+        "audio": null
+      },
+      "choices": [
+        { "id": "tuckberge", "text": "Die Tuckberge erkunden", "nextNode": "tuckberge" }
+      ]
+    },
+    "tuckberge": {
+      "id": "tuckberge",
+      "title": "Die Tuckberge",
+      "text": "Die Tuckberge selbst sind ein Wunder.\n\nVon außen sieht man nur einen Hügel. Größer als die anderen, ja, mit einer prächtigen grünen Tür und Fenstern, die in der Sonne glänzen. Aber eben ein Hügel.\n\nVon innen ist es eine Stadt.\n\nGenerationen von Tuks haben hier gegraben, gebaut, erweitert. Tunnel führen in alle Richtungen, manche breit genug für drei Hobbits nebeneinander, manche so schmal, dass man sich seitwärts hindurchzwängen muss. Es gibt Zimmer für jeden Zweck: Schlafzimmer und Wohnzimmer, Küchen und Vorratskammern, Bibliotheken und Spielzimmer, Räume für Feste und Räume für Stille.\n\nEs gibt Treppen, die nach oben führen, bis fast zur Spitze des Hügels, wo kleine Fenster einen Blick über das ganze Auenland bieten. Es gibt Treppen, die nach unten führen, tiefer, als ein Hobbithaus eigentlich gehen sollte, in kühle Keller, in denen Fässer mit Wein und Käseräder lagern.\n\nUnd es gibt Türen.\n\nHunderte von Türen. Runde Türen und eckige Türen, große Türen und kleine Türen, Türen mit Messingklinken und Türen mit Holzriegeln. Manche stehen immer offen. Manche sind immer geschlossen. Und manche – mehr als man denken würde – hat seit Jahrzehnten niemand mehr geöffnet.\n\nDie Tuckberge sind so alt, dass niemand mehr genau weiß, wo alles ist. Es gibt Karten, natürlich, gezeichnet von verschiedenen Tuks zu verschiedenen Zeiten. Aber die Karten widersprechen sich. Gänge, die auf einer Karte eingezeichnet sind, existieren auf einer anderen nicht. Räume tauchen auf und verschwinden. Entweder haben die Kartenzeichner Fehler gemacht, oder die Tuckberge verändern sich.\n\nDie Hobbits, die dort leben, denken nicht viel darüber nach. Man kennt die Wege, die man braucht, und die anderen Wege sind eben die anderen Wege. So ist das nun mal.",
+      "media": {
+        "image": null,
+        "audio": null
+      },
+      "choices": [
+        { "id": "familie", "text": "Die Familie kennenlernen", "nextNode": "familie" }
+      ]
+    },
+    "familie": {
+      "id": "familie",
+      "title": "Eine Familie in Tuckbergen",
+      "text": "In diesem Labyrinth aus Tunneln und Zimmern und vergessenen Ecken lebt eine Familie.\n\nAdelard Tuk, genannt Adel, ist ein freundlicher Hobbit mit einem runden Gesicht und einem noch runderen Bauch. Er arbeitet als Verwalter für den Tuk – den Oberhaupt der Familie – und verbringt seine Tage damit, Listen zu schreiben, Vorräte zu zählen und dafür zu sorgen, dass alles läuft, wie es laufen soll. Er ist gut darin. Er mag Ordnung. Er mag es, wenn Dinge an ihrem Platz sind.\n\nSeine Frau Mirabella ist anders. Sie stammt aus der Familie Brandybock – ja, die mit den Booten – und manchmal, wenn sie am Fenster steht und nach Osten schaut, denkt Adel, dass sie den Fluss vermisst. Aber sie sagt nichts, und er fragt nicht, und so ist es gut.\n\nMirabella hat dunkles, lockiges Haar und Augen, die immer ein bisschen so aussehen, als wüsste sie mehr, als sie sagt. Sie lacht oft und laut, lauter als es sich eigentlich gehört, und die respektableren Hobbits runzeln manchmal die Stirn darüber. Aber ihre Kuchen sind die besten in ganz Tuckbergen, und am Ende wiegt das schwerer.\n\nZusammen haben Adel und Mirabella fünf Kinder.\n\nEsmeralda ist die Älteste, siebzehn Jahre alt und so vernünftig, dass es manchmal wehtut. Sie hilft ihrer Mutter in der Küche und ihrem Vater mit den Listen, und alle wissen, dass sie eines Tages einen sehr respektablen Hobbit heiraten und sehr respektable Kinder haben wird.\n\nDann kommen die Zwillinge, Dodo und Dora, vierzehn Jahre alt und unzertrennlich. Sie beenden gegenseitig ihre Sätze und haben eine eigene Sprache, die niemand sonst versteht. Wenn man einen sucht, findet man beide. Wenn man beide sucht, findet man keinen.\n\nDer vierte ist Largo, zehn Jahre alt und immer hungrig. Largo interessiert sich für drei Dinge: Essen, Essen und Essen. Manchmal, zur Abwechslung, interessiert er sich fürs Kochen. Er ist rund und zufrieden und wird einmal ein hervorragender Gastwirt sein, sagen alle.\n\nUnd dann ist da Odo.",
+      "media": {
+        "image": null,
+        "audio": null
+      },
+      "choices": [
+        { "id": "odo", "text": "Mehr über Odo erfahren", "nextNode": "odo" }
+      ]
+    },
+    "odo": {
+      "id": "odo",
+      "title": "Odo",
+      "text": "Odo ist zwölf.\n\nEr ist der zweitjüngste, eingeklemmt zwischen Largo und niemandem, denn nach Odo kamen keine weiteren Kinder. Manchmal nennt seine Mutter ihn \"mein Nesthäkchen\", und Odo verdreht jedes Mal die Augen, aber heimlich mag er es.\n\nOdo sieht aus wie ein Tuk. Braunes, leicht widerspenstiges Haar. Grüne Augen, ein bisschen zu groß für sein Gesicht, was ihm einen wachen, aufmerksamen Ausdruck gibt. Er ist nicht besonders groß und nicht besonders klein, nicht besonders dick und nicht besonders dünn. Ein normaler Hobbitjunge, würde man denken.\n\nAber Odo ist nicht ganz normal.\n\nEs ist nichts Dramatisches. Nichts, worüber die Leute reden würden. Es ist eher… eine Verschiebung. Als wäre er einen halben Schritt neben allen anderen. Als würde er die Welt aus einem leicht anderen Winkel betrachten.\n\nDie anderen Hobbit-Kinder spielen, und Odo spielt mit. Er rennt und lacht und schreit, wie sie alle. Aber zwischendurch hält er inne. Sieht etwas. Denkt an etwas. Während die anderen weiterspielen, steht Odo da und betrachtet einen Käfer, der über ein Blatt krabbelt. Oder er hebt einen Stein auf und dreht ihn im Licht. Oder er schaut einfach nur, ohne dass jemand wüsste, was er sieht.\n\n\"Träumer\", sagt sein Vater manchmal, liebevoll und ein bisschen ratlos.\n\nAber das stimmt nicht ganz. Träumer schauen nach innen. Odo schaut nach außen. Er schaut so genau nach außen, dass er Dinge sieht, die andere übersehen.",
+      "media": {
+        "image": null,
+        "audio": null
+      },
+      "choices": [
+        { "id": "gabe", "text": "Von Odos Gabe hören", "nextNode": "gabe" }
+      ]
+    },
+    "gabe": {
+      "id": "gabe",
+      "title": "Die Gabe des Sehens",
+      "text": "Es begann, als er klein war.\n\nMit vier Jahren fand er den Ehering seines Großvaters, der seit Wochen verschwunden war. Alle hatten gesucht. Unter Möbeln, in Schubladen, zwischen Kissen. Odo schaute einmal durchs Zimmer, ging zum Bücherregal, zog einen bestimmten Band heraus, und da lag der Ring. Im Buchrücken. Wo er beim Lesen hineingerutscht sein musste.\n\n\"Woher wusstest du das?\", fragte sein Großvater verblüfft.\n\nOdo zuckte die Schultern. \"Er musste da sein.\"\n\nMit sechs Jahren sagte er seiner Mutter, dass es bald regnen würde, obwohl der Himmel blau war. Zwei Stunden später brach ein Gewitter los. \"Die Vögel\", erklärte Odo, als wäre es selbstverständlich. \"Sie flogen alle nach Süden.\"\n\nMit acht Jahren fand er den geheimen Tunnel, den die Zwillinge als Versteck benutzten, obwohl er sie nie hatte hineingehen sehen. Die Zwillinge sprachen drei Tage nicht mit ihm. Dann gaben sie auf und nahmen ihn stattdessen in ihren Geheimbund auf.\n\nEs ist keine Magie. Es ist nichts Übernatürliches. Es ist nur… Odo sieht hin. Wirklich hin. Während andere Hobbits durch die Welt gehen und sehen, was sie erwarten, schaut Odo, was tatsächlich da ist. Und manchmal, oft sogar, ist das nicht dasselbe.\n\nSeine Familie liebt ihn. Das klingt selbstverständlich, aber es ist wichtig. In manchen Geschichten ist das besondere Kind einsam, unverstanden, ein Außenseiter im eigenen Heim. Odo ist keines davon.\n\nOdo gehört hierher. In diese Familie, in diesen Hügel, in dieses Land.\n\nAber manchmal, wenn er abends am Fenster sitzt und die Sterne anschaut, fragt er sich, ob das alles ist. Ob hinter den Grenzen des Auenlands noch etwas wartet. Ob die Geschichten, die sein Großvater erzählt – von Elben und Zwergen, von Bergen und Meeren, von Abenteuern in der großen Welt – ob diese Geschichten wirklich nur Geschichten sind.\n\nEr würde nie weggehen. Nicht wirklich. Er liebt sein Zuhause zu sehr.\n\nAber fragen darf man ja.",
+      "media": {
+        "image": null,
+        "audio": null
+      },
+      "choices": [
+        { "id": "taschen", "text": "Von Odos Taschen hören", "nextNode": "taschen" }
+      ]
+    },
+    "taschen": {
+      "id": "taschen",
+      "title": "Odos Taschen",
+      "text": "Die andere Sache, die man über Odo wissen muss, sind seine Taschen.\n\nOdos Taschen sind wie kleine Werkstätten. Während andere Hobbit-Kinder Murmeln sammeln oder bunte Steine oder getrocknete Käfer, sammelt Odo… nützliche Dinge.\n\nEs begann mit einem Draht. Ein Stück Draht, das er auf dem Boden fand, als er sieben war. Er hob es auf, ohne zu wissen warum, und steckte es ein. Tage später, als seine Schwester ihren Schlüssel verloren hatte und vor verschlossener Tür stand, zog Odo den Draht heraus. Er bog ihn zurecht. Probierte ein bisschen. Das Schloss klickte auf.\n\n\"Woher kannst du das?\", fragte Esmeralda, halb empört, halb beeindruckt.\n\nOdo überlegte. \"Es machte Sinn\", sagte er schließlich. Und das war die einzige Erklärung, die er hatte.\n\nSeitdem sammelt er. Sein Draht – inzwischen mehrfach ersetzt und verbessert – ist immer dabei. Dazu eine Schnur, die er selbst geflochten hat, dünner und stärker als alles, was man kaufen kann. Ein kleiner Spiegel, so groß wie ein Daumennagel, mit dem man um Ecken schauen kann. Eine Klappmesserklinge, ein Stück Kreide, drei Streichhölzer in einer winzigen Dose, ein gefaltetes Blatt Papier, ein Stift.\n\nSeine Mutter hat aufgehört, seine Taschen zu leeren, bevor sie seine Sachen wäscht. Sie weiß, dass er alles braucht, auch wenn sie nicht versteht, wozu.\n\nOdo weiß es selbst nicht immer. Manchmal steckt er etwas ein und fragt sich erst Wochen später, warum. Und dann, irgendwann, braucht er es.\n\nSo ist das mit Odo.",
+      "media": {
+        "image": null,
+        "audio": null
+      },
+      "choices": [
+        { "id": "herbst", "text": "Weiter zur Geschichte", "nextNode": "herbst" }
+      ]
+    },
+    "herbst": {
+      "id": "herbst",
+      "title": "Herbst im Auenland",
+      "text": "Es ist Herbst im Auenland.\n\nDie Blätter an den Bäumen haben ihre Farbe gewechselt, von Grün zu Gold zu Rot zu Braun. Der Wind trägt den Geruch von reifen Äpfeln und feuchter Erde. In den Gärten werden die letzten Kürbisse geerntet, und in den Küchen stehen die Töpfe auf dem Feuer, voll mit Suppen und Eintöpfen und allem, was warm macht.\n\nEs ist die Zeit zwischen der Ernte und dem Winter. Die Vorratskammern sind voll. Die Arbeit ist getan. Die Hobbits haben Zeit, und sie nutzen sie, wie Hobbits Zeit am liebsten nutzen: mit Essen, mit Geschichten, mit Besuchen bei Freunden und Familie.\n\nIn Tuckbergen ist es besonders gemütlich. Die Kamine brennen, die Kerzen flackern, und überall riecht es nach Mirabellas Küche. Apfelkuchen, Pilzpastete, Rindfleischeintopf mit Kartoffeln. Die Familie kommt dreimal am Tag zusammen, manchmal öfter, und der große Tisch in der Haupthalle ist nie leer.\n\nAber für Odo ist der Herbst auch die schwierigste Zeit.\n\nEs regnet zu oft, um draußen zu sein. Die Wälder und Felder, die er im Sommer erkundet, sind matschig und grau. Aber es ist noch nicht kalt genug für die behagliche Enge des Winters, wenn man mit gutem Gewissen den ganzen Tag am Feuer sitzen und Geschichten hören kann.\n\nDer Herbst ist eine Zwischenzeit. Eine Wartezeit.\n\nOdo hasst Warten.",
+      "media": {
+        "image": null,
+        "audio": null
+      },
+      "choices": [
+        { "id": "zimmer", "text": "Odos Zimmer besuchen", "nextNode": "zimmer" }
+      ]
+    },
+    "zimmer": {
+      "id": "zimmer",
+      "title": "Odos Zimmer",
+      "text": "Sein Zimmer liegt ganz hinten in Tuckbergen.\n\nEs ist kein Zufall, dass er dort gelandet ist. Als er alt genug war für ein eigenes Zimmer – mit acht, als er anfing, die Zwillinge zu sehr zu stören – durfte er sich aussuchen, wo er wohnen wollte. Die meisten Kinder hätten ein Zimmer nahe der Haupthalle gewählt, nahe der Küche, nahe dem Geschehen.\n\nOdo wählte das Zimmer am Ende des Gangs, der einen Knick macht und dann noch einen und dann in einer Sackgasse endet. Es ist still hier. Abgelegen. Nur Odos Zimmer liegt hier, und eine Abstellkammer gegenüber, voll mit alten Möbeln und Dingen, die niemand mehr braucht, aber auch niemand wegwerfen will.\n\nDas Zimmer selbst ist klein, aber Odo hat es sich gemütlich gemacht. Ein Bett unter dem runden Fenster. Ein Regal an der Wand, voll mit Fundstücken: Steine mit interessanten Mustern, eine Vogelfeder, die schillert wie Öl auf Wasser, ein verrostetes Zahnrad, dessen Herkunft er nie herausgefunden hat. Ein kleiner Schreibtisch, auf dem immer irgendetwas liegt, das er gerade untersucht.\n\nAn der Decke hängt eine Karte des Auenlands, die er selbst gezeichnet hat. Sie ist genauer als die meisten Karten, die man kaufen kann, weil Odo jeden Weg selbst abgelaufen ist. Aber an den Rändern hört sie auf. Weiße Flächen, unbeschrieben. \"Hier nicht gewesen\", steht dort in Odos ordentlicher Handschrift.\n\nNoch nicht.",
+      "media": {
+        "image": null,
+        "audio": null
+      },
+      "choices": [
+        { "id": "entdeckung", "text": "Die Entdeckung", "nextNode": "entdeckung" }
+      ]
+    },
+    "entdeckung": {
+      "id": "entdeckung",
+      "title": "Die Entdeckung",
+      "text": "Es ist später Nachmittag, und der Regen trommelt gegen das Fenster.\n\nOdo liegt auf seinem Bett und zählt die Risse in der Decke. Das macht er manchmal, wenn ihm langweilig ist. Es gibt siebenundzwanzig Risse, wenn man die ganz kleinen mitzählt. Er kennt jeden einzelnen.\n\nIm Gang hört er Largos Schritte, schwer und eilig wie immer. Wahrscheinlich auf dem Weg zur Küche. Dann Stille. Nur der Regen.\n\nOdo dreht sich auf die Seite und schaut die Wand an. Das Regal mit seinen Fundstücken. Die Vogelfeder, die sich im Luftzug bewegt…\n\nEr runzelt die Stirn.\n\nIm Luftzug?\n\nDas Fenster ist geschlossen. Die Tür ist zu. Es gibt keinen Luftzug in seinem Zimmer. Es gibt nie einen Luftzug in seinem Zimmer. Hobbithöhlen sind so gebaut, dass es keine Zugluft gibt.\n\nAber die Feder bewegt sich. Ganz leicht. Ein Zittern.\n\nOdo setzt sich auf.\n\nEr schaut zum Fenster. Geschlossen, der Riegel vorgeschoben.\n\nEr schaut zur Tür. Zu, ein Streifen Licht darunter, aber kein Spalt.\n\nEr schaut zum Regal.\n\nDie Feder zittert immer noch.\n\nLangsam steht Odo auf. Er geht zum Regal, beugt sich vor, hält sein Gesicht neben die Feder. Und da spürt er es: einen Hauch von Luft. Kühl. Nicht von oben, nicht von unten.\n\nVon der Wand.\n\nVon der Wand hinter dem Regal.\n\nOdo legt seine Hand flach auf den Stein. Es ist kaum zu spüren, aber es ist da. Ein Hauch. Ein Luftzug, der aus der Wand kommt.\n\nDas ist unmöglich.\n\nHinter dieser Wand ist die Abstellkammer. Odo war dort, hundertmal. Ein Raum voller alter Stühle und kaputter Truhen und Lampen, die nicht mehr funktionieren. Eine Außenwand. Dahinter ist der Hügel, ist Erde und Stein.\n\nAber die Luft kommt irgendwoher.\n\nUnd zum ersten Mal seit Wochen spürt Odo dieses Kribbeln. Dieses Gefühl, das er bekommt, wenn er etwas sieht, das niemand sonst sieht. Dieses Gefühl, das wie eine Frage ist und wie ein Versprechen zugleich.\n\nEr lächelt.",
+      "media": {
+        "image": null,
+        "audio": null
+      },
+      "choices": [
+        { "id": "sofort", "text": "Das Regal zur Seite schieben und die Wand untersuchen", "nextNode": "sofort" },
+        { "id": "zwillinge", "text": "Den Zwillingen davon erzählen", "nextNode": "zwillinge" },
+        { "id": "mutter", "text": "Die Mutter suchen", "nextNode": "mutter" },
+        { "id": "nacht", "text": "Bis zur Nacht warten, wenn alle schlafen", "nextNode": "nacht" }
+      ]
+    },
+    "sofort": {
+      "id": "sofort",
+      "title": "Sofortige Untersuchung",
+      "text": "Fortsetzung folgt...",
       "media": {
         "image": null,
         "audio": null
@@ -26,10 +148,32 @@
       "choices": [],
       "pending": true
     },
-    "owl": {
-      "id": "owl",
-      "title": "The Wise Owl",
-      "text": "Coming soon...",
+    "zwillinge": {
+      "id": "zwillinge",
+      "title": "Die Zwillinge einweihen",
+      "text": "Fortsetzung folgt...",
+      "media": {
+        "image": null,
+        "audio": null
+      },
+      "choices": [],
+      "pending": true
+    },
+    "mutter": {
+      "id": "mutter",
+      "title": "Mutter suchen",
+      "text": "Fortsetzung folgt...",
+      "media": {
+        "image": null,
+        "audio": null
+      },
+      "choices": [],
+      "pending": true
+    },
+    "nacht": {
+      "id": "nacht",
+      "title": "Nächtliche Erkundung",
+      "text": "Fortsetzung folgt...",
       "media": {
         "image": null,
         "audio": null

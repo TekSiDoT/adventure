@@ -1,6 +1,6 @@
 <div class="pin-gate">
   <div class="scroll-container">
-    <h1 class="title">Enter the Secret Code</h1>
+    <h1 class="title">Gib den Geheimcode ein</h1>
 
     <div class="pin-display" [class.shake]="shake()" [class.error]="error()">
       @for (i of [0, 1, 2, 3]; track i) {
@@ -9,7 +9,7 @@
     </div>
 
     @if (error()) {
-      <p class="error-message">That's not quite right. Try again!</p>
+      <p class="error-message">Das war leider falsch. Versuch es nochmal!</p>
     }
 
     <div class="keypad">
@@ -38,7 +38,7 @@
       [disabled]="pin().length !== 4"
       (click)="onSubmit()"
     >
-      Enter the Adventure
+      Abenteuer starten
     </button>
   </div>
 </div>
