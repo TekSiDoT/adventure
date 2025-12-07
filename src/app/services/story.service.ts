@@ -135,12 +135,14 @@ export class StoryService {
     const current = this.currentNode();
     if (!current) return;
 
-    // Send notification
-    try {
-      await this.notifyChoice(current, choice);
-    } catch (err) {
-      console.error('Failed to send notification:', err);
-      // Continue anyway - don't block the adventure
+    // Send notification only for real choices (multiple options) and not in reader mode
+    if (!this.readerMode() && current.choices.length > 1) {
+      try {
+        await this.notifyChoice(current, choice);
+      } catch (err) {
+        console.error('Failed to send notification:', err);
+        // Continue anyway - don't block the adventure
+      }
     }
 
     // Update history - mark current node with the choice made
