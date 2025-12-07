@@ -4,6 +4,12 @@ import { Story, StoryNode, Choice } from '../models/story.model';
 
 const PIN_STORAGE_KEY = 'adventure_pin_verified';
 const CURRENT_NODE_KEY = 'adventure_current_node';
+const HISTORY_KEY = 'adventure_history';
+
+interface HistoryEntry {
+  nodeId: string;
+  choiceText?: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +18,7 @@ export class StoryService {
   private story = signal<Story | null>(null);
   private currentNodeId = signal<string>('start');
   private pinVerified = signal<boolean>(false);
+  private history = signal<HistoryEntry[]>([]);
 
   readonly isLoading = signal<boolean>(true);
   readonly error = signal<string | null>(null);
@@ -24,19 +31,39 @@ export class StoryService {
 
   readonly isPinVerified = computed(() => this.pinVerified());
 
+  readonly storyHistory = computed(() => {
+    const s = this.story();
+    if (!s) return [];
+
+    return this.history().map(entry => ({
+      node: s.nodes[entry.nodeId],
+      choiceText: entry.choiceText
+    })).filter(h => h.node);
+  });
+
   constructor(private http: HttpClient) {
-    this.checkStoredPin();
+    this.checkStoredState();
     this.loadStory();
   }
 
-  private checkStoredPin(): void {
+  private checkStoredState(): void {
     const stored = localStorage.getItem(PIN_STORAGE_KEY);
     if (stored === 'true') {
       this.pinVerified.set(true);
     }
+
     const savedNode = localStorage.getItem(CURRENT_NODE_KEY);
     if (savedNode) {
       this.currentNodeId.set(savedNode);
+    }
+
+    const savedHistory = localStorage.getItem(HISTORY_KEY);
+    if (savedHistory) {
+      try {
+        this.history.set(JSON.parse(savedHistory));
+      } catch {
+        this.history.set([]);
+      }
     }
   }
 
@@ -48,6 +75,13 @@ export class StoryService {
         // If saved node doesn't exist, reset to story's current node
         if (!story.nodes[this.currentNodeId()]) {
           this.currentNodeId.set(story.currentNode);
+          this.history.set([]);
+          localStorage.removeItem(HISTORY_KEY);
+        }
+        // Initialize history with start node if empty
+        if (this.history().length === 0 && story.nodes[this.currentNodeId()]) {
+          this.history.set([{ nodeId: this.currentNodeId() }]);
+          this.saveHistory();
         }
         this.isLoading.set(false);
       },
@@ -57,6 +91,10 @@ export class StoryService {
         this.isLoading.set(false);
       }
     });
+  }
+
+  private saveHistory(): void {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(this.history()));
   }
 
   verifyPin(pin: string): boolean {
@@ -79,6 +117,20 @@ export class StoryService {
     } catch (err) {
       console.error('Failed to send notification:', err);
       // Continue anyway - don't block the adventure
+    }
+
+    // Update history - mark current node with the choice made
+    const currentHistory = this.history();
+    if (currentHistory.length > 0) {
+      const updatedHistory = [...currentHistory];
+      updatedHistory[updatedHistory.length - 1] = {
+        ...updatedHistory[updatedHistory.length - 1],
+        choiceText: choice.text
+      };
+      // Add the new node
+      updatedHistory.push({ nodeId: choice.nextNode });
+      this.history.set(updatedHistory);
+      this.saveHistory();
     }
 
     // Update current node
@@ -106,6 +158,8 @@ export class StoryService {
     if (s) {
       this.currentNodeId.set(s.currentNode);
       localStorage.setItem(CURRENT_NODE_KEY, s.currentNode);
+      this.history.set([{ nodeId: s.currentNode }]);
+      this.saveHistory();
     }
   }
 

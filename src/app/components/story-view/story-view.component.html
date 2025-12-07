@@ -40,6 +40,42 @@
             <p>To be continued...</p>
             <p class="subtext">Check back soon for the next part of your adventure!</p>
           </div>
+
+          <!-- Story so far button -->
+          @if (storyHistory().length > 1) {
+            <button class="history-toggle" (click)="toggleHistory()">
+              @if (showHistory()) {
+                <span>&#9650; Hide the story so far</span>
+              } @else {
+                <span>&#9660; Read the story so far</span>
+              }
+            </button>
+
+            @if (showHistory()) {
+              <div class="story-history">
+                @for (entry of storyHistory(); track $index; let isLast = $last) {
+                  @if (!isLast) {
+                    <div class="history-entry">
+                      @if (entry.node.title) {
+                        <h2 class="history-title">{{ entry.node.title }}</h2>
+                      }
+                      <div class="history-text">
+                        @for (paragraph of entry.node.text.split('\n\n'); track $index) {
+                          <p>{{ paragraph }}</p>
+                        }
+                      </div>
+                      @if (entry.choiceText) {
+                        <div class="history-choice">
+                          <span class="choice-label">You chose:</span>
+                          <span class="choice-text">"{{ entry.choiceText }}"</span>
+                        </div>
+                      }
+                    </div>
+                  }
+                }
+              </div>
+            }
+          }
         } @else if (node.choices.length > 0) {
           <div class="choices">
             <p class="choices-prompt">What do you do?</p>

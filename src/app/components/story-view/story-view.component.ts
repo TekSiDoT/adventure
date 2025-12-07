@@ -17,8 +17,10 @@ export class StoryViewComponent {
   readonly currentNode = this.storyService.currentNode;
   readonly isLoading = this.storyService.isLoading;
   readonly error = this.storyService.error;
+  readonly storyHistory = this.storyService.storyHistory;
 
   isChoosing = signal<boolean>(false);
+  showHistory = signal<boolean>(false);
 
   async onChoiceClick(choice: Choice): Promise<void> {
     this.isChoosing.set(true);
@@ -28,5 +30,10 @@ export class StoryViewComponent {
 
   onRestart(): void {
     this.storyService.resetAdventure();
+    this.showHistory.set(false);
+  }
+
+  toggleHistory(): void {
+    this.showHistory.set(!this.showHistory());
   }
 }

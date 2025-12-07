@@ -253,3 +253,82 @@
   0%, 100% { transform: rotate(0deg); }
   50% { transform: rotate(180deg); }
 }
+
+// Story history styles
+.history-toggle {
+  display: block;
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  color: #5d3a1a;
+  background: linear-gradient(145deg, #deb887, #c4a56a);
+  border: 2px solid #8b4513;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: linear-gradient(145deg, #e8c89a, #deb887);
+  }
+}
+
+.story-history {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 2px dashed #8b4513;
+}
+
+.history-entry {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(139, 69, 19, 0.3);
+
+  &:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+}
+
+.history-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.25rem;
+  color: #7d5a3a;
+  margin-bottom: 0.5rem;
+}
+
+.history-text {
+  font-family: 'Lora', serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #5d4a3a;
+
+  p {
+    margin-bottom: 0.5rem;
+    text-indent: 1rem;
+  }
+}
+
+.history-choice {
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(34, 139, 34, 0.1);
+  border-left: 3px solid #228b22;
+  border-radius: 0 0.25rem 0.25rem 0;
+
+  .choice-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    color: #228b22;
+    margin-right: 0.5rem;
+  }
+
+  .choice-text {
+    font-family: 'Lora', serif;
+    font-size: 0.95rem;
+    color: #1a6b1a;
+    font-style: italic;
+  }
+}
