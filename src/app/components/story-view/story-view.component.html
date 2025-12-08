@@ -1,4 +1,21 @@
 <div class="story-view">
+  @if (isDebugMode()) {
+    <div class="debug-panel">
+      <div class="debug-header">Debug Mode</div>
+      <div class="debug-controls">
+        <select class="debug-select" (change)="onDebugNavigate($any($event.target).value)">
+          <option value="" disabled selected>Jump to node...</option>
+          @for (node of allNodes(); track node.id) {
+            <option [value]="node.id" [class.current]="node.id === currentNode()?.id">
+              {{ node.title }}
+            </option>
+          }
+        </select>
+        <button class="debug-btn reset" (click)="onDebugReset()">Reset All</button>
+      </div>
+    </div>
+  }
+
   @if (isLoading()) {
     <div class="loading">
       <div class="spinner"></div>
@@ -16,18 +33,31 @@
           <h1 class="story-title">{{ node.title }}</h1>
         }
 
-        @if (node.media?.image) {
-          <div class="story-image">
-            <img [src]="node.media!.image!" [alt]="node.title || 'Story illustration'" />
-          </div>
-        }
-
         @if (!node.pending) {
-          <div class="story-text">
-            @for (paragraph of node.text.split('\n\n'); track $index) {
-              <p>{{ paragraph }}</p>
-            }
-          </div>
+          <!-- Paragraphs before image (for middle/bottom position) -->
+          @if (paragraphsBeforeImage().length > 0) {
+            <div class="story-text">
+              @for (paragraph of paragraphsBeforeImage(); track $index) {
+                <p>{{ paragraph }}</p>
+              }
+            </div>
+          }
+
+          <!-- Image -->
+          @if (node.media?.image) {
+            <div class="story-image">
+              <img [src]="node.media!.image!" [alt]="node.title || 'Story illustration'" />
+            </div>
+          }
+
+          <!-- Paragraphs after image (for top/middle position) -->
+          @if (paragraphsAfterImage().length > 0) {
+            <div class="story-text" [class.story-text-continued]="paragraphsBeforeImage().length > 0">
+              @for (paragraph of paragraphsAfterImage(); track $index) {
+                <p>{{ paragraph }}</p>
+              }
+            </div>
+          }
 
           @if (node.media?.audio) {
             <app-audio-player [src]="node.media!.audio!" />
@@ -35,6 +65,11 @@
         }
 
         @if (node.pending) {
+          @if (node.teaser) {
+            <div class="story-text teaser-text">
+              <p>{{ node.teaser }}</p>
+            </div>
+          }
           <div class="pending-message">
             <div class="hourglass">&#9203;</div>
             <p>Fortsetzung folgt...</p>
@@ -52,10 +87,27 @@
             </button>
 
             @if (showHistory()) {
+              <!-- Sticky chapter navigation -->
+              <nav class="chapter-nav">
+                @for (entry of storyHistory(); track $index; let isLast = $last) {
+                  @if (!isLast) {
+                    <button
+                      class="chapter-dot"
+                      [class.active]="activeChapterIndex() === $index"
+                      (click)="scrollToChapter($index)"
+                      [title]="entry.node.title || 'Kapitel ' + ($index + 1)"
+                    >
+                      <span class="dot"></span>
+                      <span class="chapter-label">{{ entry.node.title || 'Kapitel ' + ($index + 1) }}</span>
+                    </button>
+                  }
+                }
+              </nav>
+
               <div class="story-history">
                 @for (entry of storyHistory(); track $index; let isLast = $last) {
                   @if (!isLast) {
-                    <div class="history-entry">
+                    <div class="history-entry" #historyChapter [attr.data-index]="$index">
                       @if (entry.node.title) {
                         <h2 class="history-title">{{ entry.node.title }}</h2>
                       }
@@ -64,7 +116,7 @@
                           <p>{{ paragraph }}</p>
                         }
                       </div>
-                      @if (entry.choiceText) {
+                      @if (entry.choiceText && entry.wasRealChoice) {
                         <div class="history-choice">
                           <span class="choice-label">Du hast gewählt:</span>
                           <span class="choice-text">"{{ entry.choiceText }}"</span>

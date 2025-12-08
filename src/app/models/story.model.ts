@@ -6,6 +6,7 @@ export interface Choice {
 
 export interface Media {
   image: string | null;
+  imagePosition?: 'top' | 'middle' | 'bottom';
   audio: string | null;
 }
 
@@ -21,6 +22,7 @@ export interface StoryNode {
   choices: Choice[];
   openQuestion?: OpenQuestion;
   pending?: boolean;
+  teaser?: string; // Preview sentence shown on pending page, e.g. "Odo entschliesst sich weiter zu gehen..."
 }
 
 export interface Story {

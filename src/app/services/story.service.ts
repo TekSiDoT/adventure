@@ -11,6 +11,7 @@ const ANSWERED_KEY = 'adventure_v2_answered';
 interface HistoryEntry {
   nodeId: string;
   choiceText?: string;
+  wasRealChoice?: boolean;
 }
 
 @Injectable({
@@ -21,11 +22,22 @@ export class StoryService {
   private currentNodeId = signal<string>('start');
   private pinVerified = signal<boolean>(false);
   private readerMode = signal<boolean>(false);
+  private debugMode = signal<boolean>(false);
   private history = signal<HistoryEntry[]>([]);
   private answeredNodes = signal<Set<string>>(new Set());
 
   readonly isLoading = signal<boolean>(true);
   readonly error = signal<string | null>(null);
+  readonly isDebugMode = computed(() => this.debugMode());
+
+  readonly allNodes = computed(() => {
+    const s = this.story();
+    if (!s) return [];
+    return Object.values(s.nodes).map(node => ({
+      id: node.id,
+      title: node.title || node.id
+    }));
+  });
 
   readonly currentNode = computed<StoryNode | null>(() => {
     const s = this.story();
@@ -43,7 +55,8 @@ export class StoryService {
 
     return this.history().map(entry => ({
       node: s.nodes[entry.nodeId],
-      choiceText: entry.choiceText
+      choiceText: entry.choiceText,
+      wasRealChoice: entry.wasRealChoice
     })).filter(h => h.node);
   });
 
@@ -161,9 +174,11 @@ export class StoryService {
     const currentHistory = this.history();
     if (currentHistory.length > 0) {
       const updatedHistory = [...currentHistory];
+      const wasRealChoice = current.choices.length > 1;
       updatedHistory[updatedHistory.length - 1] = {
         ...updatedHistory[updatedHistory.length - 1],
-        choiceText: choice.text
+        choiceText: choice.text,
+        wasRealChoice
       };
       // Add the new node
       updatedHistory.push({ nodeId: choice.nextNode });
@@ -272,5 +287,30 @@ export class StoryService {
     this.readerMode.set(false);
     localStorage.removeItem(PIN_STORAGE_KEY);
     localStorage.removeItem(READER_MODE_KEY);
+  }
+
+  toggleDebugMode(): void {
+    this.debugMode.set(!this.debugMode());
+  }
+
+  navigateToNode(nodeId: string): void {
+    const s = this.story();
+    if (!s || !s.nodes[nodeId]) return;
+
+    this.currentNodeId.set(nodeId);
+    localStorage.setItem(CURRENT_NODE_KEY, nodeId);
+    // Add to history
+    const currentHistory = this.history();
+    this.history.set([...currentHistory, { nodeId }]);
+    this.saveHistory();
+  }
+
+  debugReset(): void {
+    localStorage.removeItem(PIN_STORAGE_KEY);
+    localStorage.removeItem(READER_MODE_KEY);
+    localStorage.removeItem(CURRENT_NODE_KEY);
+    localStorage.removeItem(HISTORY_KEY);
+    localStorage.removeItem(ANSWERED_KEY);
+    window.location.reload();
   }
 }

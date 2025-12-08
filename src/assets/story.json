@@ -11,9 +11,7 @@
         "image": "/assets/images/01-1-sunset.png",
         "audio": null
       },
-      "choices": [
-        { "id": "hobbits", "text": "Weiter", "nextNode": "hobbits" }
-      ]
+      "choices": [{ "id": "hobbits", "text": "Weiter", "nextNode": "hobbits" }]
     },
     "hobbits": {
       "id": "hobbits",
@@ -23,9 +21,7 @@
         "image": null,
         "audio": null
       },
-      "choices": [
-        { "id": "tuks", "text": "Weiter", "nextNode": "tuks" }
-      ]
+      "choices": [{ "id": "tuks", "text": "Weiter", "nextNode": "tuks" }]
     },
     "tuks": {
       "id": "tuks",
@@ -47,9 +43,7 @@
         "image": "/assets/images/01-2-raeume.png",
         "audio": null
       },
-      "choices": [
-        { "id": "familie", "text": "Weiter", "nextNode": "familie" }
-      ]
+      "choices": [{ "id": "familie", "text": "Weiter", "nextNode": "familie" }]
     },
     "familie": {
       "id": "familie",
@@ -59,9 +53,7 @@
         "image": null,
         "audio": null
       },
-      "choices": [
-        { "id": "odo", "text": "Weiter", "nextNode": "odo" }
-      ]
+      "choices": [{ "id": "odo", "text": "Weiter", "nextNode": "odo" }]
     },
     "odo": {
       "id": "odo",
@@ -71,9 +63,7 @@
         "image": null,
         "audio": null
       },
-      "choices": [
-        { "id": "gabe", "text": "Weiter", "nextNode": "gabe" }
-      ]
+      "choices": [{ "id": "gabe", "text": "Weiter", "nextNode": "gabe" }]
     },
     "gabe": {
       "id": "gabe",
@@ -83,9 +73,7 @@
         "image": null,
         "audio": null
       },
-      "choices": [
-        { "id": "taschen", "text": "Weiter", "nextNode": "taschen" }
-      ]
+      "choices": [{ "id": "taschen", "text": "Weiter", "nextNode": "taschen" }]
     },
     "taschen": {
       "id": "taschen",
@@ -95,9 +83,7 @@
         "image": null,
         "audio": null
       },
-      "choices": [
-        { "id": "herbst", "text": "Weiter", "nextNode": "herbst" }
-      ]
+      "choices": [{ "id": "herbst", "text": "Weiter", "nextNode": "herbst" }]
     },
     "herbst": {
       "id": "herbst",
@@ -107,9 +93,7 @@
         "image": null,
         "audio": null
       },
-      "choices": [
-        { "id": "zimmer", "text": "Weiter", "nextNode": "zimmer" }
-      ]
+      "choices": [{ "id": "zimmer", "text": "Weiter", "nextNode": "zimmer" }]
     },
     "zimmer": {
       "id": "zimmer",
@@ -132,27 +116,84 @@
         "audio": null
       },
       "choices": [
-        { "id": "sofort", "text": "Das Regal zur Seite schieben und die Wand untersuchen", "nextNode": "sofort" },
-        { "id": "zwillinge", "text": "Den Zwillingen davon erzählen", "nextNode": "zwillinge" },
+        {
+          "id": "durch-den-spalt",
+          "text": "Das Regal zur Seite schieben und die Wand untersuchen",
+          "nextNode": "durch-den-spalt"
+        },
+        {
+          "id": "zwillinge",
+          "text": "Den Zwillingen davon erzählen",
+          "nextNode": "zwillinge"
+        },
         { "id": "mutter", "text": "Die Mutter suchen", "nextNode": "mutter" },
-        { "id": "nacht", "text": "Bis zur Nacht warten, wenn alle schlafen", "nextNode": "nacht" }
+        {
+          "id": "nacht",
+          "text": "Bis zur Nacht warten, wenn alle schlafen",
+          "nextNode": "nacht"
+        }
       ]
     },
-    "sofort": {
-      "id": "sofort",
-      "title": "Sofortige Untersuchung",
-      "text": "Fortsetzung folgt...",
+    "durch-den-spalt": {
+      "id": "durch-den-spalt",
+      "title": "Durch den Spalt",
+      "media": {
+        "image": "/assets/images/02-1-spalt.png",
+        "imagePosition": "bottom",
+        "audio": null
+      },
+      "text": "Odo stand reglos vor der Wand.\n\nDer Luftzug war kaum zu spüren, aber er war da. Kühl gegen seine Fingerspitzen, wie der Atem von etwas Altem, das tief im Hügel schlief. Die Feder auf dem Regal zitterte noch immer.\n\nEr hätte jemanden holen können. Seinen Vater, der alles wusste über die Tuckberge. Die Zwillinge, die jeden Geheimgang kannten. Sogar Largo, nur um nicht allein zu sein.\n\nAber Odo holte niemanden.\n\nStattdessen legte er beide Hände an das Regal und schob.\n\nEs war schwerer, als er gedacht hatte. Das Holz schrammte über den Steinboden mit einem Geräusch, das viel zu laut war in der Stille seines Zimmers. Odo hielt inne, lauschte. Schritte im Gang? Nein. Nur der Regen, der gegen das Fenster trommelte. Nur sein eigener Atem.\n\nEr schob weiter.\n\nDas Regal glitt zur Seite, Zentimeter für Zentimeter, und dahinter kam die Wand zum Vorschein. Grauer Stein, wie überall in Tuckbergen. Odo runzelte die Stirn. Hatte er sich geirrt? War da doch nichts?\n\nDann sah er es.\n\nEin Spalt.\n\nNicht breiter als seine Hand, dort wo zwei Steinblöcke aufeinandertrafen. Kein Riss, kein Zufall – die Kanten waren zu gerade. Jemand hatte diesen Spalt gemacht. Und dann das Regal davorgestellt. Und dann... vergessen? Versteckt?\n\nOdo kniete sich hin und spähte hindurch.\n\nSchwärze. Nichts als Schwärze.\n\nAber der Luftzug war stärker hier, kühl und alt und irgendwie süßlich, wie Staub und trockenes Holz und etwas, das Odo nicht benennen konnte. Dahinter war ein Raum. Oder ein Gang. Oder etwas.\n\nOdo setzte sich auf seine Fersen und dachte nach.\n\nDer Spalt war schmal. Ein erwachsener Hobbit würde niemals hindurchpassen – nicht sein Vater mit seinem runden Bauch, nicht einmal seine Mutter mit ihren breiten Hüften. Aber Odo war zwölf und schmal und hatte sich schon durch engere Lücken gezwängt.\n\nDie Frage war nur: Was war auf der anderen Seite?\n\nUnd die andere Frage, die wichtigere: Wollte er es wissen?\n\nOdo schaute über seine Schulter zu seinem Zimmer. Das Bett unter dem Fenster, die Karte an der Decke, die Fundstücke auf dem Regal. Alles vertraut. Alles sicher. Alles bekannt.\n\nEr schaute zurück zum Spalt.\n\nDann griff er in seine Tasche und zog die Kerze hervor, die er immer bei sich trug. Klein, nur ein Stummel, aber genug. Daneben die Streichhölzer in ihrer winzigen Dose. Er zündete die Kerze an, und ein kleiner Kreis aus Licht erschien um seine Hand.\n\nOdo atmete ein.\n\nUnd dann zwängte er sich durch den Spalt.\n\nEs war enger, als es aussah.\n\nDer Stein presste sich gegen Odos Schultern, kühl und rau durch das Hemd. Er musste sich seitwärts drehen, die Kerze vor sich halten, den Kopf einziehen. Sein Herz klopfte schnell, aber nicht nur vor Angst – da war auch etwas anderes. Etwas, das kribbelte.\n\nEin Geheimgang. In seinem Zimmer. Die ganze Zeit.\n\nFür einen Moment steckte er fest, und sein Atem stockte. Er dachte an seinen Vater, der immer sagte, Tuks hätten mehr Neugier als Verstand. Er dachte an seine Mutter, die fragen würde, warum um alles in der Welt er nicht wenigstens eine Lampe geholt hatte. Er dachte daran, dass niemand wusste, wo er war.\n\nAber dann dachte er: Ich bin der Erste. Seit wer weiß wie lange. Der Erste, der das hier sieht.\n\nUnd das war stärker.\n\nEr presste die Schultern zusammen, schob sich vorwärts – und dann gab der Stein nach, und Odo stolperte in die Dunkelheit.\n\nEr fing sich, hob die Kerze, und das Licht zeigte ihm, wo er war.\n\nEin Gang.\n\nAber nicht wie die Gänge in Tuckbergen. Nicht gemauert, nicht verputzt, nicht mit den runden Wänden und warmen Farben, die er kannte. Dieser Gang war grob. Die Wände sahen aus, als hätte jemand sie aus dem Stein gehauen, vor langer Zeit, mit Werkzeugen, die keine Hobbit-Werkzeuge waren. Die Decke war niedrig – Odo konnte sie berühren, wenn er die Hand hob – und der Boden war uneben, voller kleiner Steine und Unebenheiten.\n\nUnd überall lag Staub.\n\nEr bedeckte alles wie eine graue Decke. Als Odo einen Schritt machte, wirbelten kleine Wölkchen auf, tanzten im Kerzenlicht und sanken langsam wieder herab. Niemand war hier gewesen. Nicht seit Jahren. Nicht seit Jahrzehnten.\n\nVielleicht nicht seit noch viel länger.",
+      "choices": [
+        {
+          "id": "der-verborgene-raum",
+          "text": "Weiter",
+          "nextNode": "der-verborgene-raum"
+        }
+      ]
+    },
+    "der-verborgene-raum": {
+      "id": "der-verborgene-raum",
+      "title": "Der verborgene Raum",
+      "text": "Der Luftzug kam von vorn, aus der Dunkelheit jenseits des Kerzenlichts. Odo folgte ihm.\n\nSeine Schritte hallten seltsam in der Stille – ein dumpfes Klopfen, das von den Wänden zurückgeworfen wurde. Irgendwo tropfte Wasser, ein gleichmäßiges Plink... Plink... Plink, das aus weiter Ferne zu kommen schien. Oder aus der Nähe. Es war schwer zu sagen.\n\nDer Gang machte eine Biegung. Dann noch eine.\n\nOdo zählte seine Schritte. Zwanzig. Dreißig. Fünfzig.\n\nEr musste längst unter dem Zimmer der Zwillinge sein. Oder unter dem großen Saal. Oder unter Räumen, die er kannte, ohne zu wissen, dass unter ihnen etwas anderes lag.\n\nBei Schritt achtundsechzig endete der Gang.\n\nNicht abrupt – er öffnete sich, wie ein Bach sich in einen Teich öffnet, und Odo stand in einem Raum.\n\nDie Kerze war zu klein, um alles zu beleuchten.\n\nOdo sah Schatten und Formen, Umrisse, die sich im flackernden Licht bewegten, ohne sich wirklich zu bewegen. Er ging langsam vorwärts, die Kerze vor sich wie einen Schild, und Stück für Stück gab der Raum seine Geheimnisse preis.\n\nFässer.\n\nDrei davon, aufgereiht an der Wand. Zwei standen aufrecht, das dritte lag auf der Seite, als hätte es jemand umgestoßen. Odo klopfte dagegen – hohl. Leer. Seit langer Zeit leer.\n\nRegale.\n\nAn der gegenüberliegenden Wand, aus dunklem Holz, die Bretter durchgebogen von der Last der Jahre. Darauf standen Krüge, Dutzende von Krügen, manche noch aufrecht, manche umgefallen, manche zerbrochen auf dem Boden darunter. Odo hob einen an. Leicht, viel zu leicht. Was auch immer darin gewesen war, es war längst verdampft oder verschüttet oder vergessen.\n\nWerkzeuge.\n\nIn einer Ecke, aufgehängt an Haken, die in den Stein geschlagen waren. Odo erkannte manche davon – ein Hammer, eine Säge, etwas, das wie eine Zange aussah – aber andere waren ihm fremd. Seltsam geformte Dinge aus Metall, rostig und rätselhaft. Wozu hatte man die benutzt?\n\nUnd in der anderen Ecke: ein Regal, zusammengebrochen.\n\nEs war einmal groß gewesen, vielleicht das größte im Raum. Aber irgendwann, vor Jahren oder Jahrhunderten, hatten die Bretter nachgegeben. Das ganze Ding war in sich zusammengesackt wie ein müder alter Hobbit, der sich hinsetzen muss. Holzstücke lagen kreuz und quer, bedeckt mit demselben grauen Staub, der überall lag.\n\nAber dort, genau dort, kam der Luftzug her.\n\nOdo spürte es deutlich. Die Luft strömte unter dem Haufen aus Holz hervor, kühler und frischer als die stehende Luft im Raum. Dahinter war etwas. Dahinter ging es weiter.\n\nEr kniete sich hin und betrachtete das Chaos aus Brettern und Balken. Es war zu schwer, um es einfach beiseite zu schieben. Aber wenn er systematisch vorging, Stück für Stück, dann vielleicht...\n\nEr hielt inne.\n\nSein Blick war auf den Boden gefallen, auf den Staub vor dem zusammengestürzten Regal. Etwas stimmte nicht. Der Staub war... anders. Dünner. Als würde die Luft, die hier strömte, ihn immer wieder fortblasen. Eine halbmondförmige Fläche vor dem Regal war fast sauber.\n\nOdo lächelte unwillkürlich.\n\nEr hatte Recht gehabt. Hier war etwas. Hier ging es weiter.",
       "media": {
         "image": null,
         "audio": null
       },
-      "choices": [],
-      "pending": true
+      "choices": [
+        {
+          "id": "die-alte-lampe",
+          "text": "Weiter",
+          "nextNode": "die-alte-lampe"
+        }
+      ]
+    },
+    "die-alte-lampe": {
+      "id": "die-alte-lampe",
+      "title": "Die alte Lampe",
+      "text": "Aber das Regal war schwer. Zu schwer für einen zwölfjährigen Hobbit allein. Er würde Zeit brauchen. Kraft. Vielleicht einen Hebel.\n\nEr schaute sich um.\n\nDie Krüge auf den Regalen. Die leeren Fässer. Die seltsamen Werkzeuge an der Wand.\n\nUnd dann blieb sein Blick an etwas hängen. Etwas, das er vorher nicht bemerkt hatte, halb verborgen hinter den aufrechten Fässern. Ein Kasten aus Metall, flach und rechteckig, mit einem Griff oben. Odo ging hin und zog ihn hervor. Er war überraschend leicht.\n\nEin Klicken, als er den Deckel öffnete. Und darin, gebettet in geöltes Tuch, lag eine Lampe.\n\nNicht wie die Lampen, die Odo kannte – die Kerzenhalter und Öllichter in Tuckbergen, gemütlich und praktisch. Diese Lampe war anders. Schlanker. Aus einem Metall, das matt schimmerte, ohne zu rosten. Und als Odo sie heraushob und untersuchte, sah er, dass der Tank noch halb voll war mit einer klaren, öligen Flüssigkeit.\n\nEr schüttelte sie vorsichtig. Ein Schwappen.\n\nSein Herz machte einen kleinen Sprung.\n\nWenn die Lampe funktionierte – wenn sie Licht gab, richtiges Licht, nicht nur den kleinen Kreis seiner Kerzenflamme – dann konnte er weiter. Dann konnte er sehen, was hinter dem Regal lag. Dann...\n\nAber der Kerzenstummel in seiner Hand war schon halb heruntergebrannt. Wie lange war er hier unten gewesen? Eine Stunde? Länger? Die Zeit fühlte sich seltsam an in diesem Raum, gedehnt und verzerrt wie ein Traum kurz vor dem Aufwachen.\n\nUnd seine Familie würde ihn suchen. Beim Abendessen, spätestens. Wenn sein Platz leer war, würde seine Mutter rufen, und wenn er nicht antwortete, würden sie nachschauen, und dann...\n\nOdo betrachtete die Lampe in seiner Hand. Das zusammengestürzte Regal. Die Dunkelheit dahinter.\n\nEr konnte jetzt weitermachen. Die Lampe anzünden, das Regal beiseite räumen, sehen, was dort wartete.\n\nOder er konnte zurückgehen. Die Lampe mitnehmen, den Spalt markieren, morgen wiederkommen. Mit mehr Zeit. Mit einem Plan.\n\nWas sollte er tun?",
+      "media": {
+        "image": "/assets/images/02-2-lampe.png",
+        "imagePosition": "bottom",
+        "audio": null
+      },
+      "choices": [
+        {
+          "id": "weiter-erkunden",
+          "text": "Die Lampe anzünden und das Regal beiseite räumen. Er kann jetzt nicht aufhören.",
+          "nextNode": "weiter-erkunden"
+        },
+        {
+          "id": "zurueck-ins-zimmer",
+          "text": "Mit der Lampe zurückgehen damit er nicht vermisst wird, am nächsten Tag mit mehr Zeit wiederkommen.",
+          "nextNode": "zurueck-ins-zimmer"
+        }
+      ]
     },
     "zwillinge": {
       "id": "zwillinge",
       "title": "Die Zwillinge einweihen",
-      "text": "Fortsetzung folgt...",
+      "text": "",
+      "teaser": "Odo beschließt, den Zwillingen von dem seltsamen Luftzug zu erzählen. Wenn jemand die verborgenen Gänge der Tuckberge kennt, dann sie...",
       "media": {
         "image": null,
         "audio": null
@@ -163,7 +204,8 @@
     "mutter": {
       "id": "mutter",
       "title": "Mutter suchen",
-      "text": "Fortsetzung folgt...",
+      "text": "",
+      "teaser": "Odo macht sich auf den Weg zur Küche, wo seine Mutter bestimmt gerade einen ihrer berühmten Kuchen backt. Sie würde wissen, was dieser Luftzug bedeutet...",
       "media": {
         "image": null,
         "audio": null
@@ -174,7 +216,32 @@
     "nacht": {
       "id": "nacht",
       "title": "Nächtliche Erkundung",
-      "text": "Fortsetzung folgt...",
+      "text": "",
+      "teaser": "Odo beschließt zu warten. Diese Entdeckung ist zu wichtig, um sie zu überstürzen. Heute Nacht, wenn alle schlafen, wird er zurückkommen...",
+      "media": {
+        "image": null,
+        "audio": null
+      },
+      "choices": [],
+      "pending": true
+    },
+    "weiter-erkunden": {
+      "id": "weiter-erkunden",
+      "title": "Weitermachen",
+      "text": "",
+      "teaser": "Odo zündet die alte Lampe an. Die Flamme flackert, dann brennt sie ruhig und hell. Jetzt kann er sehen. Jetzt kann er das Regal beiseite räumen...",
+      "media": {
+        "image": null,
+        "audio": null
+      },
+      "choices": [],
+      "pending": true
+    },
+    "zurueck-ins-zimmer": {
+      "id": "zurueck-ins-zimmer",
+      "title": "Zurück ins Zimmer",
+      "text": "",
+      "teaser": "Odo steckt die Lampe vorsichtig in seine Tasche. Diese Entdeckung wird nicht weglaufen. Morgen kommt er zurück – besser vorbereitet...",
       "media": {
         "image": null,
         "audio": null
