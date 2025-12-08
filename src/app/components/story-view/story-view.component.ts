@@ -28,6 +28,7 @@ export class StoryViewComponent implements AfterViewInit, OnDestroy {
   readonly isCurrentNodeAnswered = this.storyService.isCurrentNodeAnswered;
   readonly isDebugMode = this.storyService.isDebugMode;
   readonly allNodes = this.storyService.allNodes;
+  readonly availablePath = this.storyService.availablePath;
 
   isChoosing = signal<boolean>(false);
   showHistory = signal<boolean>(false);

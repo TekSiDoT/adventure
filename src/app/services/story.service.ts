@@ -49,6 +49,21 @@ export class StoryService {
   readonly isReaderMode = computed(() => this.readerMode());
   readonly isCurrentNodeAnswered = computed(() => this.answeredNodes().has(this.currentNodeId()));
 
+  // For reader mode: find which choice leads to a non-pending node (the path taken)
+  readonly availablePath = computed<Choice | null>(() => {
+    const current = this.currentNode();
+    const s = this.story();
+    if (!current || !s || current.choices.length <= 1) return null;
+
+    for (const choice of current.choices) {
+      const nextNode = s.nodes[choice.nextNode];
+      if (nextNode && !nextNode.pending && nextNode.text) {
+        return choice;
+      }
+    }
+    return null;
+  });
+
   readonly storyHistory = computed(() => {
     const s = this.story();
     if (!s) return [];

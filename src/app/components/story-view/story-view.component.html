@@ -161,7 +161,11 @@
           <div class="choices">
             @if (node.choices.length > 1) {
               @if (isReaderMode()) {
-                <p class="choices-prompt reader-prompt">Warte auf die nächste Entscheidung...</p>
+                @if (availablePath()) {
+                  <p class="choices-prompt reader-prompt">Die Entscheidung wurde getroffen:</p>
+                } @else {
+                  <p class="choices-prompt reader-prompt">Warte auf die nächste Entscheidung...</p>
+                }
               } @else {
                 <p class="choices-prompt">Was machst du?</p>
               }
@@ -169,8 +173,10 @@
             @for (choice of node.choices; track choice.id) {
               <button
                 class="choice-btn"
+                [class.available-path]="isReaderMode() && availablePath()?.id === choice.id"
                 (click)="onChoiceClick(choice)"
-                [disabled]="isChoosing() || (isReaderMode() && node.choices.length > 1)"
+                [disabled]="isChoosing() || (isReaderMode() && node.choices.length > 1 && availablePath()?.id !== choice.id)"
+                [class.hidden-choice]="isReaderMode() && node.choices.length > 1 && availablePath() && availablePath()?.id !== choice.id"
               >
                 {{ choice.text }}
               </button>
