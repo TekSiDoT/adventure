@@ -1,12 +1,13 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Story, StoryNode, Choice, OpenQuestion } from '../models/story.model';
+import { Story, StoryNode, Choice, OpenQuestion, InventoryItem } from '../models/story.model';
 
 const PIN_STORAGE_KEY = 'adventure_v2_pin_verified';
 const READER_MODE_KEY = 'adventure_v2_reader_mode';
 const CURRENT_NODE_KEY = 'adventure_v2_current_node';
 const HISTORY_KEY = 'adventure_v2_history';
 const ANSWERED_KEY = 'adventure_v2_answered';
+const INVENTORY_KEY = 'adventure_v2_inventory';
 
 interface HistoryEntry {
   nodeId: string;
@@ -25,6 +26,7 @@ export class StoryService {
   private debugMode = signal<boolean>(false);
   private history = signal<HistoryEntry[]>([]);
   private answeredNodes = signal<Set<string>>(new Set());
+  private collectedItems = signal<Set<string>>(new Set());
 
   readonly isLoading = signal<boolean>(true);
   readonly error = signal<string | null>(null);
@@ -75,6 +77,17 @@ export class StoryService {
     })).filter(h => h.node);
   });
 
+  readonly inventory = computed<InventoryItem[]>(() => {
+    const s = this.story();
+    if (!s?.items) return [];
+
+    return [...this.collectedItems()]
+      .map(id => s.items![id])
+      .filter((item): item is InventoryItem => item !== undefined);
+  });
+
+  readonly inventoryCount = computed(() => this.collectedItems().size);
+
   constructor(private http: HttpClient) {
     this.checkStoredState();
     this.loadStory();
@@ -113,6 +126,15 @@ export class StoryService {
         this.answeredNodes.set(new Set());
       }
     }
+
+    const savedInventory = localStorage.getItem(INVENTORY_KEY);
+    if (savedInventory) {
+      try {
+        this.collectedItems.set(new Set(JSON.parse(savedInventory)));
+      } catch {
+        this.collectedItems.set(new Set());
+      }
+    }
   }
 
   private loadStory(): void {
@@ -131,6 +153,11 @@ export class StoryService {
           this.history.set([{ nodeId: this.currentNodeId() }]);
           this.saveHistory();
         }
+        // Collect items from current node (for initial load)
+        const currentNodeData = story.nodes[this.currentNodeId()];
+        if (currentNodeData?.grantsItems) {
+          this.collectItems(currentNodeData.grantsItems);
+        }
         this.isLoading.set(false);
       },
       error: (err) => {
@@ -143,6 +170,30 @@ export class StoryService {
 
   private saveHistory(): void {
     localStorage.setItem(HISTORY_KEY, JSON.stringify(this.history()));
+  }
+
+  private saveInventory(): void {
+    localStorage.setItem(INVENTORY_KEY, JSON.stringify([...this.collectedItems()]));
+  }
+
+  private collectItems(itemIds: string[] | undefined): void {
+    if (!itemIds || itemIds.length === 0) return;
+
+    const current = this.collectedItems();
+    const newItems = new Set(current);
+    let changed = false;
+
+    for (const id of itemIds) {
+      if (!newItems.has(id)) {
+        newItems.add(id);
+        changed = true;
+      }
+    }
+
+    if (changed) {
+      this.collectedItems.set(newItems);
+      this.saveInventory();
+    }
   }
 
   verifyPin(pin: string): boolean {
@@ -175,6 +226,9 @@ export class StoryService {
     const current = this.currentNode();
     if (!current) return;
 
+    // Collect items from this choice
+    this.collectItems(choice.grantsItems);
+
     // Send notification only for real choices (multiple options) and not in reader mode
     if (!this.readerMode() && current.choices.length > 1) {
       try {
@@ -204,6 +258,12 @@ export class StoryService {
     // Update current node
     this.currentNodeId.set(choice.nextNode);
     localStorage.setItem(CURRENT_NODE_KEY, choice.nextNode);
+
+    // Collect items from the next node
+    const nextNode = this.story()?.nodes[choice.nextNode];
+    if (nextNode?.grantsItems) {
+      this.collectItems(nextNode.grantsItems);
+    }
   }
 
   async submitOpenAnswer(question: OpenQuestion, answer: string): Promise<void> {
@@ -326,6 +386,7 @@ export class StoryService {
     localStorage.removeItem(CURRENT_NODE_KEY);
     localStorage.removeItem(HISTORY_KEY);
     localStorage.removeItem(ANSWERED_KEY);
+    localStorage.removeItem(INVENTORY_KEY);
     window.location.reload();
   }
 }

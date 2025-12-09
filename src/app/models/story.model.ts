@@ -2,6 +2,14 @@ export interface Choice {
   id: string;
   text: string;
   nextNode: string;
+  grantsItems?: string[];  // Item IDs granted when selecting this choice
+}
+
+export interface InventoryItem {
+  id: string;
+  name: string;
+  description: string;
+  image?: string;
 }
 
 export interface Media {
@@ -23,6 +31,7 @@ export interface StoryNode {
   openQuestion?: OpenQuestion;
   pending?: boolean;
   teaser?: string; // Preview sentence shown on pending page, e.g. "Odo entschliesst sich weiter zu gehen..."
+  grantsItems?: string[];  // Item IDs granted when visiting this node
 }
 
 export interface Story {
@@ -30,4 +39,5 @@ export interface Story {
   pin: string;
   readerPin?: string;
   nodes: Record<string, StoryNode>;
+  items?: Record<string, InventoryItem>;  // Catalog of all collectible items
 }

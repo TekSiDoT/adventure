@@ -1,0 +1,66 @@
+<!-- Inventory Toggle Button -->
+<button
+  class="inventory-toggle"
+  (click)="toggle()"
+  [class.has-items]="inventoryCount() > 0"
+  [attr.aria-expanded]="isOpen()"
+  aria-label="Odos Taschen"
+>
+  <span class="bag-icon">&#127890;</span>
+  @if (inventoryCount() > 0) {
+    <span class="item-count">{{ inventoryCount() }}</span>
+  }
+</button>
+
+<!-- Dropdown Panel -->
+@if (isOpen()) {
+  <div class="inventory-backdrop" (click)="close()"></div>
+
+  <div class="inventory-panel" role="dialog" aria-label="Odos Taschen">
+    <div class="inventory-header">
+      <h2>Odos Taschen</h2>
+      <button class="close-btn" (click)="close()" aria-label="Schliessen">
+        &times;
+      </button>
+    </div>
+
+    <div class="inventory-content">
+      @if (inventory().length === 0) {
+        <p class="empty-message">
+          Odos Taschen sind noch leer. Auf seinem Abenteuer wird er bestimmt
+          nutzliche Dinge finden...
+        </p>
+      } @else {
+        @if (selectedItem(); as item) {
+          <!-- Item Detail View -->
+          <div class="item-detail">
+            <button class="back-btn" (click)="clearSelection()">
+              &larr; Zuruck
+            </button>
+            @if (item.image) {
+              <div class="item-image">
+                <img [src]="item.image" [alt]="item.name" />
+              </div>
+            }
+            <h3 class="item-name">{{ item.name }}</h3>
+            <p class="item-description">{{ item.description }}</p>
+          </div>
+        } @else {
+          <!-- Item List View -->
+          <div class="item-list">
+            @for (item of inventory(); track item.id) {
+              <button class="item-card" (click)="selectItem(item)">
+                @if (item.image) {
+                  <img [src]="item.image" [alt]="item.name" class="item-thumb" />
+                } @else {
+                  <div class="item-placeholder">&#128230;</div>
+                }
+                <span class="item-label">{{ item.name }}</span>
+              </button>
+            }
+          </div>
+        }
+      }
+    </div>
+  </div>
+}

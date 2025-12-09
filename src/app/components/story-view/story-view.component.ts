@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StoryService } from '../../services/story.service';
 import { AudioPlayerComponent } from '../audio-player/audio-player.component';
+import { InventoryComponent } from '../inventory/inventory.component';
 import { Choice, OpenQuestion } from '../../models/story.model';
 
 @Component({
   selector: 'app-story-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, AudioPlayerComponent],
+  imports: [CommonModule, FormsModule, AudioPlayerComponent, InventoryComponent],
   templateUrl: './story-view.component.html',
   styleUrl: './story-view.component.scss'
 })
