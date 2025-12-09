@@ -8,6 +8,7 @@ const CURRENT_NODE_KEY = 'adventure_v2_current_node';
 const HISTORY_KEY = 'adventure_v2_history';
 const ANSWERED_KEY = 'adventure_v2_answered';
 const INVENTORY_KEY = 'adventure_v2_inventory';
+const EXPLORED_KEY = 'adventure_v2_explored';
 
 interface HistoryEntry {
   nodeId: string;
@@ -27,6 +28,8 @@ export class StoryService {
   private history = signal<HistoryEntry[]>([]);
   private answeredNodes = signal<Set<string>>(new Set());
   private collectedItems = signal<Set<string>>(new Set());
+  private exploredNodes = signal<Set<string>>(new Set());
+  private pendingReturn = signal<string | null>(null);  // For exploration hub return navigation
 
   readonly isLoading = signal<boolean>(true);
   readonly error = signal<string | null>(null);
@@ -88,6 +91,31 @@ export class StoryService {
 
   readonly inventoryCount = computed(() => this.collectedItems().size);
 
+  // Exploration hub: check if current node is a hub and which options are explored
+  readonly explorationStatus = computed(() => {
+    const current = this.currentNode();
+    if (!current?.explorationHub) return null;
+
+    const explored = this.exploredNodes();
+    const required = current.explorationHub.requiredNodes;
+    const exploredList = required.map(nodeId => ({
+      nodeId,
+      explored: explored.has(nodeId)
+    }));
+    const allExplored = required.every(nodeId => explored.has(nodeId));
+
+    return {
+      requiredNodes: required,
+      exploredList,
+      allExplored,
+      summaryNodeId: current.explorationHub.summaryNodeId
+    };
+  });
+
+  readonly hasPendingReturn = computed(() => this.pendingReturn() !== null);
+
+  readonly canGoBack = computed(() => this.history().length > 1);
+
   constructor(private http: HttpClient) {
     this.checkStoredState();
     this.loadStory();
@@ -135,6 +163,15 @@ export class StoryService {
         this.collectedItems.set(new Set());
       }
     }
+
+    const savedExplored = localStorage.getItem(EXPLORED_KEY);
+    if (savedExplored) {
+      try {
+        this.exploredNodes.set(new Set(JSON.parse(savedExplored)));
+      } catch {
+        this.exploredNodes.set(new Set());
+      }
+    }
   }
 
   private loadStory(): void {
@@ -174,6 +211,20 @@ export class StoryService {
 
   private saveInventory(): void {
     localStorage.setItem(INVENTORY_KEY, JSON.stringify([...this.collectedItems()]));
+  }
+
+  private saveExploredNodes(): void {
+    localStorage.setItem(EXPLORED_KEY, JSON.stringify([...this.exploredNodes()]));
+  }
+
+  private markNodeExplored(nodeId: string): void {
+    const current = this.exploredNodes();
+    if (!current.has(nodeId)) {
+      const newExplored = new Set(current);
+      newExplored.add(nodeId);
+      this.exploredNodes.set(newExplored);
+      this.saveExploredNodes();
+    }
   }
 
   private collectItems(itemIds: string[] | undefined): void {
@@ -239,6 +290,13 @@ export class StoryService {
       }
     }
 
+    // Handle exploration hub: if this choice has returnsTo, mark the target as explored
+    // and set up the return navigation
+    if (choice.returnsTo) {
+      this.markNodeExplored(choice.nextNode);
+      this.pendingReturn.set(choice.returnsTo);
+    }
+
     // Update history - mark current node with the choice made
     const currentHistory = this.history();
     if (currentHistory.length > 0) {
@@ -264,6 +322,40 @@ export class StoryService {
     if (nextNode?.grantsItems) {
       this.collectItems(nextNode.grantsItems);
     }
+  }
+
+  // Return to the exploration hub after exploring a node
+  returnToHub(): void {
+    const returnTo = this.pendingReturn();
+    if (!returnTo) return;
+
+    this.currentNodeId.set(returnTo);
+    localStorage.setItem(CURRENT_NODE_KEY, returnTo);
+    this.pendingReturn.set(null);
+
+    // Add to history
+    const currentHistory = this.history();
+    this.history.set([...currentHistory, { nodeId: returnTo }]);
+    this.saveHistory();
+  }
+
+  // Navigate to summary when all exploration nodes are visited
+  proceedToSummary(): void {
+    const status = this.explorationStatus();
+    if (!status?.allExplored) return;
+
+    const summaryId = status.summaryNodeId;
+    this.currentNodeId.set(summaryId);
+    localStorage.setItem(CURRENT_NODE_KEY, summaryId);
+
+    // Add to history
+    const currentHistory = this.history();
+    this.history.set([...currentHistory, { nodeId: summaryId }]);
+    this.saveHistory();
+  }
+
+  isNodeExplored(nodeId: string): boolean {
+    return this.exploredNodes().has(nodeId);
   }
 
   async submitOpenAnswer(question: OpenQuestion, answer: string): Promise<void> {
@@ -357,6 +449,20 @@ export class StoryService {
     }
   }
 
+  goBack(): void {
+    const hist = this.history();
+    if (hist.length < 2) return;
+
+    const newHistory = hist.slice(0, -1);
+    this.history.set(newHistory);
+
+    const previousEntry = newHistory[newHistory.length - 1];
+    this.currentNodeId.set(previousEntry.nodeId);
+    localStorage.setItem(CURRENT_NODE_KEY, previousEntry.nodeId);
+
+    this.saveHistory();
+  }
+
   logout(): void {
     this.pinVerified.set(false);
     this.readerMode.set(false);
@@ -387,6 +493,7 @@ export class StoryService {
     localStorage.removeItem(HISTORY_KEY);
     localStorage.removeItem(ANSWERED_KEY);
     localStorage.removeItem(INVENTORY_KEY);
+    localStorage.removeItem(EXPLORED_KEY);
     window.location.reload();
   }
 }

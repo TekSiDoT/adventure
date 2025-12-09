@@ -158,6 +158,22 @@
   }
 }
 
+.back-button {
+  background: none;
+  border: none;
+  font-family: 'Lora', serif;
+  font-size: 0.95rem;
+  color: #7d5a3a;
+  cursor: pointer;
+  padding: 0.25rem 0;
+  margin-bottom: 0.5rem;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #5d3a1a;
+  }
+}
+
 .story-title {
   font-family: 'Cinzel', serif;
   font-size: 1.75rem;
@@ -618,5 +634,91 @@
     font-family: 'Cinzel', serif;
     font-size: 1.2rem;
     color: #5d3a1a;
+  }
+}
+
+// Exploration Hub styles
+.exploration-progress {
+  text-align: center;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: linear-gradient(145deg, #f5e6d3, #ead4bd);
+  border-radius: 0.5rem;
+  border: 2px solid #8b4513;
+
+  .exploration-label {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    color: #5d3a1a;
+    margin-bottom: 0.5rem;
+  }
+
+  .exploration-items {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .exploration-item {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 1rem;
+    background: #deb887;
+    border: 2px solid #8b4513;
+    color: #8b4513;
+    transition: all 0.3s ease;
+
+    &.explored {
+      background: #228b22;
+      border-color: #1a6b1a;
+      color: #fff;
+    }
+  }
+
+  .exploration-count {
+    font-family: 'Lora', serif;
+    font-size: 0.9rem;
+    color: #7d5a3a;
+  }
+}
+
+// Explored choice styling
+.choice-btn.explored-choice {
+  background: linear-gradient(145deg, #6a8a6a, #5a7a5a);
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(145deg, #7a9a7a, #6a8a6a);
+  }
+}
+
+.explored-mark {
+  margin-right: 0.5rem;
+  font-size: 0.9em;
+}
+
+// Return to hub button
+.choice-btn.return-btn {
+  background: linear-gradient(145deg, #4a90a4, #3a7a8a);
+  text-align: center;
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(145deg, #5aa0b4, #4a90a4);
+  }
+}
+
+// Summary/continue button
+.choice-btn.summary-btn {
+  background: linear-gradient(145deg, #b8860b, #9a7209);
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(145deg, #c89618, #b8860b);
   }
 }

@@ -3,6 +3,7 @@ export interface Choice {
   text: string;
   nextNode: string;
   grantsItems?: string[];  // Item IDs granted when selecting this choice
+  returnsTo?: string;  // After visiting nextNode, return to this node (for exploration hubs)
 }
 
 export interface InventoryItem {
@@ -22,6 +23,11 @@ export interface OpenQuestion {
   prompt: string;
 }
 
+export interface ExplorationHub {
+  requiredNodes: string[];  // Node IDs that must be visited before proceeding
+  summaryNodeId: string;    // Node ID to navigate to when all required nodes visited
+}
+
 export interface StoryNode {
   id: string;
   title?: string;
@@ -32,6 +38,7 @@ export interface StoryNode {
   pending?: boolean;
   teaser?: string; // Preview sentence shown on pending page, e.g. "Odo entschliesst sich weiter zu gehen..."
   grantsItems?: string[];  // Item IDs granted when visiting this node
+  explorationHub?: ExplorationHub;  // If set, this node is an exploration hub
 }
 
 export interface Story {

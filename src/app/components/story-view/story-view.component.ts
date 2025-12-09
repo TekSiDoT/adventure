@@ -30,6 +30,15 @@ export class StoryViewComponent implements AfterViewInit, OnDestroy {
   readonly isDebugMode = this.storyService.isDebugMode;
   readonly allNodes = this.storyService.allNodes;
   readonly availablePath = this.storyService.availablePath;
+  readonly explorationStatus = this.storyService.explorationStatus;
+  readonly hasPendingReturn = this.storyService.hasPendingReturn;
+  readonly canGoBack = this.storyService.canGoBack;
+
+  readonly exploredCount = computed(() => {
+    const status = this.explorationStatus();
+    if (!status) return 0;
+    return status.exploredList.filter(i => i.explored).length;
+  });
 
   isChoosing = signal<boolean>(false);
   showHistory = signal<boolean>(false);
@@ -77,6 +86,13 @@ export class StoryViewComponent implements AfterViewInit, OnDestroy {
     this.openAnswer.set('');
   }
 
+  onGoBack(): void {
+    this.storyService.goBack();
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }, 0);
+  }
+
   onDebugNavigate(nodeId: string): void {
     this.storyService.navigateToNode(nodeId);
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -88,6 +104,24 @@ export class StoryViewComponent implements AfterViewInit, OnDestroy {
 
   toggleHistory(): void {
     this.showHistory.set(!this.showHistory());
+  }
+
+  onReturnToHub(): void {
+    this.storyService.returnToHub();
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }, 0);
+  }
+
+  onProceedToSummary(): void {
+    this.storyService.proceedToSummary();
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }, 0);
+  }
+
+  isNodeExplored(nodeId: string): boolean {
+    return this.storyService.isNodeExplored(nodeId);
   }
 
   async onOpenAnswerSubmit(question: OpenQuestion): Promise<void> {

@@ -30,6 +30,11 @@
   } @else {
     @if (currentNode(); as node) {
       <article class="story-card">
+        @if (canGoBack()) {
+          <button class="back-button" (click)="onGoBack()">
+            ← Zurück
+          </button>
+        }
         @if (node.title) {
           <h1 class="story-title">{{ node.title }}</h1>
         }
@@ -158,8 +163,38 @@
               </button>
             }
           </div>
+        } @else if (hasPendingReturn()) {
+          <!-- Exploration node: return to hub button -->
+          <div class="choices">
+            <button class="choice-btn return-btn" (click)="onReturnToHub()">
+              &#8592; Zurück zur Übersicht
+            </button>
+          </div>
         } @else if (node.choices.length > 0) {
           <div class="choices">
+            @if (explorationStatus(); as status) {
+              <!-- Exploration Hub: show progress -->
+              <div class="exploration-progress">
+                <p class="exploration-label">Erkunde alle Bereiche:</p>
+                <div class="exploration-items">
+                  @for (item of status.exploredList; track item.nodeId) {
+                    <span class="exploration-item" [class.explored]="item.explored">
+                      @if (item.explored) {
+                        &#10003;
+                      } @else {
+                        &#9675;
+                      }
+                    </span>
+                  }
+                </div>
+                <p class="exploration-count">{{ exploredCount() }} / {{ status.requiredNodes.length }}</p>
+              </div>
+              @if (status.allExplored) {
+                <button class="choice-btn summary-btn" (click)="onProceedToSummary()">
+                  Weiter &#8594;
+                </button>
+              }
+            }
             @if (node.choices.length > 1) {
               @if (isReaderMode()) {
                 @if (availablePath()) {
@@ -167,7 +202,7 @@
                 } @else {
                   <p class="choices-prompt reader-prompt">Warte auf die nächste Entscheidung...</p>
                 }
-              } @else {
+              } @else if (!explorationStatus()) {
                 <p class="choices-prompt">Was machst du?</p>
               }
             }
@@ -175,10 +210,14 @@
               <button
                 class="choice-btn"
                 [class.available-path]="isReaderMode() && availablePath()?.id === choice.id"
+                [class.explored-choice]="choice.returnsTo && isNodeExplored(choice.nextNode)"
                 (click)="onChoiceClick(choice)"
                 [disabled]="isChoosing() || (isReaderMode() && node.choices.length > 1 && availablePath()?.id !== choice.id)"
                 [class.hidden-choice]="isReaderMode() && node.choices.length > 1 && availablePath() && availablePath()?.id !== choice.id"
               >
+                @if (choice.returnsTo && isNodeExplored(choice.nextNode)) {
+                  <span class="explored-mark">&#10003;</span>
+                }
                 {{ choice.text }}
               </button>
             }
