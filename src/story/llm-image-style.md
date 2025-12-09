@@ -44,7 +44,7 @@ Young hobbit boy, 12 years old, curious intelligent expression.
 Curly brown slightly unruly hair. Large green eyes, a bit too big
 for his face, giving him an alert, observant look. Average build
 for a hobbit child. Often has pockets bulging with collected items.
-Wears simple earth-toned clothing - vest, loose shirt, short trousers.
+Wears simple earth-toned clothing - red vest, loose slightly greenish shirt, dark brown short trousers.
 Bare feet with curly hair on top. Expression: curious, thoughtful,
 sometimes mischievous.
 ```
