@@ -1,4 +1,6 @@
-@if (isPinVerified()) {
+@if (isTestRoute) {
+  <router-outlet />
+} @else if (isPinVerified()) {
   <app-story-view />
 } @else {
   <app-pin-gate (pinSubmit)="onPinSubmit($event)" />

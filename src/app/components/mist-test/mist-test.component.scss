@@ -1,0 +1,134 @@
+@font-face {
+  font-family: 'Tengwar Annatar';
+  src: url('../../../assets/fonts/TengwarAnnatar.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.mist-test-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: #e0e0e0;
+  font-family: 'Lora', Georgia, serif;
+}
+
+h1 {
+  font-family: 'Cinzel', serif;
+  color: #c9a227;
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.filter-svg {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.text-container {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.elvish-text {
+  font-family: 'Tengwar Annatar', 'Times New Roman', serif;
+  font-size: 3rem;
+  color: #f4e4ba;
+  filter: url(#mist-reveal);
+  margin-bottom: 1.5rem;
+  line-height: 1.4;
+  text-shadow: 0 0 20px rgba(201, 162, 39, 0.3);
+  transition: text-shadow 0.5s ease;
+
+  &.animating {
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+
+  &.revealed {
+    text-shadow:
+      0 0 10px rgba(201, 162, 39, 0.7),
+      0 0 25px rgba(201, 162, 39, 0.5),
+      0 0 50px rgba(201, 162, 39, 0.4),
+      0 0 80px rgba(201, 162, 39, 0.3);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    text-shadow:
+      0 0 20px rgba(201, 162, 39, 0.5),
+      0 0 40px rgba(201, 162, 39, 0.4),
+      0 0 80px rgba(201, 162, 39, 0.3),
+      0 0 120px rgba(201, 162, 39, 0.2);
+  }
+  50% {
+    text-shadow:
+      0 0 30px rgba(201, 162, 39, 0.8),
+      0 0 60px rgba(201, 162, 39, 0.6),
+      0 0 100px rgba(201, 162, 39, 0.5),
+      0 0 150px rgba(201, 162, 39, 0.3);
+  }
+}
+
+.translation {
+  font-family: 'Lora', Georgia, serif;
+  font-style: italic;
+  font-size: 1.2rem;
+  color: #a0a0a0;
+  opacity: 0;
+  transition: opacity 1s ease 3s;
+
+  .revealed ~ & {
+    opacity: 1;
+  }
+}
+
+// Make translation visible when elvish is revealed
+.text-container:has(.elvish-text.revealed) .translation {
+  opacity: 1;
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+
+  button {
+    font-family: 'Cinzel', serif;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    background: linear-gradient(135deg, #2a2a4a 0%, #1a1a3a 100%);
+    border: 2px solid #c9a227;
+    color: #c9a227;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, #3a3a5a 0%, #2a2a4a 100%);
+      box-shadow: 0 0 15px rgba(201, 162, 39, 0.3);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.debug-info {
+  font-family: monospace;
+  font-size: 0.9rem;
+  color: #666;
+
+  p {
+    margin: 0.25rem 0;
+  }
+}

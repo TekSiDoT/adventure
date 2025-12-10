@@ -1,0 +1,62 @@
+<div class="mist-test-container">
+  <h1>Mist Reveal Animation Test</h1>
+
+  <!-- SVG Filter Definition -->
+  <svg class="filter-svg">
+    <defs>
+      <filter id="mist-reveal" x="-50%" y="-50%" width="200%" height="200%">
+        <feTurbulence
+          #turbulence
+          type="fractalNoise"
+          baseFrequency="0.08"
+          numOctaves="3"
+          seed="42"
+          result="noise"
+        />
+        <feDisplacementMap
+          #displacement
+          in="SourceGraphic"
+          in2="noise"
+          scale="80"
+          xChannelSelector="R"
+          yChannelSelector="G"
+          result="displaced"
+        />
+        <feGaussianBlur
+          #blur
+          in="displaced"
+          stdDeviation="4"
+          result="blurred"
+        />
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- Elvish Text -->
+  <div class="text-container">
+    <p class="elvish-text" [class.revealed]="isRevealed" [class.animating]="isAnimating">
+      t%xj$6T 1~B72# ¬ 52$ 9hM = 52$ lE6E = 52$ ehM5 = 52$ 5#6E
+    </p>
+    <p class="translation">
+      "Dir sei es gegeben zu sehen – im Nebel, im Weiten, in Nacht, im Licht."
+    </p>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <button (click)="startReveal()" [disabled]="isAnimating">
+      @if (isAnimating) { Animation läuft... } @else { Text enthüllen }
+    </button>
+    <button (click)="resetAnimation()" [disabled]="isAnimating">
+      Zurücksetzen
+    </button>
+  </div>
+
+  <!-- Debug info -->
+  <div class="debug-info">
+    <p>
+      Status:
+      {{ isAnimating ? "Animiert..." : isRevealed ? "Enthüllt" : "Versteckt" }}
+    </p>
+  </div>
+</div>
