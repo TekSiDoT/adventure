@@ -1,0 +1,223 @@
+<div class="admin-panel">
+  <header class="admin-header">
+    <h1>Admin</h1>
+    <button class="close-btn" (click)="onClose()" title="Schließen">&times;</button>
+  </header>
+
+  @if (error()) {
+    <div class="error-banner">
+      {{ error() }}
+      <button (click)="error.set(null)">&times;</button>
+    </div>
+  }
+
+  <nav class="admin-tabs">
+    <button
+      class="tab-btn"
+      [class.active]="activeTab() === 'users'"
+      (click)="activeTab.set('users')"
+    >
+      Benutzer ({{ users().length }})
+    </button>
+    <button
+      class="tab-btn"
+      [class.active]="activeTab() === 'locks'"
+      (click)="activeTab.set('locks')"
+    >
+      Kapitel ({{ lockedCount() }} gesperrt)
+    </button>
+    <button
+      class="tab-btn"
+      [class.active]="activeTab() === 'export'"
+      (click)="activeTab.set('export')"
+    >
+      Export
+    </button>
+  </nav>
+
+  <main class="admin-content">
+    @if (isLoading()) {
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Laden...</p>
+      </div>
+    } @else {
+      <!-- Users Tab -->
+      @if (activeTab() === 'users') {
+        <section class="users-section">
+          <!-- Generate PIN form -->
+          <div class="generate-pin-card">
+            <h2>Neuen Leser einladen</h2>
+            <div class="generate-form">
+              <input
+                type="text"
+                class="name-input"
+                placeholder="Name des Lesers"
+                [(ngModel)]="newReaderName"
+                [disabled]="isGenerating()"
+              />
+              <button
+                class="generate-btn"
+                (click)="generatePin()"
+                [disabled]="isGenerating() || !newReaderName().trim()"
+              >
+                @if (isGenerating()) {
+                  Generiere...
+                } @else {
+                  PIN generieren
+                }
+              </button>
+            </div>
+
+            @if (generatedPin()) {
+              <div class="generated-pin">
+                <span class="pin-label">PIN für neuen Leser:</span>
+                <span class="pin-value">{{ generatedPin() }}</span>
+                <button class="copy-btn" (click)="copyPin()">
+                  @if (copiedPin()) {
+                    Kopiert!
+                  } @else {
+                    Kopieren
+                  }
+                </button>
+              </div>
+            }
+          </div>
+
+          <!-- Users list -->
+          <div class="users-list">
+            <h2>Alle Benutzer</h2>
+            <div class="stats">
+              <span class="stat">{{ readerCount() }} Leser</span>
+            </div>
+
+            <table class="users-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>PIN</th>
+                  <th>Rolle</th>
+                  <th>Zuletzt aktiv</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (user of sortedUsers(); track user.id) {
+                  <tr [class.admin-row]="user.role === 'admin'" [class.player-row]="user.role === 'player'">
+                    <td class="name-cell">{{ user.name || '(Unbenannt)' }}</td>
+                    <td class="pin-cell">
+                      <code>{{ user.pin }}</code>
+                    </td>
+                    <td class="role-cell">{{ getRoleBadge(user.role) }}</td>
+                    <td class="date-cell">{{ formatDate(user.last_active) }}</td>
+                    <td class="actions-cell">
+                      @if (user.role === 'reader') {
+                        <button
+                          class="delete-btn"
+                          (click)="deleteUser(user)"
+                          title="Löschen"
+                        >
+                          &times;
+                        </button>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </section>
+      }
+
+      <!-- Locks Tab -->
+      @if (activeTab() === 'locks') {
+        <section class="locks-section">
+          <h2>Kapitel-Sperren</h2>
+          <div class="stats">
+            <span class="stat locked">{{ lockedCount() }} gesperrt</span>
+            <span class="stat unlocked">{{ unlockedCount() }} sichtbar</span>
+          </div>
+
+          <div class="locks-list">
+            <table class="locks-table">
+              <thead>
+                <tr>
+                  <th>Kapitel</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (node of allNodes(); track node.id) {
+                  <tr [class.locked-row]="node.is_locked">
+                    <td class="node-cell">
+                      <span class="node-title">{{ node.title || node.id }}</span>
+                      <code class="node-id">{{ node.id }}</code>
+                    </td>
+                    <td class="status-cell">
+                      @if (node.is_locked) {
+                        <span class="status-badge locked">🔒 Gesperrt</span>
+                      } @else {
+                        <span class="status-badge unlocked">✓ Sichtbar</span>
+                      }
+                    </td>
+                    <td class="actions-cell">
+                      <button
+                        class="toggle-btn"
+                        [class.unlock]="node.is_locked"
+                        [class.lock]="!node.is_locked"
+                        [disabled]="isTogglingLock() === node.id"
+                        (click)="toggleNodeLock(node.id, node.is_locked)"
+                      >
+                        @if (isTogglingLock() === node.id) {
+                          ...
+                        } @else if (node.is_locked) {
+                          Freischalten
+                        } @else {
+                          Sperren
+                        }
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </section>
+      }
+
+      <!-- Export Tab -->
+      @if (activeTab() === 'export') {
+        <section class="export-section">
+          <h2>Daten exportieren</h2>
+
+          <div class="export-card">
+            <h3>Story-Verlauf als JSON</h3>
+            <p>Exportiere alle Ereignisse und Entscheidungen als JSON-Datei.</p>
+            <button class="export-btn" (click)="exportEvents()">
+              JSON herunterladen
+            </button>
+          </div>
+
+          <div class="export-card">
+            <h3>Leser-PINs</h3>
+            <p>Liste aller aktiven Leser-PINs zum Teilen:</p>
+            <div class="pin-list">
+              @for (user of sortedUsers(); track user.id) {
+                @if (user.role === 'reader') {
+                  <div class="pin-item">
+                    <span class="pin-name">{{ user.name || 'Unbenannt' }}:</span>
+                    <code class="pin-code">{{ user.pin }}</code>
+                  </div>
+                }
+              }
+              @if (readerCount() === 0) {
+                <p class="empty-state">Keine Leser vorhanden.</p>
+              }
+            </div>
+          </div>
+        </section>
+      }
+    }
+  </main>
+</div>

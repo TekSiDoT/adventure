@@ -19,13 +19,14 @@ export class AppComponent {
   private router = inject(Router);
 
   readonly isPinVerified = this.storyService.isPinVerified;
+  readonly isAuthLoading = this.storyService.isAuthLoading;
 
   get isTestRoute(): boolean {
     return this.router.url.startsWith('/mist-test');
   }
 
-  onPinSubmit(pin: string): void {
-    const valid = this.storyService.verifyPin(pin);
+  async onPinSubmit(pin: string): Promise<void> {
+    const valid = await this.storyService.verifyPin(pin);
     if (!valid) {
       this.pinGate.showError();
     }

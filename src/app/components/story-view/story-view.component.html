@@ -1,4 +1,49 @@
 <div class="story-view">
+  <!-- Admin panel overlay -->
+  @if (showAdminPanel()) {
+    <app-admin (close)="onCloseAdmin()" />
+  }
+
+  <!-- Story overview overlay -->
+  @if (showStoryOverview()) {
+    <app-story-overview (close)="onCloseStoryOverview()" />
+  }
+
+  <!-- New event toast for readers -->
+  @if (showNewEventToast()) {
+    <div class="new-event-toast" (click)="onDismissToast()">
+      <span class="toast-icon">&#9733;</span>
+      <span class="toast-text">Neues Kapitel verfügbar!</span>
+      <button class="toast-close">&times;</button>
+    </div>
+  }
+
+  <!-- Admin header -->
+  @if (isAdmin()) {
+    <div class="admin-header-bar">
+      <span class="admin-badge">Admin</span>
+      <button class="admin-btn" (click)="onOpenStoryOverview()">Übersicht</button>
+      <button class="admin-btn" (click)="onOpenAdmin()">Verwaltung</button>
+      <button class="logout-btn" (click)="onLogout()" title="Abmelden">&#9211;</button>
+    </div>
+  }
+
+  <!-- Reader progress indicator -->
+  @if (isReaderMode()) {
+    <div class="reader-header">
+      <div class="reader-progress-bar">
+        <span class="progress-text">Kapitel {{ readerProgress().current }} von {{ readerProgress().total }}</span>
+        <div class="progress-track">
+          <div class="progress-fill" [style.width.%]="(readerProgress().current / readerProgress().total) * 100"></div>
+        </div>
+      </div>
+      <div class="reader-controls">
+        <button class="refresh-btn" (click)="onRefresh()" title="Aktualisieren">&#8635;</button>
+        <button class="logout-btn" (click)="onLogout()" title="Abmelden">&#9211;</button>
+      </div>
+    </div>
+  }
+
   @if (isDebugMode()) {
     <app-inventory />
     <div class="debug-panel">
@@ -40,6 +85,11 @@
         }
 
         @if (!node.pending) {
+          <!-- Mist reveal for Elvish text -->
+          @if (node.mistRevealText) {
+            <app-mist-reveal [text]="node.mistRevealText" />
+          }
+
           <!-- Paragraphs before image (for middle/bottom position) -->
           @if (paragraphsBeforeImage().length > 0) {
             <div class="story-text">
@@ -228,6 +278,27 @@
             <button class="restart-btn" (click)="onRestart()">
               Ein neues Abenteuer starten
             </button>
+          </div>
+        }
+
+        <!-- Reader navigation controls -->
+        @if (isReaderMode()) {
+          <div class="reader-nav">
+            @if (readerProgress().current > 1) {
+              <button class="reader-nav-btn prev" (click)="onReaderGoBack()">
+                &#8592; Zurück
+              </button>
+            }
+            @if (isCaughtUp()) {
+              <div class="caught-up-message">
+                <span class="waiting-icon">&#9203;</span>
+                <span>Warte auf den Spieler...</span>
+              </div>
+            } @else {
+              <button class="reader-nav-btn next" (click)="onReaderAdvance()">
+                Weiter &#8594;
+              </button>
+            }
           </div>
         }
       </article>

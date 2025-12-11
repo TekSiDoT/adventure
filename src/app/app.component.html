@@ -3,5 +3,8 @@
 } @else if (isPinVerified()) {
   <app-story-view />
 } @else {
-  <app-pin-gate (pinSubmit)="onPinSubmit($event)" />
+  <app-pin-gate
+    (pinSubmit)="onPinSubmit($event)"
+    [isLoading]="isAuthLoading()"
+  />
 }

@@ -4,12 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { StoryService } from '../../services/story.service';
 import { AudioPlayerComponent } from '../audio-player/audio-player.component';
 import { InventoryComponent } from '../inventory/inventory.component';
+import { AdminComponent } from '../admin/admin.component';
+import { StoryOverviewComponent } from '../story-overview/story-overview.component';
+import { MistRevealComponent } from '../mist-reveal/mist-reveal.component';
 import { Choice, OpenQuestion } from '../../models/story.model';
 
 @Component({
   selector: 'app-story-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, AudioPlayerComponent, InventoryComponent],
+  imports: [CommonModule, FormsModule, AudioPlayerComponent, InventoryComponent, AdminComponent, StoryOverviewComponent, MistRevealComponent],
   templateUrl: './story-view.component.html',
   styleUrl: './story-view.component.scss'
 })
@@ -34,6 +37,12 @@ export class StoryViewComponent implements AfterViewInit, OnDestroy {
   readonly hasPendingReturn = this.storyService.hasPendingReturn;
   readonly canGoBack = this.storyService.canGoBack;
 
+  // Reader-specific
+  readonly isCaughtUp = this.storyService.isCaughtUp;
+  readonly readerProgress = this.storyService.readerProgress;
+  readonly showNewEventToast = this.storyService.showNewEventToast;
+  readonly isAdmin = this.storyService.isAdmin;
+
   readonly exploredCount = computed(() => {
     const status = this.explorationStatus();
     if (!status) return 0;
@@ -44,6 +53,8 @@ export class StoryViewComponent implements AfterViewInit, OnDestroy {
   showHistory = signal<boolean>(false);
   openAnswer = signal<string>('');
   activeChapterIndex = signal<number>(0);
+  showAdminPanel = signal<boolean>(false);
+  showStoryOverview = signal<boolean>(false);
 
   readonly imagePosition = computed(() => this.currentNode()?.media?.imagePosition ?? 'top');
 
@@ -124,6 +135,41 @@ export class StoryViewComponent implements AfterViewInit, OnDestroy {
     return this.storyService.isNodeExplored(nodeId);
   }
 
+  // Reader navigation
+  onReaderAdvance(): void {
+    this.storyService.readerAdvance();
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }, 0);
+  }
+
+  onReaderGoBack(): void {
+    this.storyService.readerGoBack();
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }, 0);
+  }
+
+  onDismissToast(): void {
+    this.storyService.dismissNewEventToast();
+  }
+
+  async onRefresh(): Promise<void> {
+    await this.storyService.refreshState();
+  }
+
+  onLogout(): void {
+    this.storyService.logout();
+  }
+
+  onOpenAdmin(): void {
+    this.showAdminPanel.set(true);
+  }
+
+  onCloseAdmin(): void {
+    this.showAdminPanel.set(false);
+  }
+
   async onOpenAnswerSubmit(question: OpenQuestion): Promise<void> {
     const answer = this.openAnswer().trim();
     if (!answer) return;
@@ -132,6 +178,14 @@ export class StoryViewComponent implements AfterViewInit, OnDestroy {
     await this.storyService.submitOpenAnswer(question, answer);
     this.openAnswer.set('');
     this.isChoosing.set(false);
+  }
+
+  onOpenStoryOverview(): void {
+    this.showStoryOverview.set(true);
+  }
+
+  onCloseStoryOverview(): void {
+    this.showStoryOverview.set(false);
   }
 
   ngAfterViewInit(): void {

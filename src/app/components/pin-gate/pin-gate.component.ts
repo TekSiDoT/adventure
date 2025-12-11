@@ -1,4 +1,4 @@
-import { Component, signal, Output, EventEmitter } from '@angular/core';
+import { Component, signal, Output, EventEmitter, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -11,13 +11,17 @@ import { FormsModule } from '@angular/forms';
 })
 export class PinGateComponent {
   @Output() pinSubmit = new EventEmitter<string>();
+  @Input() isLoading = false;
+
+  readonly PIN_LENGTH = 6;
+  readonly pinDots = Array(6).fill(0).map((_, i) => i);
 
   pin = signal<string>('');
   error = signal<boolean>(false);
   shake = signal<boolean>(false);
 
   onDigitClick(digit: string): void {
-    if (this.pin().length < 4) {
+    if (this.pin().length < this.PIN_LENGTH) {
       this.pin.set(this.pin() + digit);
       this.error.set(false);
     }
@@ -34,7 +38,7 @@ export class PinGateComponent {
   }
 
   onSubmit(): void {
-    if (this.pin().length === 4) {
+    if (this.pin().length === this.PIN_LENGTH && !this.isLoading) {
       this.pinSubmit.emit(this.pin());
     }
   }

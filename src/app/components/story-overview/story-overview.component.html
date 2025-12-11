@@ -1,0 +1,135 @@
+<div class="story-overview-panel">
+  <header class="overview-header">
+    <h1>Story-Übersicht</h1>
+    <button class="close-btn" (click)="onClose()" title="Schließen">&times;</button>
+  </header>
+
+  <main class="overview-content">
+    @if (isLoading()) {
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Laden...</p>
+      </div>
+    } @else {
+      <!-- Full Story Tree -->
+      <section class="story-tree-section">
+        <h2>Story-Karte</h2>
+        <p class="hint">Klicke auf ein Kapitel, um dorthin zu springen.</p>
+
+        @if (flattenedTree().length === 0) {
+          <p class="empty-state">Keine Story geladen.</p>
+        } @else {
+          <div class="tree-container">
+            @for (item of flattenedTree(); track $index) {
+              @if (item.type === 'part-header') {
+                <!-- Part Header (e.g., "Prolog") -->
+                <div class="part-header">
+                  <span class="part-icon">📖</span>
+                  <span class="part-title">{{ item.teil }}</span>
+                </div>
+              } @else if (item.type === 'chapter-header') {
+                <!-- Chapter Header -->
+                <div class="chapter-header">
+                  <span class="chapter-title">Kapitel {{ item.kapitel }}</span>
+                </div>
+              } @else if (item.treeNode) {
+                <!-- Node -->
+                <div
+                  class="tree-node-wrapper"
+                  [style.padding-left.rem]="0.75 + item.depth * 1.5"
+                >
+                  <div
+                    class="tree-node"
+                    [class.current]="item.treeNode.isCurrent"
+                    [class.visited]="item.treeNode.isVisited"
+                    [class.upcoming]="item.treeNode.isUpcoming"
+                    [class.is-branch-child]="item.isChildOfBranch"
+                    [class.has-past-decision]="isPastDecision(item.treeNode)"
+                  >
+                    <span class="node-marker">
+                      @if (item.treeNode.isCurrent) {
+                        ◉
+                      } @else if (item.treeNode.isVisited) {
+                        ●
+                      } @else if (item.treeNode.isUpcoming) {
+                        ◎
+                      } @else {
+                        ○
+                      }
+                    </span>
+
+                    <span class="node-title" (click)="onNodeClick(item.treeNode.node.id)">
+                      {{ item.treeNode.node.title || item.treeNode.node.id }}
+                    </span>
+
+                    <!-- Branch child: show choice text that leads here -->
+                    @if (item.isChildOfBranch) {
+                      <span class="choice-label">{{ getChoiceTextForNode(item.treeNode) }}</span>
+                      @if (item.treeNode.isVisited) {
+                        <span class="hub-done">✓</span>
+                      }
+                    }
+
+                    <!-- Player name badge (shows where the actual player is) -->
+                    @if (isPlayerAtNode(item.treeNode.node.id)) {
+                      <span class="player-badge">{{ playerName() }}</span>
+                    }
+
+                    <!-- Reader indicators (subtle person icons) -->
+                    @if (getReadersAtNode(item.treeNode.node.id).length > 0) {
+                      <span class="reader-indicator" [title]="getReadersAtNode(item.treeNode.node.id).join(', ')">
+                        👤
+                      </span>
+                    }
+                  </div>
+
+                  <!-- Past decision: choice made on new line, expandable -->
+                  @if (isPastDecision(item.treeNode)) {
+                    <div class="past-decision" (click)="togglePastDecision(item.treeNode.node.id)">
+                      <span class="expand-icon">{{ isPastDecisionExpanded(item.treeNode.node.id) ? '▼' : '▶' }}</span>
+                      <span class="choice-made">{{ item.treeNode.choiceMade!.text }}</span>
+                    </div>
+
+                    @if (isPastDecisionExpanded(item.treeNode.node.id)) {
+                      <div class="past-choices">
+                        @for (choice of item.treeNode.choicesAvailable; track choice.id) {
+                          <div
+                            class="past-choice"
+                            [class.was-taken]="choice.id === item.treeNode.choiceMade?.id"
+                          >
+                            @if (choice.id === item.treeNode.choiceMade?.id) {
+                              <span class="choice-icon">✓</span>
+                            } @else {
+                              <span class="choice-icon">○</span>
+                            }
+                            {{ choice.text }}
+                          </div>
+                        }
+                      </div>
+                    }
+                  }
+                </div>
+              }
+            }
+          </div>
+        }
+      </section>
+
+      <!-- Legend -->
+      <div class="legend">
+        <div class="legend-item">
+          <span class="node-marker visited">●</span>
+          <span>Besucht</span>
+        </div>
+        <div class="legend-item">
+          <span class="node-marker current">◉</span>
+          <span>Aktuell</span>
+        </div>
+        <div class="legend-item">
+          <span class="node-marker upcoming">◎</span>
+          <span>Optionen</span>
+        </div>
+      </div>
+    }
+  </main>
+</div>

@@ -1,39 +1,72 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Story, StoryNode, Choice, OpenQuestion, InventoryItem } from '../models/story.model';
-
-const PIN_STORAGE_KEY = 'adventure_v2_pin_verified';
-const READER_MODE_KEY = 'adventure_v2_reader_mode';
-const CURRENT_NODE_KEY = 'adventure_v2_current_node';
-const HISTORY_KEY = 'adventure_v2_history';
-const ANSWERED_KEY = 'adventure_v2_answered';
-const INVENTORY_KEY = 'adventure_v2_inventory';
-const EXPLORED_KEY = 'adventure_v2_explored';
+import { SupabaseService, DbStoryEvent, DbStoryState, AuthResponse } from './supabase.service';
 
 interface HistoryEntry {
   nodeId: string;
   choiceText?: string;
   wasRealChoice?: boolean;
+  answer?: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class StoryService {
-  private story = signal<Story | null>(null);
-  private currentNodeId = signal<string>('start');
-  private pinVerified = signal<boolean>(false);
-  private readerMode = signal<boolean>(false);
-  private debugMode = signal<boolean>(false);
-  private history = signal<HistoryEntry[]>([]);
-  private answeredNodes = signal<Set<string>>(new Set());
-  private collectedItems = signal<Set<string>>(new Set());
-  private exploredNodes = signal<Set<string>>(new Set());
-  private pendingReturn = signal<string | null>(null);  // For exploration hub return navigation
+  private http = inject(HttpClient);
+  private supabase = inject(SupabaseService);
 
+  // Story content (loaded from Supabase, with JSON fallback)
+  private story = signal<Story | null>(null);
+  private storyLoadedFromDb = signal<boolean>(false);
+
+  // Auth state
+  private pinVerified = signal<boolean>(false);
+  private authLoading = signal<boolean>(false);
+  private currentUser = signal<AuthResponse['user'] | null>(null);
+  private currentStoryMeta = signal<AuthResponse['story'] | null>(null);
+
+  // Player state (from Supabase for player, derived from events for reader)
+  private currentNodeId = signal<string>('start');
+  private collectedItems = signal<Set<string>>(new Set());
+
+  // History/events (from Supabase)
+  private storyEvents = signal<DbStoryEvent[]>([]);
+
+  // Expose events for reader position mapping
+  readonly events = computed(() => this.storyEvents());
+  private readerPosition = signal<number>(0);
+
+  // Legacy local state (kept for exploration hub feature)
+  private exploredNodes = signal<Set<string>>(new Set());
+  private pendingReturn = signal<string | null>(null);
+
+  // UI state
+  private debugMode = signal<boolean>(false);
   readonly isLoading = signal<boolean>(true);
   readonly error = signal<string | null>(null);
   readonly isDebugMode = computed(() => this.debugMode());
+  readonly isAuthLoading = computed(() => this.authLoading());
+
+  // Computed state
+  readonly isPinVerified = computed(() => this.pinVerified());
+
+  readonly isReaderMode = computed(() => {
+    const user = this.currentUser();
+    return user?.role === 'reader';
+  });
+
+  readonly isAdmin = computed(() => {
+    const user = this.currentUser();
+    return user?.role === 'admin';
+  });
+
+  readonly currentNode = computed<StoryNode | null>(() => {
+    const s = this.story();
+    const nodeId = this.currentNodeId();
+    return s?.nodes[nodeId] ?? null;
+  });
 
   readonly allNodes = computed(() => {
     const s = this.story();
@@ -44,40 +77,35 @@ export class StoryService {
     }));
   });
 
-  readonly currentNode = computed<StoryNode | null>(() => {
+  // Full story structure for admin overview
+  readonly storyStructure = computed(() => {
     const s = this.story();
-    const nodeId = this.currentNodeId();
-    return s?.nodes[nodeId] ?? null;
+    if (!s) return null;
+    return s;
   });
 
-  readonly isPinVerified = computed(() => this.pinVerified());
-  readonly isReaderMode = computed(() => this.readerMode());
-  readonly isCurrentNodeAnswered = computed(() => this.answeredNodes().has(this.currentNodeId()));
-
-  // For reader mode: find which choice leads to a non-pending node (the path taken)
-  readonly availablePath = computed<Choice | null>(() => {
-    const current = this.currentNode();
-    const s = this.story();
-    if (!current || !s || current.choices.length <= 1) return null;
-
-    for (const choice of current.choices) {
-      const nextNode = s.nodes[choice.nextNode];
-      if (nextNode && !nextNode.pending && nextNode.text) {
-        return choice;
-      }
-    }
-    return null;
-  });
-
+  // Convert DB events to history entries for display
+  // Shows all visited nodes from events
   readonly storyHistory = computed(() => {
     const s = this.story();
-    if (!s) return [];
+    const events = this.storyEvents();
+    if (!s || events.length === 0) return [];
 
-    return this.history().map(entry => ({
-      node: s.nodes[entry.nodeId],
-      choiceText: entry.choiceText,
-      wasRealChoice: entry.wasRealChoice
-    })).filter(h => h.node);
+    return events.map(event => {
+      const node = s.nodes[event.node_id];
+      // Create a fallback node if it doesn't exist in story.json
+      const fallbackNode: StoryNode = {
+        id: event.node_id,
+        title: event.node_id,
+        text: '',
+        choices: []
+      };
+      return {
+        node: node || fallbackNode,
+        choiceText: event.choice_text || event.answer,
+        wasRealChoice: !!event.choice_id && event.choice_id !== 'continue'
+      };
+    });
   });
 
   readonly inventory = computed<InventoryItem[]>(() => {
@@ -91,7 +119,29 @@ export class StoryService {
 
   readonly inventoryCount = computed(() => this.collectedItems().size);
 
-  // Exploration hub: check if current node is a hub and which options are explored
+  // Reader-specific: are they caught up with the player?
+  readonly isCaughtUp = computed(() => {
+    if (!this.isReaderMode()) return true;
+    const events = this.storyEvents();
+    const position = this.readerPosition();
+    return position >= events.length - 1;
+  });
+
+  // Reader progress indicator
+  readonly readerProgress = computed(() => {
+    const events = this.storyEvents();
+    const position = this.readerPosition();
+    return {
+      current: position + 1,
+      total: events.length
+    };
+  });
+
+  // New event indicator for readers
+  private hasNewEvents = signal<boolean>(false);
+  readonly showNewEventToast = computed(() => this.hasNewEvents());
+
+  // Exploration hub support
   readonly explorationStatus = computed(() => {
     const current = this.currentNode();
     if (!current?.explorationHub) return null;
@@ -113,108 +163,351 @@ export class StoryService {
   });
 
   readonly hasPendingReturn = computed(() => this.pendingReturn() !== null);
+  readonly canGoBack = computed(() => this.storyEvents().length > 1);
 
-  readonly canGoBack = computed(() => this.history().length > 1);
+  // For reader mode: available path (backward compat, but now based on events)
+  readonly availablePath = computed<Choice | null>(() => {
+    // In new system, readers navigate through events, not choices
+    // Keep this for backward compatibility during transition
+    const current = this.currentNode();
+    const s = this.story();
+    if (!current || !s || current.choices.length <= 1) return null;
 
-  constructor(private http: HttpClient) {
-    this.checkStoredState();
-    this.loadStory();
+    // Find which choice leads to the next event's node
+    const events = this.storyEvents();
+    const currentEventIndex = events.findIndex(e => e.node_id === current.id);
+    if (currentEventIndex >= 0 && currentEventIndex < events.length - 1) {
+      const nextEvent = events[currentEventIndex + 1];
+      return current.choices.find(c => c.nextNode === nextEvent.node_id) || null;
+    }
+
+    return null;
+  });
+
+  readonly isCurrentNodeAnswered = computed(() => {
+    const current = this.currentNode();
+    if (!current) return false;
+    // Check if there's an event with an answer for this node
+    return this.storyEvents().some(e => e.node_id === current.id && e.answer);
+  });
+
+  constructor() {
+    // Load initial story (from JSON for now, will reload from DB after auth)
+    this.loadStoryFromJson();
   }
 
-  private checkStoredState(): void {
-    const stored = localStorage.getItem(PIN_STORAGE_KEY);
-    if (stored === 'true') {
-      this.pinVerified.set(true);
-    }
-
-    const isReader = localStorage.getItem(READER_MODE_KEY);
-    if (isReader === 'true') {
-      this.readerMode.set(true);
-    }
-
-    const savedNode = localStorage.getItem(CURRENT_NODE_KEY);
-    if (savedNode) {
-      this.currentNodeId.set(savedNode);
-    }
-
-    const savedHistory = localStorage.getItem(HISTORY_KEY);
-    if (savedHistory) {
-      try {
-        this.history.set(JSON.parse(savedHistory));
-      } catch {
-        this.history.set([]);
+  /**
+   * Load story content from Supabase database
+   * Falls back to JSON if DB fails or has no content
+   */
+  private async loadStoryFromSupabase(storyId: string): Promise<boolean> {
+    try {
+      const story = await this.supabase.getStoryContent(storyId);
+      if (story && Object.keys(story.nodes).length > 0) {
+        this.story.set(story);
+        this.storyLoadedFromDb.set(true);
+        console.log('Story loaded from Supabase:', Object.keys(story.nodes).length, 'nodes');
+        return true;
       }
+    } catch (err) {
+      console.warn('Failed to load story from Supabase:', err);
     }
-
-    const savedAnswered = localStorage.getItem(ANSWERED_KEY);
-    if (savedAnswered) {
-      try {
-        this.answeredNodes.set(new Set(JSON.parse(savedAnswered)));
-      } catch {
-        this.answeredNodes.set(new Set());
-      }
-    }
-
-    const savedInventory = localStorage.getItem(INVENTORY_KEY);
-    if (savedInventory) {
-      try {
-        this.collectedItems.set(new Set(JSON.parse(savedInventory)));
-      } catch {
-        this.collectedItems.set(new Set());
-      }
-    }
-
-    const savedExplored = localStorage.getItem(EXPLORED_KEY);
-    if (savedExplored) {
-      try {
-        this.exploredNodes.set(new Set(JSON.parse(savedExplored)));
-      } catch {
-        this.exploredNodes.set(new Set());
-      }
-    }
+    return false;
   }
 
-  private loadStory(): void {
+  /**
+   * Load story content from static JSON file (fallback)
+   */
+  private loadStoryFromJson(): void {
     this.isLoading.set(true);
     this.http.get<Story>('/assets/story.json').subscribe({
       next: (story) => {
-        this.story.set(story);
-        // If saved node doesn't exist, reset to story's current node
-        if (!story.nodes[this.currentNodeId()]) {
-          this.currentNodeId.set(story.currentNode);
-          this.history.set([]);
-          localStorage.removeItem(HISTORY_KEY);
-        }
-        // Initialize history with start node if empty
-        if (this.history().length === 0 && story.nodes[this.currentNodeId()]) {
-          this.history.set([{ nodeId: this.currentNodeId() }]);
-          this.saveHistory();
-        }
-        // Collect items from current node (for initial load)
-        const currentNodeData = story.nodes[this.currentNodeId()];
-        if (currentNodeData?.grantsItems) {
-          this.collectItems(currentNodeData.grantsItems);
+        // Only set if we haven't loaded from DB yet
+        if (!this.storyLoadedFromDb()) {
+          this.story.set(story);
         }
         this.isLoading.set(false);
       },
       error: (err) => {
-        console.error('Failed to load story:', err);
+        console.error('Failed to load story from JSON:', err);
         this.error.set('Das Abenteuer konnte nicht geladen werden. Bitte neu laden!');
         this.isLoading.set(false);
       }
     });
   }
 
-  private saveHistory(): void {
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(this.history()));
+  /**
+   * Verify PIN via Supabase RPC
+   */
+  async verifyPin(pin: string): Promise<boolean> {
+    this.authLoading.set(true);
+
+    try {
+      const response = await this.supabase.authWithPin(pin);
+
+      if (!response.success) {
+        this.authLoading.set(false);
+        return false;
+      }
+
+      // Store auth state
+      this.currentUser.set(response.user || null);
+      this.currentStoryMeta.set(response.story || null);
+      this.pinVerified.set(true);
+
+      // Try to load story content from Supabase (falls back to existing JSON)
+      if (response.story) {
+        await this.loadStoryFromSupabase(response.story.id);
+      }
+
+      // Initialize state from response
+      if (response.state) {
+        this.currentNodeId.set(response.state.currentNodeId);
+        this.collectedItems.set(new Set(response.state.collectedItems || []));
+      }
+
+      if (response.events) {
+        this.storyEvents.set(response.events);
+      }
+
+      if (response.readerPosition !== undefined) {
+        this.readerPosition.set(response.readerPosition);
+      }
+
+      // Subscribe to real-time updates for readers
+      if (this.isReaderMode() && response.story) {
+        this.subscribeToUpdates(response.story.id);
+      }
+
+      this.authLoading.set(false);
+      return true;
+    } catch (err) {
+      console.error('Auth error:', err);
+      this.authLoading.set(false);
+      return false;
+    }
   }
 
-  private saveInventory(): void {
-    localStorage.setItem(INVENTORY_KEY, JSON.stringify([...this.collectedItems()]));
+  /**
+   * Subscribe to real-time story updates (for readers)
+   */
+  private subscribeToUpdates(storyId: string): void {
+    this.supabase.subscribeToEvents(
+      storyId,
+      (newEvent) => {
+        // Add new event to list
+        const events = [...this.storyEvents(), newEvent];
+        this.storyEvents.set(events);
+        this.hasNewEvents.set(true);
+
+        // Auto-dismiss toast after 5 seconds
+        setTimeout(() => this.hasNewEvents.set(false), 5000);
+      },
+      (newState) => {
+        // Update current state (for player position indicator)
+        this.currentNodeId.set(newState.current_node_id);
+        this.collectedItems.set(new Set(newState.collected_items || []));
+      }
+    );
   }
 
-  private saveExploredNodes(): void {
-    localStorage.setItem(EXPLORED_KEY, JSON.stringify([...this.exploredNodes()]));
+  /**
+   * Player makes a choice
+   */
+  async makeChoice(choice: Choice): Promise<void> {
+    const current = this.currentNode();
+    const storyMeta = this.currentStoryMeta();
+    if (!current || !storyMeta) return;
+
+    // Collect items from this choice
+    this.collectItems(choice.grantsItems);
+
+    // Handle exploration hub
+    if (choice.returnsTo) {
+      this.markNodeExplored(choice.nextNode);
+      this.pendingReturn.set(choice.returnsTo);
+    }
+
+    // Update current node
+    this.currentNodeId.set(choice.nextNode);
+
+    // Collect items from the next node
+    const nextNode = this.story()?.nodes[choice.nextNode];
+    if (nextNode?.grantsItems) {
+      this.collectItems(nextNode.grantsItems);
+    }
+
+    // Record event to Supabase (player only)
+    if (!this.isReaderMode()) {
+      const wasRealChoice = current.choices.length > 1;
+
+      await this.supabase.recordEvent({
+        storyId: storyMeta.id,
+        nodeId: choice.nextNode,
+        choiceId: wasRealChoice ? choice.id : 'continue',
+        choiceText: wasRealChoice ? choice.text : undefined,
+        collectedItems: [...this.collectedItems()]
+      });
+
+      // Update story state
+      await this.supabase.updateStoryState(
+        storyMeta.id,
+        choice.nextNode,
+        [...this.collectedItems()]
+      );
+
+      // Add to local events list
+      const newEvent: DbStoryEvent = {
+        id: Date.now(), // Temporary ID
+        story_id: storyMeta.id,
+        node_id: choice.nextNode,
+        choice_id: wasRealChoice ? choice.id : 'continue',
+        choice_text: wasRealChoice ? choice.text : undefined,
+        collected_items: [...this.collectedItems()],
+        created_at: new Date().toISOString()
+      };
+      this.storyEvents.set([...this.storyEvents(), newEvent]);
+    }
+  }
+
+  /**
+   * Reader advances to next event
+   */
+  readerAdvance(): void {
+    if (!this.isReaderMode()) return;
+
+    const events = this.storyEvents();
+    const position = this.readerPosition();
+
+    if (position < events.length - 1) {
+      const newPosition = position + 1;
+      this.readerPosition.set(newPosition);
+
+      // Update current node to match the event
+      const event = events[newPosition];
+      this.currentNodeId.set(event.node_id);
+
+      // Update collected items
+      if (event.collected_items) {
+        this.collectedItems.set(new Set(event.collected_items));
+      }
+
+      // Save position to Supabase
+      const storyMeta = this.currentStoryMeta();
+      if (storyMeta) {
+        this.supabase.updateReaderPosition(storyMeta.id, newPosition);
+      }
+    }
+  }
+
+  /**
+   * Reader goes back to previous event
+   */
+  readerGoBack(): void {
+    if (!this.isReaderMode()) return;
+
+    const position = this.readerPosition();
+    if (position > 0) {
+      const newPosition = position - 1;
+      this.readerPosition.set(newPosition);
+
+      const events = this.storyEvents();
+      const event = events[newPosition];
+      this.currentNodeId.set(event.node_id);
+
+      if (event.collected_items) {
+        this.collectedItems.set(new Set(event.collected_items));
+      }
+
+      const storyMeta = this.currentStoryMeta();
+      if (storyMeta) {
+        this.supabase.updateReaderPosition(storyMeta.id, newPosition);
+      }
+    }
+  }
+
+  /**
+   * Dismiss new event toast
+   */
+  dismissNewEventToast(): void {
+    this.hasNewEvents.set(false);
+  }
+
+  /**
+   * Refresh story state (for readers)
+   */
+  async refreshState(): Promise<void> {
+    const storyMeta = this.currentStoryMeta();
+    if (!storyMeta) return;
+
+    const { state, events } = await this.supabase.getStoryState(storyMeta.id);
+
+    if (state) {
+      // Don't update currentNodeId for readers - they control their own position
+      if (!this.isReaderMode()) {
+        this.currentNodeId.set(state.current_node_id);
+      }
+      this.collectedItems.set(new Set(state.collected_items || []));
+    }
+
+    if (events) {
+      this.storyEvents.set(events);
+    }
+  }
+
+  /**
+   * Submit answer to open question
+   */
+  async submitOpenAnswer(question: OpenQuestion, answer: string): Promise<void> {
+    const current = this.currentNode();
+    const storyMeta = this.currentStoryMeta();
+    if (!current || !storyMeta) return;
+
+    // Record event to Supabase
+    if (!this.isReaderMode()) {
+      await this.supabase.recordEvent({
+        storyId: storyMeta.id,
+        nodeId: current.id,
+        answer: `[${question.prompt}] ${answer}`,
+        collectedItems: [...this.collectedItems()]
+      });
+
+      // Add to local events
+      const newEvent: DbStoryEvent = {
+        id: Date.now(),
+        story_id: storyMeta.id,
+        node_id: current.id,
+        answer: `[${question.prompt}] ${answer}`,
+        collected_items: [...this.collectedItems()],
+        created_at: new Date().toISOString()
+      };
+      this.storyEvents.set([...this.storyEvents(), newEvent]);
+    }
+  }
+
+  /**
+   * Return to exploration hub after exploring a node
+   */
+  returnToHub(): void {
+    const returnTo = this.pendingReturn();
+    if (!returnTo) return;
+
+    this.currentNodeId.set(returnTo);
+    this.pendingReturn.set(null);
+  }
+
+  /**
+   * Navigate to summary when all exploration nodes are visited
+   */
+  proceedToSummary(): void {
+    const status = this.explorationStatus();
+    if (!status?.allExplored) return;
+
+    this.currentNodeId.set(status.summaryNodeId);
+  }
+
+  isNodeExplored(nodeId: string): boolean {
+    return this.exploredNodes().has(nodeId);
   }
 
   private markNodeExplored(nodeId: string): void {
@@ -223,7 +516,6 @@ export class StoryService {
       const newExplored = new Set(current);
       newExplored.add(nodeId);
       this.exploredNodes.set(newExplored);
-      this.saveExploredNodes();
     }
   }
 
@@ -232,268 +524,75 @@ export class StoryService {
 
     const current = this.collectedItems();
     const newItems = new Set(current);
-    let changed = false;
 
     for (const id of itemIds) {
-      if (!newItems.has(id)) {
-        newItems.add(id);
-        changed = true;
-      }
+      newItems.add(id);
     }
 
-    if (changed) {
-      this.collectedItems.set(newItems);
-      this.saveInventory();
-    }
+    this.collectedItems.set(newItems);
   }
 
-  verifyPin(pin: string): boolean {
-    const s = this.story();
-    if (!s) return false;
-
-    // Check main PIN (chooser mode)
-    if (pin === s.pin) {
-      this.pinVerified.set(true);
-      this.readerMode.set(false);
-      localStorage.setItem(PIN_STORAGE_KEY, 'true');
-      localStorage.removeItem(READER_MODE_KEY);
-      return true;
-    }
-
-    // Check reader PIN (read-only mode)
-    if (s.readerPin && pin === s.readerPin) {
-      this.pinVerified.set(true);
-      this.readerMode.set(true);
-      localStorage.setItem(PIN_STORAGE_KEY, 'true');
-      localStorage.setItem(READER_MODE_KEY, 'true');
-      this.notifyReaderLogin();
-      return true;
-    }
-
-    return false;
-  }
-
-  async makeChoice(choice: Choice): Promise<void> {
-    const current = this.currentNode();
-    if (!current) return;
-
-    // Collect items from this choice
-    this.collectItems(choice.grantsItems);
-
-    // Send notification only for real choices (multiple options) and not in reader mode
-    if (!this.readerMode() && current.choices.length > 1) {
-      try {
-        await this.notifyChoice(current, choice);
-      } catch (err) {
-        console.error('Failed to send notification:', err);
-        // Continue anyway - don't block the adventure
-      }
-    }
-
-    // Handle exploration hub: if this choice has returnsTo, mark the target as explored
-    // and set up the return navigation
-    if (choice.returnsTo) {
-      this.markNodeExplored(choice.nextNode);
-      this.pendingReturn.set(choice.returnsTo);
-    }
-
-    // Update history - mark current node with the choice made
-    const currentHistory = this.history();
-    if (currentHistory.length > 0) {
-      const updatedHistory = [...currentHistory];
-      const wasRealChoice = current.choices.length > 1;
-      updatedHistory[updatedHistory.length - 1] = {
-        ...updatedHistory[updatedHistory.length - 1],
-        choiceText: choice.text,
-        wasRealChoice
-      };
-      // Add the new node
-      updatedHistory.push({ nodeId: choice.nextNode });
-      this.history.set(updatedHistory);
-      this.saveHistory();
-    }
-
-    // Update current node
-    this.currentNodeId.set(choice.nextNode);
-    localStorage.setItem(CURRENT_NODE_KEY, choice.nextNode);
-
-    // Collect items from the next node
-    const nextNode = this.story()?.nodes[choice.nextNode];
-    if (nextNode?.grantsItems) {
-      this.collectItems(nextNode.grantsItems);
-    }
-  }
-
-  // Return to the exploration hub after exploring a node
-  returnToHub(): void {
-    const returnTo = this.pendingReturn();
-    if (!returnTo) return;
-
-    this.currentNodeId.set(returnTo);
-    localStorage.setItem(CURRENT_NODE_KEY, returnTo);
-    this.pendingReturn.set(null);
-
-    // Add to history
-    const currentHistory = this.history();
-    this.history.set([...currentHistory, { nodeId: returnTo }]);
-    this.saveHistory();
-  }
-
-  // Navigate to summary when all exploration nodes are visited
-  proceedToSummary(): void {
-    const status = this.explorationStatus();
-    if (!status?.allExplored) return;
-
-    const summaryId = status.summaryNodeId;
-    this.currentNodeId.set(summaryId);
-    localStorage.setItem(CURRENT_NODE_KEY, summaryId);
-
-    // Add to history
-    const currentHistory = this.history();
-    this.history.set([...currentHistory, { nodeId: summaryId }]);
-    this.saveHistory();
-  }
-
-  isNodeExplored(nodeId: string): boolean {
-    return this.exploredNodes().has(nodeId);
-  }
-
-  async submitOpenAnswer(question: OpenQuestion, answer: string): Promise<void> {
-    const current = this.currentNode();
-    if (!current) return;
-
-    // Send notification (open answers always notify, unless reader mode)
-    if (!this.readerMode()) {
-      try {
-        await this.notifyOpenAnswer(current, question, answer);
-      } catch (err) {
-        console.error('Failed to send notification:', err);
-      }
-    }
-
-    // Mark this node as answered (stays on same node, shows pending)
-    const newAnswered = new Set(this.answeredNodes());
-    newAnswered.add(current.id);
-    this.answeredNodes.set(newAnswered);
-    localStorage.setItem(ANSWERED_KEY, JSON.stringify([...newAnswered]));
-
-    // Update history with the answer
-    const currentHistory = this.history();
-    if (currentHistory.length > 0) {
-      const updatedHistory = [...currentHistory];
-      updatedHistory[updatedHistory.length - 1] = {
-        ...updatedHistory[updatedHistory.length - 1],
-        choiceText: answer
-      };
-      this.history.set(updatedHistory);
-      this.saveHistory();
-    }
-  }
-
-  private async notifyOpenAnswer(node: StoryNode, question: OpenQuestion, answer: string): Promise<void> {
-    await fetch('/.netlify/functions/notify-choice', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        fromNode: node.id,
-        fromTitle: node.title || node.id,
-        choiceId: 'open-answer',
-        choiceText: `[${question.prompt}] ${answer}`,
-        toNode: '(waiting for response)',
-        timestamp: new Date().toISOString()
-      })
-    });
-  }
-
-  private async notifyReaderLogin(): Promise<void> {
-    try {
-      await fetch('/.netlify/functions/notify-choice', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fromNode: 'login',
-          fromTitle: 'Reader Login',
-          choiceId: 'reader-login',
-          choiceText: 'Ein Leser hat sich eingeloggt',
-          toNode: 'start',
-          timestamp: new Date().toISOString()
-        })
-      });
-    } catch (err) {
-      console.error('Failed to send reader login notification:', err);
-    }
-  }
-
-  private async notifyChoice(node: StoryNode, choice: Choice): Promise<void> {
-    await fetch('/.netlify/functions/notify-choice', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        fromNode: node.id,
-        fromTitle: node.title || node.id,
-        choiceId: choice.id,
-        choiceText: choice.text,
-        toNode: choice.nextNode,
-        timestamp: new Date().toISOString()
-      })
-    });
-  }
-
+  /**
+   * Reset adventure (player only)
+   */
   resetAdventure(): void {
     const s = this.story();
     if (s) {
       this.currentNodeId.set(s.currentNode);
-      localStorage.setItem(CURRENT_NODE_KEY, s.currentNode);
-      this.history.set([{ nodeId: s.currentNode }]);
-      this.saveHistory();
+      this.collectedItems.set(new Set());
+      this.exploredNodes.set(new Set());
+      this.pendingReturn.set(null);
     }
   }
 
+  /**
+   * Go back (for players)
+   */
   goBack(): void {
-    const hist = this.history();
-    if (hist.length < 2) return;
+    const events = this.storyEvents();
+    if (events.length < 2) return;
 
-    const newHistory = hist.slice(0, -1);
-    this.history.set(newHistory);
-
-    const previousEntry = newHistory[newHistory.length - 1];
-    this.currentNodeId.set(previousEntry.nodeId);
-    localStorage.setItem(CURRENT_NODE_KEY, previousEntry.nodeId);
-
-    this.saveHistory();
+    // For players, going back is more complex with server state
+    // For now, just go to previous event's node
+    const previousEvent = events[events.length - 2];
+    this.currentNodeId.set(previousEvent.node_id);
   }
 
+  /**
+   * Logout
+   */
   logout(): void {
+    this.supabase.logout();
     this.pinVerified.set(false);
-    this.readerMode.set(false);
-    localStorage.removeItem(PIN_STORAGE_KEY);
-    localStorage.removeItem(READER_MODE_KEY);
+    this.currentUser.set(null);
+    this.currentStoryMeta.set(null);
+    this.storyEvents.set([]);
+    this.readerPosition.set(0);
+    this.currentNodeId.set('start');
+    this.collectedItems.set(new Set());
   }
 
+  /**
+   * Debug mode toggle
+   */
   toggleDebugMode(): void {
     this.debugMode.set(!this.debugMode());
   }
 
+  /**
+   * Debug navigation
+   */
   navigateToNode(nodeId: string): void {
     const s = this.story();
     if (!s || !s.nodes[nodeId]) return;
-
     this.currentNodeId.set(nodeId);
-    localStorage.setItem(CURRENT_NODE_KEY, nodeId);
-    // Add to history
-    const currentHistory = this.history();
-    this.history.set([...currentHistory, { nodeId }]);
-    this.saveHistory();
   }
 
+  /**
+   * Debug reset
+   */
   debugReset(): void {
-    localStorage.removeItem(PIN_STORAGE_KEY);
-    localStorage.removeItem(READER_MODE_KEY);
-    localStorage.removeItem(CURRENT_NODE_KEY);
-    localStorage.removeItem(HISTORY_KEY);
-    localStorage.removeItem(ANSWERED_KEY);
-    localStorage.removeItem(INVENTORY_KEY);
-    localStorage.removeItem(EXPLORED_KEY);
+    this.logout();
     window.location.reload();
   }
 }

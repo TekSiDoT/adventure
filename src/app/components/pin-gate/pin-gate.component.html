@@ -3,7 +3,7 @@
     <h1 class="title">Gib den Geheimcode ein</h1>
 
     <div class="pin-display" [class.shake]="shake()" [class.error]="error()">
-      @for (i of [0, 1, 2, 3]; track i) {
+      @for (i of pinDots; track i) {
         <span class="pin-dot" [class.filled]="pin().length > i"></span>
       }
     </div>
@@ -12,33 +12,41 @@
       <p class="error-message">Das war leider falsch. Versuch es nochmal!</p>
     }
 
+    @if (isLoading) {
+      <p class="loading-message">Wird überprüft...</p>
+    }
+
     <div class="keypad">
       @for (digit of ['1', '2', '3', '4', '5', '6', '7', '8', '9']; track digit) {
         <button
           class="key"
           (click)="onDigitClick(digit)"
-          [disabled]="pin().length >= 4"
+          [disabled]="pin().length >= PIN_LENGTH || isLoading"
         >
           {{ digit }}
         </button>
       }
-      <button class="key key-action" (click)="onClear()">C</button>
+      <button class="key key-action" (click)="onClear()" [disabled]="isLoading">C</button>
       <button
         class="key"
         (click)="onDigitClick('0')"
-        [disabled]="pin().length >= 4"
+        [disabled]="pin().length >= PIN_LENGTH || isLoading"
       >
         0
       </button>
-      <button class="key key-action" (click)="onBackspace()">&larr;</button>
+      <button class="key key-action" (click)="onBackspace()" [disabled]="isLoading">&larr;</button>
     </div>
 
     <button
       class="enter-btn"
-      [disabled]="pin().length !== 4"
+      [disabled]="pin().length !== PIN_LENGTH || isLoading"
       (click)="onSubmit()"
     >
-      Abenteuer starten
+      @if (isLoading) {
+        Wird überprüft...
+      } @else {
+        Abenteuer starten
+      }
     </button>
   </div>
 </div>
