@@ -110,10 +110,16 @@ export class SupabaseService {
   readonly accessToken = this.currentAccessToken.asReadonly();
 
   constructor() {
-    this.supabase = createClient(
-      environment.supabaseUrl,
-      environment.supabaseAnonKey
-    );
+    this.supabase = createClient(environment.supabaseUrl, environment.supabaseAnonKey, {
+      // We mint our own JWTs (via pin-login) and want every request + realtime connection
+      // to use that token. When absent, fall back to anon key (anonymous role).
+      accessToken: async () => this.currentAccessToken() ?? environment.supabaseAnonKey,
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false
+      }
+    });
   }
 
   /**
@@ -158,14 +164,6 @@ export class SupabaseService {
 
       if (response.access_token) {
         this.currentAccessToken.set(response.access_token);
-        try {
-          await this.supabase.auth.setSession({
-            access_token: response.access_token,
-            refresh_token: ''
-          });
-        } catch (err) {
-          console.warn('Failed to set Supabase session:', err);
-        }
       }
     }
 
@@ -611,7 +609,6 @@ export class SupabaseService {
    */
   logout(): void {
     this.unsubscribeFromEvents();
-    this.supabase.auth.signOut().catch(err => console.warn('Sign out failed:', err));
     this.currentUser.set(null);
     this.currentStory.set(null);
     this.currentPin.set(null);
