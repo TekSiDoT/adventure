@@ -33,7 +33,10 @@
               {
                 "glob": "**/*",
                 "input": "src/assets",
-                "output": "/assets"
+                "output": "/assets",
+                "ignore": [
+                  "story.json"
+                ]
               }
             ],
             "styles": [

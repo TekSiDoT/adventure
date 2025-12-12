@@ -1,5 +1,4 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Story, StoryNode, Choice, OpenQuestion, InventoryItem } from '../models/story.model';
 import { SupabaseService, DbStoryEvent, DbStoryState, AuthResponse } from './supabase.service';
 
@@ -14,10 +13,9 @@ interface HistoryEntry {
   providedIn: 'root'
 })
 export class StoryService {
-  private http = inject(HttpClient);
   private supabase = inject(SupabaseService);
 
-  // Story content (loaded from Supabase, with JSON fallback)
+  // Story content (loaded from Supabase only)
   private story = signal<Story | null>(null);
   private storyLoadedFromDb = signal<boolean>(false);
   readonly isStoryFromDb = this.storyLoadedFromDb.asReadonly();
@@ -45,7 +43,7 @@ export class StoryService {
 
   // UI state
   private debugMode = signal<boolean>(false);
-  readonly isLoading = signal<boolean>(true);
+  readonly isLoading = signal<boolean>(false);
   readonly error = signal<string | null>(null);
   readonly isDebugMode = computed(() => this.debugMode());
   readonly isAuthLoading = computed(() => this.authLoading());
@@ -94,7 +92,7 @@ export class StoryService {
 
     return events.map(event => {
       const node = s.nodes[event.node_id];
-      // Create a fallback node if it doesn't exist in story.json
+      // Create a fallback node if it doesn't exist in the loaded story
       const fallbackNode: StoryNode = {
         id: event.node_id,
         title: event.node_id,
@@ -192,10 +190,7 @@ export class StoryService {
     return this.storyEvents().some(e => e.node_id === current.id && e.answer);
   });
 
-  constructor() {
-    // Load initial story (from JSON for now, will reload from DB after auth)
-    this.loadStoryFromJson();
-  }
+  constructor() {}
 
   /**
    * Ensure story is loaded from database (public method for components)
@@ -211,42 +206,25 @@ export class StoryService {
 
   /**
    * Load story content from Supabase database
-   * Falls back to JSON if DB fails or has no content
    */
   private async loadStoryFromSupabase(storyId: string): Promise<boolean> {
+    this.isLoading.set(true);
+    this.error.set(null);
     try {
       const story = await this.supabase.getStoryContent(storyId);
       if (story && Object.keys(story.nodes).length > 0) {
         this.story.set(story);
         this.storyLoadedFromDb.set(true);
-        console.log('Story loaded from Supabase:', Object.keys(story.nodes).length, 'nodes');
         return true;
       }
+      this.error.set('Das Abenteuer konnte nicht geladen werden. Bitte später erneut versuchen!');
     } catch (err) {
       console.warn('Failed to load story from Supabase:', err);
+      this.error.set('Das Abenteuer konnte nicht geladen werden. Bitte später erneut versuchen!');
+    } finally {
+      this.isLoading.set(false);
     }
     return false;
-  }
-
-  /**
-   * Load story content from static JSON file (fallback)
-   */
-  private loadStoryFromJson(): void {
-    this.isLoading.set(true);
-    this.http.get<Story>('/assets/story.json').subscribe({
-      next: (story) => {
-        // Only set if we haven't loaded from DB yet
-        if (!this.storyLoadedFromDb()) {
-          this.story.set(story);
-        }
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        console.error('Failed to load story from JSON:', err);
-        this.error.set('Das Abenteuer konnte nicht geladen werden. Bitte neu laden!');
-        this.isLoading.set(false);
-      }
-    });
   }
 
   /**
@@ -254,6 +232,7 @@ export class StoryService {
    */
   async verifyPin(pin: string): Promise<boolean> {
     this.authLoading.set(true);
+    this.error.set(null);
 
     try {
       const response = await this.supabase.authWithPin(pin);
@@ -266,11 +245,17 @@ export class StoryService {
       // Store auth state
       this.currentUser.set(response.user || null);
       this.currentStoryMeta.set(response.story || null);
-      this.pinVerified.set(true);
 
-      // Try to load story content from Supabase (falls back to existing JSON)
-      if (response.story) {
-        await this.loadStoryFromSupabase(response.story.id);
+      // Load story content from Supabase
+      if (!response.story) {
+        this.authLoading.set(false);
+        return false;
+      }
+
+      const loaded = await this.loadStoryFromSupabase(response.story.id);
+      if (!loaded) {
+        this.authLoading.set(false);
+        return false;
       }
 
       // Initialize state from response
@@ -292,6 +277,7 @@ export class StoryService {
         this.subscribeToUpdates(response.story.id);
       }
 
+      this.pinVerified.set(true);
       this.authLoading.set(false);
       return true;
     } catch (err) {
