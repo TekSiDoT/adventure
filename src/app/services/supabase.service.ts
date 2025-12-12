@@ -103,9 +103,11 @@ export class SupabaseService {
   private currentUser = signal<AuthResponse['user'] | null>(null);
   private currentStory = signal<AuthResponse['story'] | null>(null);
   private currentPin = signal<string | null>(null);
+  private currentAccessToken = signal<string | null>(null);
 
   readonly user = this.currentUser.asReadonly();
   readonly story = this.currentStory.asReadonly();
+  readonly accessToken = this.currentAccessToken.asReadonly();
 
   constructor() {
     this.supabase = createClient(
@@ -118,21 +120,53 @@ export class SupabaseService {
    * Authenticate with 6-digit PIN
    */
   async authWithPin(pin: string): Promise<AuthResponse> {
-    const { data, error } = await this.supabase.rpc('auth_with_pin', {
-      p_pin: pin
-    });
+    // Prefer Edge Function login (mints JWT for RLS/realtime). Fall back to RPC for local/dev.
+    let data: any;
+    let error: any;
+    try {
+      const res = await this.supabase.functions.invoke('pin-login', {
+        body: { pin }
+      });
+      data = res.data;
+      error = res.error;
+    } catch (err) {
+      error = err;
+    }
+
+    if (error) {
+      console.warn('pin-login failed, falling back to auth_with_pin RPC:', error);
+      const rpcRes = await this.supabase.rpc('auth_with_pin', { p_pin: pin });
+      data = rpcRes.data;
+      error = rpcRes.error;
+    }
 
     if (error) {
       console.error('Auth error:', error);
-      return { success: false, error: error.message };
+      return { success: false, error: error.message || String(error) };
     }
 
-    const response = data as AuthResponse;
+    const response = data as AuthResponse & {
+      access_token?: string;
+      expires_in?: number;
+      token_type?: string;
+    };
 
     if (response.success && response.user && response.story) {
       this.currentUser.set(response.user);
       this.currentStory.set(response.story);
       this.currentPin.set(pin);
+
+      if (response.access_token) {
+        this.currentAccessToken.set(response.access_token);
+        try {
+          await this.supabase.auth.setSession({
+            access_token: response.access_token,
+            refresh_token: ''
+          });
+        } catch (err) {
+          console.warn('Failed to set Supabase session:', err);
+        }
+      }
     }
 
     return response;
@@ -177,29 +211,23 @@ export class SupabaseService {
     collectedItems?: string[];
   }): Promise<{ success: boolean; error?: string }> {
     const user = this.currentUser();
-    const pin = this.currentPin();
-    if (!user || !pin || user.role === 'reader') {
+    if (!user || user.role === 'reader') {
       return { success: false, error: 'Unauthorized' };
     }
 
-    const { data, error } = await this.supabase.rpc('record_story_event', {
-      p_pin: pin,
-      p_story_id: event.storyId,
-      p_node_id: event.nodeId,
-      p_choice_id: event.choiceId ?? null,
-      p_choice_text: event.choiceText ?? null,
-      p_answer: event.answer ?? null,
-      p_collected_items: event.collectedItems ?? null
+    const { error } = await this.supabase.from('story_events').insert({
+      story_id: event.storyId,
+      node_id: event.nodeId,
+      choice_id: event.choiceId ?? null,
+      choice_text: event.choiceText ?? null,
+      answer: event.answer ?? null,
+      collected_items: event.collectedItems ?? null,
+      created_by: user.id
     });
 
     if (error) {
       console.error('Record event error:', error);
       return { success: false, error: error.message };
-    }
-
-    const response = data as { success: boolean; error?: string } | null;
-    if (!response?.success) {
-      return { success: false, error: response?.error || 'Record event failed' };
     }
 
     return { success: true };
@@ -214,26 +242,22 @@ export class SupabaseService {
     collectedItems: string[]
   ): Promise<{ success: boolean; error?: string }> {
     const user = this.currentUser();
-    const pin = this.currentPin();
-    if (!user || !pin || user.role === 'reader') {
+    if (!user || user.role === 'reader') {
       return { success: false, error: 'Unauthorized' };
     }
 
-    const { data, error } = await this.supabase.rpc('update_story_state', {
-      p_pin: pin,
-      p_story_id: storyId,
-      p_current_node_id: currentNodeId,
-      p_collected_items: collectedItems
-    });
+    const { error } = await this.supabase
+      .from('story_state')
+      .upsert({
+        story_id: storyId,
+        current_node_id: currentNodeId,
+        collected_items: collectedItems,
+        updated_at: new Date().toISOString()
+      });
 
     if (error) {
-      console.error('Update state error:', error);
+      console.error('Update reader position error:', error);
       return { success: false, error: error.message };
-    }
-
-    const response = data as { success: boolean; error?: string } | null;
-    if (!response?.success) {
-      return { success: false, error: response?.error || 'Update state failed' };
     }
 
     return { success: true };
@@ -243,6 +267,35 @@ export class SupabaseService {
    * Update reader position
    */
   async updateReaderPosition(
+    storyId: string,
+    historyIndex: number
+  ): Promise<{ success: boolean; error?: string }> {
+    const user = this.currentUser();
+    if (!user || (user.role !== 'reader' && user.role !== 'admin')) {
+      return { success: false, error: 'Not authenticated' };
+    }
+
+    const { error } = await this.supabase
+      .from('reader_positions')
+      .upsert({
+        user_id: user.id,
+        story_id: storyId,
+        history_index: historyIndex,
+        updated_at: new Date().toISOString()
+      });
+
+    if (error) {
+      console.error('Update reader position error:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  }
+
+  /**
+   * Deprecated PIN-based reader position update (kept for backward compatibility)
+   */
+  async updateReaderPositionWithPin(
     storyId: string,
     historyIndex: number
   ): Promise<{ success: boolean; error?: string }> {
@@ -259,7 +312,7 @@ export class SupabaseService {
     });
 
     if (error) {
-      console.error('Update reader position error:', error);
+      console.error('Update state error:', error);
       return { success: false, error: error.message };
     }
 
@@ -520,9 +573,11 @@ export class SupabaseService {
    */
   logout(): void {
     this.unsubscribeFromEvents();
+    this.supabase.auth.signOut().catch(err => console.warn('Sign out failed:', err));
     this.currentUser.set(null);
     this.currentStory.set(null);
     this.currentPin.set(null);
+    this.currentAccessToken.set(null);
   }
 
   /**
