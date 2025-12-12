@@ -255,9 +255,10 @@ export class StoryOverviewComponent implements OnInit {
       this.playerUserId.set(playerUser.id);
       this.playerName.set(playerUser.name || 'Spieler');
 
-      // Filter events to only include those created by the player
+      // Filter events to show the canonical player timeline:
+      // include events created by the player, and legacy seeded events (created_by null).
       const allEvents = this.events();
-      const filteredEvents = allEvents.filter(e => e.created_by === playerUser.id);
+      const filteredEvents = allEvents.filter(e => e.created_by === playerUser.id || !e.created_by);
       this.playerEvents.set(filteredEvents);
 
       // Track player's current position (last event)
@@ -282,16 +283,16 @@ export class StoryOverviewComponent implements OnInit {
     if (!storyMeta) return;
 
     const positions = await this.supabase.getReaderPositions(storyMeta.id);
-    const events = this.playerEvents(); // Use player events for reader position mapping
+    const events = this.events(); // Use canonical events for reader position mapping
     const story = this.storyStructure();
 
     if (!story) return;
 
     // Map reader positions to their current node using player events (database records)
     const statuses: ReaderLiveStatus[] = positions.map(pos => {
-      // Get node from player events at reader's position (historyIndex maps to events array)
-      const event = events[pos.historyIndex];
-      const nodeId = event?.node_id || story.currentNode;
+      const nodeId = pos.nodeId ||
+        events.find(e => e.id === pos.lastSeenEventId)?.node_id ||
+        story.currentNode;
       const node = story.nodes[nodeId];
 
       return {

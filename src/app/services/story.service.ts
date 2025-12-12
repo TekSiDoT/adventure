@@ -35,7 +35,7 @@ export class StoryService {
 
   // Expose events for reader position mapping
   readonly events = computed(() => this.storyEvents());
-  private readerPosition = signal<number>(0);
+  private readerLastSeenEventId = signal<number>(0);
 
   // Legacy local state (kept for exploration hub feature)
   private exploredNodes = signal<Set<string>>(new Set());
@@ -122,16 +122,16 @@ export class StoryService {
   readonly isCaughtUp = computed(() => {
     if (!this.isReaderMode()) return true;
     const events = this.storyEvents();
-    const position = this.readerPosition();
-    return position >= events.length - 1;
+    const index = this.readerIndex();
+    return index >= events.length - 1;
   });
 
   // Reader progress indicator
   readonly readerProgress = computed(() => {
     const events = this.storyEvents();
-    const position = this.readerPosition();
+    const index = this.readerIndex();
     return {
-      current: position + 1,
+      current: Math.max(0, index + 1),
       total: events.length
     };
   });
@@ -163,6 +163,12 @@ export class StoryService {
 
   readonly hasPendingReturn = computed(() => this.pendingReturn() !== null);
   readonly canGoBack = computed(() => this.storyEvents().length > 1);
+  private readonly readerIndex = computed(() => {
+    if (!this.isReaderMode()) return this.storyEvents().length - 1;
+    const lastSeenId = this.readerLastSeenEventId();
+    if (!lastSeenId) return -1;
+    return this.storyEvents().findIndex(e => e.id === lastSeenId);
+  });
 
   // For reader mode: available path (backward compat, but now based on events)
   readonly availablePath = computed<Choice | null>(() => {
@@ -260,16 +266,29 @@ export class StoryService {
 
       // Initialize state from response
       if (response.state) {
-        this.currentNodeId.set(response.state.currentNodeId);
+        if (!this.isReaderMode()) {
+          this.currentNodeId.set(response.state.currentNodeId);
+        }
         this.collectedItems.set(new Set(response.state.collectedItems || []));
       }
 
-      if (response.events) {
-        this.storyEvents.set(response.events);
-      }
+      // Load canonical history via paging (do not ship full history in auth response)
+      await this.loadAllEvents();
 
-      if (response.readerPosition !== undefined) {
-        this.readerPosition.set(response.readerPosition);
+      // Readers should see their own last seen entry, not the player's current node.
+      if (this.isReaderMode() && response.story) {
+        const lastSeenEventId = await this.supabase.getMyReaderLastSeenEventId(response.story.id);
+        this.readerLastSeenEventId.set(lastSeenEventId);
+
+        const event = this.storyEvents().find(e => e.id === lastSeenEventId);
+        if (event) {
+          this.currentNodeId.set(event.node_id);
+          if (event.collected_items) {
+            this.collectedItems.set(new Set(event.collected_items));
+          }
+        } else {
+          this.currentNodeId.set(this.story()?.currentNode || 'start');
+        }
       }
 
       // Subscribe to real-time updates for readers
@@ -285,6 +304,23 @@ export class StoryService {
       this.authLoading.set(false);
       return false;
     }
+  }
+
+  private async loadAllEvents(): Promise<void> {
+    const storyMeta = this.currentStoryMeta();
+    if (!storyMeta) return;
+
+    const all: DbStoryEvent[] = [];
+    let afterId = 0;
+    while (true) {
+      const page = await this.supabase.getStoryEventsPage(storyMeta.id, afterId, 500);
+      if (page.length === 0) break;
+      all.push(...page);
+      afterId = page[page.length - 1].id;
+      if (page.length < 500) break;
+    }
+
+    this.storyEvents.set(all);
   }
 
   /**
@@ -303,9 +339,7 @@ export class StoryService {
         setTimeout(() => this.hasNewEvents.set(false), 5000);
       },
       (newState) => {
-        // Update current state (for player position indicator)
-        this.currentNodeId.set(newState.current_node_id);
-        this.collectedItems.set(new Set(newState.collected_items || []));
+        // Readers navigate through history; do not override their view state here.
       }
     );
   }
@@ -340,7 +374,7 @@ export class StoryService {
     if (!this.isReaderMode()) {
       const wasRealChoice = current.choices.length > 1;
 
-      await this.supabase.recordEvent({
+      const eventResult = await this.supabase.recordEvent({
         storyId: storyMeta.id,
         nodeId: choice.nextNode,
         choiceId: wasRealChoice ? choice.id : 'continue',
@@ -355,17 +389,12 @@ export class StoryService {
         [...this.collectedItems()]
       );
 
-      // Add to local events list
-      const newEvent: DbStoryEvent = {
-        id: Date.now(), // Temporary ID
-        story_id: storyMeta.id,
-        node_id: choice.nextNode,
-        choice_id: wasRealChoice ? choice.id : 'continue',
-        choice_text: wasRealChoice ? choice.text : undefined,
-        collected_items: [...this.collectedItems()],
-        created_at: new Date().toISOString()
-      };
-      this.storyEvents.set([...this.storyEvents(), newEvent]);
+      if (eventResult.success && eventResult.event) {
+        this.storyEvents.set([...this.storyEvents(), eventResult.event]);
+      } else {
+        // As a fallback (e.g. if insert didn't return), try to sync the newest events.
+        await this.refreshState();
+      }
     }
   }
 
@@ -376,25 +405,22 @@ export class StoryService {
     if (!this.isReaderMode()) return;
 
     const events = this.storyEvents();
-    const position = this.readerPosition();
+    const index = this.readerIndex();
 
-    if (position < events.length - 1) {
-      const newPosition = position + 1;
-      this.readerPosition.set(newPosition);
-
-      // Update current node to match the event
-      const event = events[newPosition];
-      this.currentNodeId.set(event.node_id);
+    if (index < events.length - 1) {
+      const nextEvent = events[index + 1];
+      this.readerLastSeenEventId.set(nextEvent.id);
+      this.currentNodeId.set(nextEvent.node_id);
 
       // Update collected items
-      if (event.collected_items) {
-        this.collectedItems.set(new Set(event.collected_items));
+      if (nextEvent.collected_items) {
+        this.collectedItems.set(new Set(nextEvent.collected_items));
       }
 
       // Save position to Supabase
       const storyMeta = this.currentStoryMeta();
       if (storyMeta) {
-        this.supabase.updateReaderPosition(storyMeta.id, newPosition);
+        this.supabase.updateReaderPosition(storyMeta.id, nextEvent.id);
       }
     }
   }
@@ -405,22 +431,20 @@ export class StoryService {
   readerGoBack(): void {
     if (!this.isReaderMode()) return;
 
-    const position = this.readerPosition();
-    if (position > 0) {
-      const newPosition = position - 1;
-      this.readerPosition.set(newPosition);
+    const events = this.storyEvents();
+    const index = this.readerIndex();
+    if (index > 0) {
+      const previousEvent = events[index - 1];
+      this.readerLastSeenEventId.set(previousEvent.id);
+      this.currentNodeId.set(previousEvent.node_id);
 
-      const events = this.storyEvents();
-      const event = events[newPosition];
-      this.currentNodeId.set(event.node_id);
-
-      if (event.collected_items) {
-        this.collectedItems.set(new Set(event.collected_items));
+      if (previousEvent.collected_items) {
+        this.collectedItems.set(new Set(previousEvent.collected_items));
       }
 
       const storyMeta = this.currentStoryMeta();
       if (storyMeta) {
-        this.supabase.updateReaderPosition(storyMeta.id, newPosition);
+        this.supabase.updateReaderPosition(storyMeta.id, previousEvent.id);
       }
     }
   }
@@ -439,7 +463,7 @@ export class StoryService {
     const storyMeta = this.currentStoryMeta();
     if (!storyMeta) return;
 
-    const { state, events } = await this.supabase.getStoryState(storyMeta.id);
+    const { state } = await this.supabase.getStoryState(storyMeta.id);
 
     if (state) {
       // Don't update currentNodeId for readers - they control their own position
@@ -449,8 +473,11 @@ export class StoryService {
       this.collectedItems.set(new Set(state.collected_items || []));
     }
 
-    if (events) {
-      this.storyEvents.set(events);
+    const existing = this.storyEvents();
+    const lastId = existing.length > 0 ? existing[existing.length - 1].id : 0;
+    const newEvents = await this.supabase.getStoryEventsPage(storyMeta.id, lastId, 500);
+    if (newEvents.length > 0) {
+      this.storyEvents.set([...existing, ...newEvents]);
     }
   }
 
@@ -464,23 +491,18 @@ export class StoryService {
 
     // Record event to Supabase
     if (!this.isReaderMode()) {
-      await this.supabase.recordEvent({
+      const eventResult = await this.supabase.recordEvent({
         storyId: storyMeta.id,
         nodeId: current.id,
         answer: `[${question.prompt}] ${answer}`,
         collectedItems: [...this.collectedItems()]
       });
 
-      // Add to local events
-      const newEvent: DbStoryEvent = {
-        id: Date.now(),
-        story_id: storyMeta.id,
-        node_id: current.id,
-        answer: `[${question.prompt}] ${answer}`,
-        collected_items: [...this.collectedItems()],
-        created_at: new Date().toISOString()
-      };
-      this.storyEvents.set([...this.storyEvents(), newEvent]);
+      if (eventResult.success && eventResult.event) {
+        this.storyEvents.set([...this.storyEvents(), eventResult.event]);
+      } else {
+        await this.refreshState();
+      }
     }
   }
 
@@ -566,7 +588,7 @@ export class StoryService {
     this.currentUser.set(null);
     this.currentStoryMeta.set(null);
     this.storyEvents.set([]);
-    this.readerPosition.set(0);
+    this.readerLastSeenEventId.set(0);
     this.currentNodeId.set('start');
     this.collectedItems.set(new Set());
   }

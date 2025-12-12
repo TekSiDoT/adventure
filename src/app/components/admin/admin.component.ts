@@ -158,12 +158,9 @@ export class AdminComponent implements OnInit, OnDestroy {
     if (!story) return;
 
     try {
-      const { state, events } = await this.supabase.getStoryState(story.id);
+      const { state } = await this.supabase.getStoryState(story.id);
       if (state) {
         this.storyState.set(state);
-      }
-      if (events) {
-        this.dbEvents.set(events);
       }
     } catch (err) {
       console.error('Failed to load story state:', err);

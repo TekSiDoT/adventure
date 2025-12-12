@@ -44,7 +44,7 @@ export interface DbStoryState {
 export interface DbReaderPosition {
   user_id: string;
   story_id: string;
-  history_index: number;
+  last_seen_event_id: number;
   updated_at: string;
 }
 
@@ -66,8 +66,7 @@ export interface AuthResponse {
     currentNodeId: string;
     collectedItems: string[];
   };
-  events?: DbStoryEvent[];
-  readerPosition?: number;
+  readerLastSeenEventId?: number;
 }
 
 export interface GeneratePinResponse {
@@ -89,7 +88,8 @@ export interface GetUsersResponse {
 export interface ReaderPositionInfo {
   name: string;
   id: string;
-  historyIndex: number;
+  lastSeenEventId: number;
+  nodeId?: string | null;
 }
 
 @Injectable({
@@ -177,26 +177,63 @@ export class SupabaseService {
    */
   async getStoryState(storyId: string): Promise<{
     state: DbStoryState | null;
-    events: DbStoryEvent[];
   }> {
-    const [stateResult, eventsResult] = await Promise.all([
-      this.supabase
-        .from('story_state')
-        .select('*')
-        .eq('story_id', storyId)
-        .single(),
-      this.supabase
-        .from('story_events')
-        .select('*')
-        .eq('story_id', storyId)
-        .order('created_at', { ascending: true })
-        .order('id', { ascending: true })
-    ]);
+    const { data } = await this.supabase
+      .from('story_state')
+      .select('*')
+      .eq('story_id', storyId)
+      .single();
 
     return {
-      state: stateResult.data,
-      events: eventsResult.data || []
+      state: data
     };
+  }
+
+  async getMyReaderLastSeenEventId(storyId: string): Promise<number> {
+    const user = this.currentUser();
+    if (!user) return 0;
+
+    const { data, error } = await this.supabase
+      .from('reader_positions')
+      .select('last_seen_event_id')
+      .eq('story_id', storyId)
+      .single();
+
+    if (error) {
+      return 0;
+    }
+
+    return (data?.last_seen_event_id as number) || 0;
+  }
+
+  async getStoryEventsPage(storyId: string, afterId: number, limit = 500): Promise<DbStoryEvent[]> {
+    const { data, error } = await this.supabase
+      .from('story_events')
+      .select('*')
+      .eq('story_id', storyId)
+      .gt('id', afterId)
+      .order('id', { ascending: true })
+      .limit(limit);
+
+    if (error) {
+      console.error('Get story events page error:', error);
+      return [];
+    }
+
+    return data || [];
+  }
+
+  async getStoryEventById(storyId: string, eventId: number): Promise<DbStoryEvent | null> {
+    if (!eventId) return null;
+    const { data, error } = await this.supabase
+      .from('story_events')
+      .select('*')
+      .eq('story_id', storyId)
+      .eq('id', eventId)
+      .single();
+
+    if (error) return null;
+    return data;
   }
 
   /**
@@ -209,13 +246,13 @@ export class SupabaseService {
     choiceText?: string;
     answer?: string;
     collectedItems?: string[];
-  }): Promise<{ success: boolean; error?: string }> {
+  }): Promise<{ success: boolean; error?: string; event?: DbStoryEvent }> {
     const user = this.currentUser();
     if (!user || user.role === 'reader') {
       return { success: false, error: 'Unauthorized' };
     }
 
-    const { error } = await this.supabase.from('story_events').insert({
+    const { data, error } = await this.supabase.from('story_events').insert({
       story_id: event.storyId,
       node_id: event.nodeId,
       choice_id: event.choiceId ?? null,
@@ -223,14 +260,14 @@ export class SupabaseService {
       answer: event.answer ?? null,
       collected_items: event.collectedItems ?? null,
       created_by: user.id
-    });
+    }).select('*').single();
 
     if (error) {
       console.error('Record event error:', error);
       return { success: false, error: error.message };
     }
 
-    return { success: true };
+    return { success: true, event: data ?? undefined };
   }
 
   /**
@@ -268,7 +305,7 @@ export class SupabaseService {
    */
   async updateReaderPosition(
     storyId: string,
-    historyIndex: number
+    lastSeenEventId: number
   ): Promise<{ success: boolean; error?: string }> {
     const user = this.currentUser();
     if (!user || (user.role !== 'reader' && user.role !== 'admin')) {
@@ -280,7 +317,7 @@ export class SupabaseService {
       .upsert({
         user_id: user.id,
         story_id: storyId,
-        history_index: historyIndex,
+        last_seen_event_id: lastSeenEventId,
         updated_at: new Date().toISOString()
       });
 
@@ -297,7 +334,7 @@ export class SupabaseService {
    */
   async updateReaderPositionWithPin(
     storyId: string,
-    historyIndex: number
+    lastSeenEventId: number
   ): Promise<{ success: boolean; error?: string }> {
     const user = this.currentUser();
     const pin = this.currentPin();
@@ -308,7 +345,7 @@ export class SupabaseService {
     const { data, error } = await this.supabase.rpc('update_reader_position', {
       p_pin: pin,
       p_story_id: storyId,
-      p_history_index: historyIndex
+      p_history_index: lastSeenEventId
     });
 
     if (error) {
@@ -445,7 +482,8 @@ export class SupabaseService {
     return (response.positions || []).map(p => ({
       id: p.id,
       name: p.name || 'Unbenannt',
-      historyIndex: p.historyIndex
+      lastSeenEventId: p.lastSeenEventId || 0,
+      nodeId: p.nodeId ?? null
     }));
   }
 
