@@ -156,6 +156,7 @@ export class SupabaseService {
         .select('*')
         .eq('story_id', storyId)
         .order('created_at', { ascending: true })
+        .order('id', { ascending: true })
     ]);
 
     return {
@@ -176,23 +177,29 @@ export class SupabaseService {
     collectedItems?: string[];
   }): Promise<{ success: boolean; error?: string }> {
     const user = this.currentUser();
-    if (!user || user.role === 'reader') {
+    const pin = this.currentPin();
+    if (!user || !pin || user.role === 'reader') {
       return { success: false, error: 'Unauthorized' };
     }
 
-    const { error } = await this.supabase.from('story_events').insert({
-      story_id: event.storyId,
-      node_id: event.nodeId,
-      choice_id: event.choiceId,
-      choice_text: event.choiceText,
-      answer: event.answer,
-      collected_items: event.collectedItems,
-      created_by: user.id
+    const { data, error } = await this.supabase.rpc('record_story_event', {
+      p_pin: pin,
+      p_story_id: event.storyId,
+      p_node_id: event.nodeId,
+      p_choice_id: event.choiceId ?? null,
+      p_choice_text: event.choiceText ?? null,
+      p_answer: event.answer ?? null,
+      p_collected_items: event.collectedItems ?? null
     });
 
     if (error) {
       console.error('Record event error:', error);
       return { success: false, error: error.message };
+    }
+
+    const response = data as { success: boolean; error?: string } | null;
+    if (!response?.success) {
+      return { success: false, error: response?.error || 'Record event failed' };
     }
 
     return { success: true };
@@ -207,22 +214,26 @@ export class SupabaseService {
     collectedItems: string[]
   ): Promise<{ success: boolean; error?: string }> {
     const user = this.currentUser();
-    if (!user || user.role === 'reader') {
+    const pin = this.currentPin();
+    if (!user || !pin || user.role === 'reader') {
       return { success: false, error: 'Unauthorized' };
     }
 
-    const { error } = await this.supabase
-      .from('story_state')
-      .update({
-        current_node_id: currentNodeId,
-        collected_items: collectedItems,
-        updated_at: new Date().toISOString()
-      })
-      .eq('story_id', storyId);
+    const { data, error } = await this.supabase.rpc('update_story_state', {
+      p_pin: pin,
+      p_story_id: storyId,
+      p_current_node_id: currentNodeId,
+      p_collected_items: collectedItems
+    });
 
     if (error) {
       console.error('Update state error:', error);
       return { success: false, error: error.message };
+    }
+
+    const response = data as { success: boolean; error?: string } | null;
+    if (!response?.success) {
+      return { success: false, error: response?.error || 'Update state failed' };
     }
 
     return { success: true };
@@ -236,22 +247,25 @@ export class SupabaseService {
     historyIndex: number
   ): Promise<{ success: boolean; error?: string }> {
     const user = this.currentUser();
-    if (!user) {
+    const pin = this.currentPin();
+    if (!user || !pin) {
       return { success: false, error: 'Not authenticated' };
     }
 
-    const { error } = await this.supabase
-      .from('reader_positions')
-      .upsert({
-        user_id: user.id,
-        story_id: storyId,
-        history_index: historyIndex,
-        updated_at: new Date().toISOString()
-      });
+    const { data, error } = await this.supabase.rpc('update_reader_position', {
+      p_pin: pin,
+      p_story_id: storyId,
+      p_history_index: historyIndex
+    });
 
     if (error) {
       console.error('Update reader position error:', error);
       return { success: false, error: error.message };
+    }
+
+    const response = data as { success: boolean; error?: string } | null;
+    if (!response?.success) {
+      return { success: false, error: response?.error || 'Update reader position failed' };
     }
 
     return { success: true };
@@ -355,23 +369,30 @@ export class SupabaseService {
    * Get reader positions for a story (admin only)
    */
   async getReaderPositions(storyId: string): Promise<ReaderPositionInfo[]> {
-    const { data, error } = await this.supabase
-      .from('reader_positions')
-      .select(`
-        history_index,
-        users!inner(id, name)
-      `)
-      .eq('story_id', storyId);
+    const user = this.currentUser();
+    const pin = this.currentPin();
+    if (!user || user.role !== 'admin' || !pin) return [];
+
+    const { data, error } = await this.supabase.rpc('admin_get_reader_positions', {
+      p_admin_pin: pin,
+      p_story_id: storyId
+    });
 
     if (error) {
       console.error('Get reader positions error:', error);
       return [];
     }
 
-    return (data || []).map((row: any) => ({
-      id: row.users.id,
-      name: row.users.name || 'Unbenannt',
-      historyIndex: row.history_index
+    const response = data as { success: boolean; error?: string; positions?: ReaderPositionInfo[] } | null;
+    if (!response?.success) {
+      console.error('Get reader positions failed:', response?.error);
+      return [];
+    }
+
+    return (response.positions || []).map(p => ({
+      id: p.id,
+      name: p.name || 'Unbenannt',
+      historyIndex: p.historyIndex
     }));
   }
 
@@ -436,18 +457,32 @@ export class SupabaseService {
     is_locked: boolean;
     locked_until: string | null;
   }>> {
-    const { data, error } = await this.supabase
-      .from('story_nodes')
-      .select('id, title, is_locked, locked_until')
-      .eq('story_id', storyId)
-      .order('sort_order');
+    const user = this.currentUser();
+    const pin = this.currentPin();
+    if (!user || user.role !== 'admin' || !pin) return [];
+
+    const { data, error } = await this.supabase.rpc('admin_get_all_nodes_lock_status', {
+      p_admin_pin: pin,
+      p_story_id: storyId
+    });
 
     if (error) {
       console.error('Get all nodes lock status error:', error);
       return [];
     }
 
-    return data || [];
+    const response = data as {
+      success: boolean;
+      error?: string;
+      nodes?: Array<{ id: string; title: string; is_locked: boolean; locked_until: string | null }>;
+    } | null;
+
+    if (!response?.success) {
+      console.error('Get all nodes lock status failed:', response?.error);
+      return [];
+    }
+
+    return response.nodes || [];
   }
 
   /**
