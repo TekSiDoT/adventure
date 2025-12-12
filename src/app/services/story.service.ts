@@ -20,6 +20,7 @@ export class StoryService {
   // Story content (loaded from Supabase, with JSON fallback)
   private story = signal<Story | null>(null);
   private storyLoadedFromDb = signal<boolean>(false);
+  readonly isStoryFromDb = this.storyLoadedFromDb.asReadonly();
 
   // Auth state
   private pinVerified = signal<boolean>(false);
@@ -194,6 +195,18 @@ export class StoryService {
   constructor() {
     // Load initial story (from JSON for now, will reload from DB after auth)
     this.loadStoryFromJson();
+  }
+
+  /**
+   * Ensure story is loaded from database (public method for components)
+   */
+  async ensureStoryFromDb(): Promise<boolean> {
+    if (this.storyLoadedFromDb()) return true;
+
+    const storyMeta = this.currentStoryMeta();
+    if (!storyMeta) return false;
+
+    return this.loadStoryFromSupabase(storyMeta.id);
   }
 
   /**

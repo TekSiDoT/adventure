@@ -13,7 +13,15 @@
     } @else {
       <!-- Full Story Tree -->
       <section class="story-tree-section">
-        <h2>Story-Karte</h2>
+        <div class="section-header">
+          <h2>Story-Karte</h2>
+          <button
+            class="expand-collapse-btn"
+            (click)="hasCollapsedChapters() ? expandAllChapters() : collapseAllChapters()"
+          >
+            {{ hasCollapsedChapters() ? 'Alle aufklappen' : 'Alle zuklappen' }}
+          </button>
+        </div>
         <p class="hint">Klicke auf ein Kapitel, um dorthin zu springen.</p>
 
         @if (flattenedTree().length === 0) {
@@ -28,8 +36,13 @@
                   <span class="part-title">{{ item.teil }}</span>
                 </div>
               } @else if (item.type === 'chapter-header') {
-                <!-- Chapter Header -->
-                <div class="chapter-header">
+                <!-- Chapter Header (clickable to toggle collapse) -->
+                <div
+                  class="chapter-header"
+                  [class.collapsed]="isChapterCollapsed(item.chapterKey!)"
+                  (click)="toggleChapter(item.chapterKey!)"
+                >
+                  <span class="expand-icon">{{ isChapterCollapsed(item.chapterKey!) ? '▶' : '▼' }}</span>
                   <span class="chapter-title">Kapitel {{ item.kapitel }}</span>
                 </div>
               } @else if (item.treeNode) {
@@ -81,13 +94,32 @@
                         👤
                       </span>
                     }
+
+                    <!-- Lock/Unlock button (admin only) -->
+                    @if (isAdmin()) {
+                      <button
+                        class="lock-toggle-btn"
+                        [class.locked]="isNodeLocked(item.treeNode.node.id)"
+                        [disabled]="isTogglingLock() === item.treeNode.node.id"
+                        (click)="toggleNodeLock(item.treeNode.node.id); $event.stopPropagation()"
+                        [title]="isNodeLocked(item.treeNode.node.id) ? 'Freischalten' : 'Sperren'"
+                      >
+                        @if (isTogglingLock() === item.treeNode.node.id) {
+                          <span class="lock-spinner"></span>
+                        } @else if (isNodeLocked(item.treeNode.node.id)) {
+                          🔒
+                        } @else {
+                          🔓
+                        }
+                      </button>
+                    }
                   </div>
 
-                  <!-- Past decision: choice made on new line, expandable -->
+                  <!-- Past decision: show expandable list of choices with visited status -->
                   @if (isPastDecision(item.treeNode)) {
                     <div class="past-decision" (click)="togglePastDecision(item.treeNode.node.id)">
                       <span class="expand-icon">{{ isPastDecisionExpanded(item.treeNode.node.id) ? '▼' : '▶' }}</span>
-                      <span class="choice-made">{{ item.treeNode.choiceMade!.text }}</span>
+                      <span class="choice-made">Entscheidung getroffen</span>
                     </div>
 
                     @if (isPastDecisionExpanded(item.treeNode.node.id)) {
@@ -95,14 +127,33 @@
                         @for (choice of item.treeNode.choicesAvailable; track choice.id) {
                           <div
                             class="past-choice"
-                            [class.was-taken]="choice.id === item.treeNode.choiceMade?.id"
+                            [class.was-taken]="isNodeVisited(choice.nextNode)"
                           >
-                            @if (choice.id === item.treeNode.choiceMade?.id) {
+                            @if (isNodeVisited(choice.nextNode)) {
                               <span class="choice-icon">✓</span>
                             } @else {
                               <span class="choice-icon">○</span>
                             }
                             {{ choice.text }}
+                          </div>
+                        }
+                      </div>
+                    }
+                  }
+
+                  <!-- Past exploration hub: show explored areas, expandable -->
+                  @if (isPastExplorationHub(item.treeNode)) {
+                    <div class="past-decision" (click)="togglePastDecision(item.treeNode.node.id)">
+                      <span class="expand-icon">{{ isPastDecisionExpanded(item.treeNode.node.id) ? '▼' : '▶' }}</span>
+                      <span class="choice-made">Erkundet ✓</span>
+                    </div>
+
+                    @if (isPastDecisionExpanded(item.treeNode.node.id)) {
+                      <div class="past-choices">
+                        @for (exploreNode of getExplorationNodes(item.treeNode); track exploreNode.nodeId) {
+                          <div class="past-choice" [class.was-taken]="exploreNode.visited">
+                            <span class="choice-icon">{{ exploreNode.visited ? '✓' : '○' }}</span>
+                            {{ exploreNode.title }}
                           </div>
                         }
                       </div>
