@@ -105,6 +105,7 @@ export class SupabaseService {
   private currentPin = signal<string | null>(null);
   private currentAccessToken = signal<string | null>(null);
   private readonly tokenStorageKey = 'adventure.access_token.v1';
+  private tokenExpiryTimer: ReturnType<typeof setTimeout> | null = null;
 
   readonly user = this.currentUser.asReadonly();
   readonly story = this.currentStory.asReadonly();
@@ -112,14 +113,25 @@ export class SupabaseService {
 
   constructor() {
     const restored = this.readStoredAccessToken();
-    if (restored) {
+    if (restored && this.isJwtValidAndNotExpired(restored)) {
       this.currentAccessToken.set(restored);
+      this.scheduleTokenExpiry(restored);
+    } else if (restored) {
+      this.clearStoredAccessToken();
     }
 
     this.supabase = createClient(environment.supabaseUrl, environment.supabaseAnonKey, {
       // We mint our own JWTs (via pin-login) and want every request + realtime connection
       // to use that token. When absent, fall back to anon key (anonymous role).
-      accessToken: async () => this.currentAccessToken() ?? environment.supabaseAnonKey,
+      accessToken: async () => {
+        const token = this.currentAccessToken();
+        if (!token) return environment.supabaseAnonKey;
+        if (!this.isJwtValidAndNotExpired(token)) {
+          this.logout();
+          return environment.supabaseAnonKey;
+        }
+        return token;
+      },
       auth: {
         persistSession: false,
         autoRefreshToken: false,
@@ -171,6 +183,7 @@ export class SupabaseService {
       if (response.access_token) {
         this.currentAccessToken.set(response.access_token);
         this.storeAccessToken(response.access_token);
+        this.scheduleTokenExpiry(response.access_token);
       }
     }
 
@@ -624,11 +637,61 @@ export class SupabaseService {
    */
   logout(): void {
     this.unsubscribeFromEvents();
+    if (this.tokenExpiryTimer) {
+      clearTimeout(this.tokenExpiryTimer);
+      this.tokenExpiryTimer = null;
+    }
     this.currentUser.set(null);
     this.currentStory.set(null);
     this.currentPin.set(null);
     this.currentAccessToken.set(null);
     this.clearStoredAccessToken();
+  }
+
+  private scheduleTokenExpiry(token: string): void {
+    const expMs = this.getJwtExpiryMs(token);
+    if (!expMs) return;
+
+    if (this.tokenExpiryTimer) {
+      clearTimeout(this.tokenExpiryTimer);
+      this.tokenExpiryTimer = null;
+    }
+
+    const delayMs = Math.max(0, expMs - Date.now());
+    // Use a minimum delay to avoid immediate tight loops if the clock is skewed.
+    const safeDelayMs = Math.max(1000, delayMs);
+
+    this.tokenExpiryTimer = setTimeout(() => {
+      this.logout();
+    }, safeDelayMs);
+  }
+
+  private isJwtValidAndNotExpired(token: string): boolean {
+    const expMs = this.getJwtExpiryMs(token);
+    if (!expMs) return false;
+    // Small skew to avoid edge-of-expiry flakiness.
+    return Date.now() < expMs - 30_000;
+  }
+
+  private getJwtExpiryMs(token: string): number | null {
+    const payload = this.parseJwtPayload(token);
+    const exp = payload?.['exp'];
+    if (typeof exp !== 'number' || !Number.isFinite(exp)) return null;
+    return exp * 1000;
+  }
+
+  private parseJwtPayload(token: string): Record<string, unknown> | null {
+    try {
+      const parts = token.split('.');
+      if (parts.length !== 3) return null;
+      const payloadB64Url = parts[1]!;
+      const payloadB64 = payloadB64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const padded = payloadB64.padEnd(payloadB64.length + ((4 - (payloadB64.length % 4)) % 4), '=');
+      const json = atob(padded);
+      return JSON.parse(json) as Record<string, unknown>;
+    } catch {
+      return null;
+    }
   }
 
   private readStoredAccessToken(): string | null {
