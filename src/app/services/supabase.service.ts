@@ -104,12 +104,18 @@ export class SupabaseService {
   private currentStory = signal<AuthResponse['story'] | null>(null);
   private currentPin = signal<string | null>(null);
   private currentAccessToken = signal<string | null>(null);
+  private readonly tokenStorageKey = 'adventure.access_token.v1';
 
   readonly user = this.currentUser.asReadonly();
   readonly story = this.currentStory.asReadonly();
   readonly accessToken = this.currentAccessToken.asReadonly();
 
   constructor() {
+    const restored = this.readStoredAccessToken();
+    if (restored) {
+      this.currentAccessToken.set(restored);
+    }
+
     this.supabase = createClient(environment.supabaseUrl, environment.supabaseAnonKey, {
       // We mint our own JWTs (via pin-login) and want every request + realtime connection
       // to use that token. When absent, fall back to anon key (anonymous role).
@@ -164,10 +170,19 @@ export class SupabaseService {
 
       if (response.access_token) {
         this.currentAccessToken.set(response.access_token);
+        this.storeAccessToken(response.access_token);
       }
     }
 
     return response;
+  }
+
+  async getSessionContext(): Promise<AuthResponse> {
+    const { data, error } = await this.supabase.rpc('get_session_context');
+    if (error) {
+      return { success: false, error: error.message };
+    }
+    return data as AuthResponse;
   }
 
   /**
@@ -613,6 +628,34 @@ export class SupabaseService {
     this.currentStory.set(null);
     this.currentPin.set(null);
     this.currentAccessToken.set(null);
+    this.clearStoredAccessToken();
+  }
+
+  private readStoredAccessToken(): string | null {
+    try {
+      if (typeof window === 'undefined' || !window.localStorage) return null;
+      return window.localStorage.getItem(this.tokenStorageKey);
+    } catch {
+      return null;
+    }
+  }
+
+  private storeAccessToken(token: string): void {
+    try {
+      if (typeof window === 'undefined' || !window.localStorage) return;
+      window.localStorage.setItem(this.tokenStorageKey, token);
+    } catch {
+      // ignore
+    }
+  }
+
+  private clearStoredAccessToken(): void {
+    try {
+      if (typeof window === 'undefined' || !window.localStorage) return;
+      window.localStorage.removeItem(this.tokenStorageKey);
+    } catch {
+      // ignore
+    }
   }
 
   /**

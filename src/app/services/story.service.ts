@@ -196,7 +196,32 @@ export class StoryService {
     return this.storyEvents().some(e => e.node_id === current.id && e.answer);
   });
 
-  constructor() {}
+  constructor() {
+    void this.tryRestoreSession();
+  }
+
+  async tryRestoreSession(): Promise<boolean> {
+    if (this.pinVerified()) return true;
+    if (!this.supabase.accessToken()) return false;
+
+    this.authLoading.set(true);
+    this.error.set(null);
+
+    try {
+      const response = await this.supabase.getSessionContext();
+      const ok = await this.initializeAfterAuth(response);
+      if (!ok) {
+        this.supabase.logout();
+      }
+      return ok;
+    } catch (err) {
+      console.warn('Failed to restore session:', err);
+      this.supabase.logout();
+      return false;
+    } finally {
+      this.authLoading.set(false);
+    }
+  }
 
   /**
    * Ensure story is loaded from database (public method for components)
@@ -248,62 +273,57 @@ export class StoryService {
         return false;
       }
 
-      // Store auth state
-      this.currentUser.set(response.user || null);
-      this.currentStoryMeta.set(response.story || null);
-
-      // Load story content from Supabase
-      if (!response.story) {
-        this.authLoading.set(false);
-        return false;
-      }
-
-      const loaded = await this.loadStoryFromSupabase(response.story.id);
-      if (!loaded) {
-        this.authLoading.set(false);
-        return false;
-      }
-
-      // Initialize state from response
-      if (response.state) {
-        if (!this.isReaderMode()) {
-          this.currentNodeId.set(response.state.currentNodeId);
-        }
-        this.collectedItems.set(new Set(response.state.collectedItems || []));
-      }
-
-      // Load canonical history via paging (do not ship full history in auth response)
-      await this.loadAllEvents();
-
-      // Readers should see their own last seen entry, not the player's current node.
-      if (this.isReaderMode() && response.story) {
-        const lastSeenEventId = await this.supabase.getMyReaderLastSeenEventId(response.story.id);
-        this.readerLastSeenEventId.set(lastSeenEventId);
-
-        const event = this.storyEvents().find(e => e.id === lastSeenEventId);
-        if (event) {
-          this.currentNodeId.set(event.node_id);
-          if (event.collected_items) {
-            this.collectedItems.set(new Set(event.collected_items));
-          }
-        } else {
-          this.currentNodeId.set(this.story()?.currentNode || 'start');
-        }
-      }
-
-      // Subscribe to real-time updates for readers
-      if (this.isReaderMode() && response.story) {
-        this.subscribeToUpdates(response.story.id);
-      }
-
-      this.pinVerified.set(true);
+      const ok = await this.initializeAfterAuth(response);
       this.authLoading.set(false);
-      return true;
+      return ok;
     } catch (err) {
       console.error('Auth error:', err);
       this.authLoading.set(false);
       return false;
     }
+  }
+
+  private async initializeAfterAuth(response: AuthResponse): Promise<boolean> {
+    if (!response.success || !response.user || !response.story) return false;
+
+    // Store auth state
+    this.currentUser.set(response.user);
+    this.currentStoryMeta.set(response.story);
+
+    const loaded = await this.loadStoryFromSupabase(response.story.id);
+    if (!loaded) return false;
+
+    // Initialize state from response
+    if (response.state) {
+      if (!this.isReaderMode()) {
+        this.currentNodeId.set(response.state.currentNodeId);
+      }
+      this.collectedItems.set(new Set(response.state.collectedItems || []));
+    }
+
+    // Load canonical history via paging (do not ship full history in auth response)
+    await this.loadAllEvents();
+
+    // Readers should see their own last seen entry, not the player's current node.
+    if (this.isReaderMode()) {
+      const lastSeenEventId = response.readerLastSeenEventId ?? 0;
+      this.readerLastSeenEventId.set(lastSeenEventId);
+
+      const event = this.storyEvents().find(e => e.id === lastSeenEventId);
+      if (event) {
+        this.currentNodeId.set(event.node_id);
+        if (event.collected_items) {
+          this.collectedItems.set(new Set(event.collected_items));
+        }
+      } else {
+        this.currentNodeId.set(this.story()?.currentNode || 'start');
+      }
+
+      this.subscribeToUpdates(response.story.id);
+    }
+
+    this.pinVerified.set(true);
+    return true;
   }
 
   private async loadAllEvents(): Promise<void> {
