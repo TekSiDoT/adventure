@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { createClient, SupabaseClient, RealtimeChannel } from '@supabase/supabase-js';
+import { createClient, SupabaseClient, RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import { environment } from '../../environments/environment';
 import { Story } from '../models/story.model';
 
@@ -369,7 +369,7 @@ export class SupabaseService {
           table: 'story_events',
           filter: `story_id=eq.${storyId}`
         },
-        (payload) => {
+        (payload: RealtimePostgresChangesPayload<DbStoryEvent>) => {
           onNewEvent(payload.new as DbStoryEvent);
         }
       )
@@ -381,7 +381,7 @@ export class SupabaseService {
           table: 'story_state',
           filter: `story_id=eq.${storyId}`
         },
-        (payload) => {
+        (payload: RealtimePostgresChangesPayload<DbStoryState>) => {
           onStateChange(payload.new as DbStoryState);
         }
       )
