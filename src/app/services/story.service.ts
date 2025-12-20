@@ -162,7 +162,25 @@ export class StoryService {
   });
 
   readonly hasPendingReturn = computed(() => this.pendingReturn() !== null);
-  readonly canGoBack = computed(() => this.storyEvents().length > 1);
+
+  // Find the node that links to the current node (for back navigation)
+  readonly previousNode = computed<string | null>(() => {
+    const s = this.story();
+    const currentId = this.currentNodeId();
+    if (!s || currentId === 'start') return null;
+
+    // Find which node has a choice pointing to current node
+    for (const node of Object.values(s.nodes)) {
+      for (const choice of node.choices) {
+        if (choice.nextNode === currentId) {
+          return node.id;
+        }
+      }
+    }
+    return null;
+  });
+
+  readonly canGoBack = computed(() => this.previousNode() !== null);
   private readonly readerIndex = computed(() => {
     if (!this.isReaderMode()) return this.storyEvents().length - 1;
     const lastSeenId = this.readerLastSeenEventId();
@@ -486,10 +504,8 @@ export class StoryService {
     const { state } = await this.supabase.getStoryState(storyMeta.id);
 
     if (state) {
-      // Don't update currentNodeId for readers - they control their own position
-      if (!this.isReaderMode()) {
-        this.currentNodeId.set(state.current_node_id);
-      }
+      // Don't update currentNodeId here - players control navigation via choices
+      // DB state is only for persistence across sessions (loaded on initial login)
       this.collectedItems.set(new Set(state.collected_items || []));
     }
 
@@ -587,16 +603,13 @@ export class StoryService {
   }
 
   /**
-   * Go back (for players)
+   * Go back (for players) - follows story structure backwards
    */
   goBack(): void {
-    const events = this.storyEvents();
-    if (events.length < 2) return;
-
-    // For players, going back is more complex with server state
-    // For now, just go to previous event's node
-    const previousEvent = events[events.length - 2];
-    this.currentNodeId.set(previousEvent.node_id);
+    const prevNode = this.previousNode();
+    if (prevNode) {
+      this.currentNodeId.set(prevNode);
+    }
   }
 
   /**
