@@ -103,7 +103,7 @@ export class SupabaseService {
   private currentUser = signal<AuthResponse['user'] | null>(null);
   private currentStory = signal<AuthResponse['story'] | null>(null);
   private currentAccessToken = signal<string | null>(null);
-  private readonly tokenStorageKey = 'adventure.access_token.v1';
+  private readonly tokenStorageKey = 'adventure.access_token.v2';
   private tokenExpiryTimer: ReturnType<typeof setTimeout> | null = null;
 
   readonly user = this.currentUser.asReadonly();
