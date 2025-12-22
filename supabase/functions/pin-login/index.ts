@@ -148,24 +148,31 @@ serve(async (req) => {
 
   const response = data as any;
   if (!response?.success || !response.user || !response.story) {
-    const rate = await admin.rpc("pin_login_record_failure", { p_ip: clientIp, p_pin: pin });
-    if (!rate.error) {
-      const r = rate.data as any;
-      if (r?.blocked) {
-        const retry = Number(r.retry_after_seconds) || 60;
-        return new Response(JSON.stringify({ error: "Too many attempts", retry_after_seconds: retry }), {
-          status: 429,
-          headers: {
-            ...corsHeaders,
-            "Content-Type": "application/json",
-            "Retry-After": String(retry),
-          },
-        });
+    const errorMsg = response?.error || "Invalid PIN";
+
+    // Only record as failure if it's actually a wrong PIN (not account config issues)
+    const isWrongPin = errorMsg === "Invalid PIN";
+    if (isWrongPin) {
+      const rate = await admin.rpc("pin_login_record_failure", { p_ip: clientIp, p_pin: pin });
+      if (!rate.error) {
+        const r = rate.data as any;
+        if (r?.blocked) {
+          const retry = Number(r.retry_after_seconds) || 60;
+          return new Response(JSON.stringify({ error: "Too many attempts", retry_after_seconds: retry }), {
+            status: 429,
+            headers: {
+              ...corsHeaders,
+              "Content-Type": "application/json",
+              "Retry-After": String(retry),
+            },
+          });
+        }
+      } else {
+        console.error("pin_login_record_failure error:", rate.error);
       }
-    } else {
-      console.error("pin_login_record_failure error:", rate.error);
     }
-    return new Response(JSON.stringify({ error: response?.error || "Invalid PIN" }), {
+
+    return new Response(JSON.stringify({ error: errorMsg, success: false }), {
       status: 401,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

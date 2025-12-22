@@ -26,9 +26,21 @@ export class AppComponent {
   }
 
   async onPinSubmit(pin: string): Promise<void> {
-    const valid = await this.storyService.verifyPin(pin);
-    if (!valid) {
-      this.pinGate.showError();
+    const result = await this.storyService.verifyPin(pin);
+    if (!result.success) {
+      this.pinGate.showError(this.translateError(result.error));
     }
+  }
+
+  private translateError(error?: string): string | undefined {
+    if (!error) return undefined;
+    const translations: Record<string, string> = {
+      'Invalid PIN': 'Das war leider falsch. Versuch es nochmal!',
+      'No story assigned to this account': 'Diesem Account ist kein Abenteuer zugewiesen.',
+      'Story not found': 'Das Abenteuer wurde nicht gefunden.',
+      'Too many attempts': 'Zu viele Versuche. Bitte warte einen Moment.',
+      'Server not configured': 'Server-Fehler. Bitte später erneut versuchen.',
+    };
+    return translations[error] || error;
   }
 }

@@ -278,8 +278,9 @@ export class StoryService {
 
   /**
    * Verify PIN via Supabase RPC
+   * Returns { success: true } or { success: false, error: string }
    */
-  async verifyPin(pin: string): Promise<boolean> {
+  async verifyPin(pin: string): Promise<{ success: boolean; error?: string }> {
     this.authLoading.set(true);
     this.error.set(null);
 
@@ -288,16 +289,16 @@ export class StoryService {
 
       if (!response.success) {
         this.authLoading.set(false);
-        return false;
+        return { success: false, error: response.error };
       }
 
       const ok = await this.initializeAfterAuth(response);
       this.authLoading.set(false);
-      return ok;
+      return { success: ok, error: ok ? undefined : 'Initialisierung fehlgeschlagen' };
     } catch (err) {
       console.error('Auth error:', err);
       this.authLoading.set(false);
-      return false;
+      return { success: false, error: 'Verbindungsfehler' };
     }
   }
 

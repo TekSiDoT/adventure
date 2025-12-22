@@ -18,6 +18,7 @@ export class PinGateComponent {
 
   pin = signal<string>('');
   error = signal<boolean>(false);
+  errorMessage = signal<string>('Das war leider falsch. Versuch es nochmal!');
   shake = signal<boolean>(false);
 
   onDigitClick(digit: string): void {
@@ -43,8 +44,13 @@ export class PinGateComponent {
     }
   }
 
-  showError(): void {
+  showError(message?: string): void {
     this.error.set(true);
+    if (message) {
+      this.errorMessage.set(message);
+    } else {
+      this.errorMessage.set('Das war leider falsch. Versuch es nochmal!');
+    }
     this.shake.set(true);
     this.pin.set('');
     setTimeout(() => this.shake.set(false), 500);

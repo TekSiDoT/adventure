@@ -9,7 +9,7 @@
     </div>
 
     @if (error()) {
-      <p class="error-message">Das war leider falsch. Versuch es nochmal!</p>
+      <p class="error-message">{{ errorMessage() }}</p>
     }
 
     @if (isLoading) {
