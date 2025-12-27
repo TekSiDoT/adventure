@@ -140,47 +140,30 @@ export class SupabaseService {
   }
 
   /**
-   * Authenticate with 6-digit PIN
+   * Authenticate with 6-digit PIN via Netlify proxy
    */
   async authWithPin(pin: string): Promise<AuthResponse> {
-    // Use Edge Function login (mints JWT for RLS/realtime).
-    // Try Supabase client first, then fall back to manual fetch for older browsers
-    let data: any;
-    let error: any;
-
     try {
-      const res = await this.supabase.functions.invoke('pin-login', {
-        body: { pin }
+      const response = await fetch('/.netlify/functions/pin-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin }),
       });
-      data = res.data;
-      error = res.error;
-    } catch (err) {
-      error = err;
-    }
 
-    // If Supabase client failed with network error, try manual fetch as fallback
-    // This helps with older browsers (e.g., Fire tablet Silk browser)
-    if (error && this.isNetworkError(error)) {
-      console.warn('Supabase invoke failed, trying manual fetch fallback:', error);
-      try {
-        const fallbackResult = await this.manualEdgeFunctionCall(pin);
-        data = fallbackResult.data;
-        error = fallbackResult.error;
-      } catch (fallbackErr) {
-        console.error('Manual fetch fallback also failed:', fallbackErr);
-        error = fallbackErr;
+      const data = await response.json();
+
+      if (!response.ok) {
+        return { success: false, error: data.error || `HTTP ${response.status}` };
       }
-    }
 
-    if (error) {
+      return this.handleAuthSuccess(data);
+    } catch (error: any) {
       console.error('Auth error:', error);
-      const errorMsg = error.message || String(error);
-      // Provide more helpful error for network issues
-      if (this.isNetworkError(error)) {
-        return { success: false, error: 'Verbindungsfehler. Prüfe deine Internetverbindung.' };
-      }
-      return { success: false, error: errorMsg };
+      return { success: false, error: 'Verbindungsfehler. Prüfe deine Internetverbindung.' };
     }
+  }
+
+  private handleAuthSuccess(data: any): AuthResponse {
 
     const response = data as AuthResponse & {
       access_token?: string;
@@ -736,80 +719,4 @@ export class SupabaseService {
     return data.story as Story;
   }
 
-  /**
-   * Check if an error looks like a network/connectivity issue
-   */
-  private isNetworkError(error: any): boolean {
-    if (!error) return false;
-    const msg = (error.message || String(error)).toLowerCase();
-    return (
-      msg.includes('failed to fetch') ||
-      msg.includes('network') ||
-      msg.includes('failed to send a request') ||
-      msg.includes('edge function') ||
-      msg.includes('cors') ||
-      msg.includes('net::') ||
-      error.name === 'TypeError' && msg.includes('fetch')
-    );
-  }
-
-  /**
-   * Fallback login via Netlify proxy function.
-   * Uses same-origin request which works better on restricted browsers.
-   */
-  private async manualEdgeFunctionCall(pin: string): Promise<{ data?: any; error?: any }> {
-    // Try Netlify proxy first (same domain, avoids cross-origin issues)
-    const proxyUrl = '/.netlify/functions/pin-login';
-
-    try {
-      const response = await fetch(proxyUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pin }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        return { data };
-      }
-      return { error: { message: data.error || `HTTP ${response.status}` } };
-    } catch (fetchError) {
-      console.warn('Fetch to proxy failed, trying XMLHttpRequest:', fetchError);
-    }
-
-    // Final fallback: XMLHttpRequest to proxy
-    return new Promise((resolve) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', proxyUrl, true);
-      xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.timeout = 30000;
-
-      xhr.onload = () => {
-        try {
-          const data = JSON.parse(xhr.responseText);
-          if (xhr.status >= 200 && xhr.status < 300) {
-            resolve({ data });
-          } else {
-            resolve({ error: { message: data.error || `HTTP ${xhr.status}` } });
-          }
-        } catch {
-          resolve({ error: { message: 'Invalid response from server' } });
-        }
-      };
-
-      xhr.onerror = () => {
-        resolve({ error: { message: 'Netzwerkfehler beim Verbinden mit dem Server' } });
-      };
-
-      xhr.ontimeout = () => {
-        resolve({ error: { message: 'Zeitüberschreitung - Server antwortet nicht' } });
-      };
-
-      try {
-        xhr.send(JSON.stringify({ pin }));
-      } catch {
-        resolve({ error: { message: 'Konnte Anfrage nicht senden' } });
-      }
-    });
-  }
 }
