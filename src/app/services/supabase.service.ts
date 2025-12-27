@@ -103,7 +103,12 @@ export class SupabaseService {
   private currentUser = signal<AuthResponse['user'] | null>(null);
   private currentStory = signal<AuthResponse['story'] | null>(null);
   private currentAccessToken = signal<string | null>(null);
-  private readonly tokenStorageKey = 'adventure.access_token.v2';
+  private readonly tokenStorageKey = 'adventure.access_token.v3';
+  private readonly deprecatedKeys = [
+    'adventure.access_token',
+    'adventure.access_token.v1',
+    'adventure.access_token.v2',
+  ];
   private tokenExpiryTimer: ReturnType<typeof setTimeout> | null = null;
 
   readonly user = this.currentUser.asReadonly();
@@ -111,6 +116,8 @@ export class SupabaseService {
   readonly accessToken = this.currentAccessToken.asReadonly();
 
   constructor() {
+    this.cleanupDeprecatedKeys();
+
     const restored = this.readStoredAccessToken();
     if (restored && this.isJwtValidAndNotExpired(restored)) {
       this.currentAccessToken.set(restored);
@@ -670,6 +677,17 @@ export class SupabaseService {
     try {
       if (typeof window === 'undefined' || !window.localStorage) return;
       window.localStorage.removeItem(this.tokenStorageKey);
+    } catch {
+      // ignore
+    }
+  }
+
+  private cleanupDeprecatedKeys(): void {
+    try {
+      if (typeof window === 'undefined' || !window.localStorage) return;
+      for (const key of this.deprecatedKeys) {
+        window.localStorage.removeItem(key);
+      }
     } catch {
       // ignore
     }
