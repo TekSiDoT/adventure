@@ -40,6 +40,10 @@ export class AppComponent {
       'Story not found': 'Das Abenteuer wurde nicht gefunden.',
       'Too many attempts': 'Zu viele Versuche. Bitte warte einen Moment.',
       'Server not configured': 'Server-Fehler. Bitte später erneut versuchen.',
+      'Verbindungsfehler. Prüfe deine Internetverbindung.': 'Verbindungsfehler. Prüfe deine Internetverbindung.',
+      'Netzwerkfehler beim Verbinden mit dem Server': 'Netzwerkfehler. Prüfe deine Internetverbindung.',
+      'Zeitüberschreitung - Server antwortet nicht': 'Zeitüberschreitung. Bitte versuche es erneut.',
+      'Konnte Anfrage nicht senden': 'Verbindungsfehler. Prüfe deine Internetverbindung.',
     };
     return translations[error] || error;
   }

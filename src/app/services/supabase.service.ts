@@ -144,8 +144,10 @@ export class SupabaseService {
    */
   async authWithPin(pin: string): Promise<AuthResponse> {
     // Use Edge Function login (mints JWT for RLS/realtime).
+    // Try Supabase client first, then fall back to manual fetch for older browsers
     let data: any;
     let error: any;
+
     try {
       const res = await this.supabase.functions.invoke('pin-login', {
         body: { pin }
@@ -156,9 +158,28 @@ export class SupabaseService {
       error = err;
     }
 
+    // If Supabase client failed with network error, try manual fetch as fallback
+    // This helps with older browsers (e.g., Fire tablet Silk browser)
+    if (error && this.isNetworkError(error)) {
+      console.warn('Supabase invoke failed, trying manual fetch fallback:', error);
+      try {
+        const fallbackResult = await this.manualEdgeFunctionCall(pin);
+        data = fallbackResult.data;
+        error = fallbackResult.error;
+      } catch (fallbackErr) {
+        console.error('Manual fetch fallback also failed:', fallbackErr);
+        error = fallbackErr;
+      }
+    }
+
     if (error) {
       console.error('Auth error:', error);
-      return { success: false, error: error.message || String(error) };
+      const errorMsg = error.message || String(error);
+      // Provide more helpful error for network issues
+      if (this.isNetworkError(error)) {
+        return { success: false, error: 'Verbindungsfehler. Prüfe deine Internetverbindung.' };
+      }
+      return { success: false, error: errorMsg };
     }
 
     const response = data as AuthResponse & {
@@ -713,5 +734,67 @@ export class SupabaseService {
     }
 
     return data.story as Story;
+  }
+
+  /**
+   * Check if an error looks like a network/connectivity issue
+   */
+  private isNetworkError(error: any): boolean {
+    if (!error) return false;
+    const msg = (error.message || String(error)).toLowerCase();
+    return (
+      msg.includes('failed to fetch') ||
+      msg.includes('network') ||
+      msg.includes('failed to send a request') ||
+      msg.includes('edge function') ||
+      msg.includes('cors') ||
+      msg.includes('net::') ||
+      error.name === 'TypeError' && msg.includes('fetch')
+    );
+  }
+
+  /**
+   * Manual edge function call using XMLHttpRequest as fallback
+   * for browsers where fetch doesn't work properly
+   */
+  private manualEdgeFunctionCall(pin: string): Promise<{ data?: any; error?: any }> {
+    return new Promise((resolve) => {
+      const url = `${environment.supabaseUrl}/functions/v1/pin-login`;
+      const xhr = new XMLHttpRequest();
+
+      xhr.open('POST', url, true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.setRequestHeader('apikey', environment.supabaseAnonKey);
+      xhr.setRequestHeader('Authorization', `Bearer ${environment.supabaseAnonKey}`);
+
+      xhr.timeout = 30000;
+
+      xhr.onload = () => {
+        try {
+          const data = JSON.parse(xhr.responseText);
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve({ data });
+          } else {
+            resolve({ error: { message: data.error || `HTTP ${xhr.status}` } });
+          }
+        } catch {
+          resolve({ error: { message: 'Invalid response from server' } });
+        }
+      };
+
+      xhr.onerror = () => {
+        resolve({ error: { message: 'Netzwerkfehler beim Verbinden mit dem Server' } });
+      };
+
+      xhr.ontimeout = () => {
+        resolve({ error: { message: 'Zeitüberschreitung - Server antwortet nicht' } });
+      };
+
+      try {
+        xhr.send(JSON.stringify({ pin }));
+      } catch (err) {
+        resolve({ error: { message: 'Konnte Anfrage nicht senden' } });
+      }
+    });
   }
 }
