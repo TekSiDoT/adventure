@@ -136,10 +136,6 @@ export class StoryService {
     };
   });
 
-  // New event indicator for readers
-  private hasNewEvents = signal<boolean>(false);
-  readonly showNewEventToast = computed(() => this.hasNewEvents());
-
   // Exploration hub support
   readonly explorationStatus = computed(() => {
     const current = this.currentNode();
@@ -338,7 +334,6 @@ export class StoryService {
         this.currentNodeId.set(this.story()?.currentNode || 'start');
       }
 
-      this.subscribeToUpdates(response.story.id);
     }
 
     this.pinVerified.set(true);
@@ -360,27 +355,6 @@ export class StoryService {
     }
 
     this.storyEvents.set(all);
-  }
-
-  /**
-   * Subscribe to real-time story updates (for readers)
-   */
-  private subscribeToUpdates(storyId: string): void {
-    this.supabase.subscribeToEvents(
-      storyId,
-      (newEvent) => {
-        // Add new event to list
-        const events = [...this.storyEvents(), newEvent];
-        this.storyEvents.set(events);
-        this.hasNewEvents.set(true);
-
-        // Auto-dismiss toast after 5 seconds
-        setTimeout(() => this.hasNewEvents.set(false), 5000);
-      },
-      (newState) => {
-        // Readers navigate through history; do not override their view state here.
-      }
-    );
   }
 
   /**
@@ -495,13 +469,6 @@ export class StoryService {
         this.supabase.updateReaderPosition(storyMeta.id, previousEvent.id);
       }
     }
-  }
-
-  /**
-   * Dismiss new event toast
-   */
-  dismissNewEventToast(): void {
-    this.hasNewEvents.set(false);
   }
 
   /**

@@ -9,15 +9,6 @@
     <app-story-overview (close)="onCloseStoryOverview()" />
   }
 
-  <!-- New event toast for readers -->
-  @if (showNewEventToast()) {
-    <div class="new-event-toast" (click)="onDismissToast()">
-      <span class="toast-icon">&#9733;</span>
-      <span class="toast-text">Neues Kapitel verfügbar!</span>
-      <button class="toast-close">&times;</button>
-    </div>
-  }
-
   <!-- Admin header -->
   @if (isAdmin()) {
     <div class="admin-header-bar">

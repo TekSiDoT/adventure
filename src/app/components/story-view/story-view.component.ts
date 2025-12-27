@@ -40,7 +40,6 @@ export class StoryViewComponent implements AfterViewInit, OnDestroy {
   // Reader-specific
   readonly isCaughtUp = this.storyService.isCaughtUp;
   readonly readerProgress = this.storyService.readerProgress;
-  readonly showNewEventToast = this.storyService.showNewEventToast;
   readonly isAdmin = this.storyService.isAdmin;
 
   readonly exploredCount = computed(() => {
@@ -148,10 +147,6 @@ export class StoryViewComponent implements AfterViewInit, OnDestroy {
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: 'instant' });
     }, 0);
-  }
-
-  onDismissToast(): void {
-    this.storyService.dismissNewEventToast();
   }
 
   async onRefresh(): Promise<void> {

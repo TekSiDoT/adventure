@@ -1,6 +1,4 @@
 import { Injectable, signal } from '@angular/core';
-import { createClient, SupabaseClient, RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js';
-import { environment } from '../../environments/environment';
 import { Story } from '../models/story.model';
 
 // Database types
@@ -96,9 +94,6 @@ export interface ReaderPositionInfo {
   providedIn: 'root'
 })
 export class SupabaseService {
-  private supabase: SupabaseClient;
-  private realtimeChannel: RealtimeChannel | null = null;
-
   // Current session state
   private currentUser = signal<AuthResponse['user'] | null>(null);
   private currentStory = signal<AuthResponse['story'] | null>(null);
@@ -125,30 +120,113 @@ export class SupabaseService {
     } else if (restored) {
       this.clearStoredAccessToken();
     }
-
-    this.supabase = createClient(environment.supabaseUrl, environment.supabaseAnonKey, {
-      // We mint our own JWTs (via pin-login) and want every request + realtime connection
-      // to use that token. When absent, fall back to anon key (anonymous role).
-      accessToken: async () => {
-        const token = this.currentAccessToken();
-        if (!token) return environment.supabaseAnonKey;
-        if (!this.isJwtValidAndNotExpired(token)) {
-          this.logout();
-          return environment.supabaseAnonKey;
-        }
-        return token;
-      },
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-        detectSessionInUrl: false
-      }
-    });
   }
 
-  /**
-   * Authenticate with 6-digit PIN via Netlify proxy
-   */
+  // ==========================================
+  // Proxy Helper
+  // ==========================================
+
+  private async proxy<T>(endpoint: string, method = 'GET', body?: any): Promise<{ data: T | null; error: any }> {
+    try {
+      const response = await fetch('/.netlify/functions/supabase-proxy', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.currentAccessToken() || ''}`,
+        },
+        body: JSON.stringify({ endpoint, method, body }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return { data: null, error: { message: data.error || `HTTP ${response.status}` } };
+      }
+
+      return { data, error: null };
+    } catch (error: any) {
+      return { data: null, error: { message: error.message || 'Network error' } };
+    }
+  }
+
+  private async rpc<T>(functionName: string, params?: Record<string, any>): Promise<{ data: T | null; error: any }> {
+    return this.proxy<T>(`/rest/v1/rpc/${functionName}`, 'POST', params);
+  }
+
+  private async query<T>(
+    table: string,
+    options: {
+      select?: string;
+      eq?: Record<string, any>;
+      gt?: Record<string, any>;
+      order?: { column: string; ascending?: boolean };
+      limit?: number;
+      single?: boolean;
+    } = {}
+  ): Promise<{ data: T | null; error: any }> {
+    const params = new URLSearchParams();
+
+    if (options.select) {
+      params.set('select', options.select);
+    }
+
+    if (options.eq) {
+      for (const [key, value] of Object.entries(options.eq)) {
+        params.set(key, `eq.${value}`);
+      }
+    }
+
+    if (options.gt) {
+      for (const [key, value] of Object.entries(options.gt)) {
+        params.set(key, `gt.${value}`);
+      }
+    }
+
+    if (options.order) {
+      params.set('order', `${options.order.column}.${options.order.ascending ? 'asc' : 'desc'}`);
+    }
+
+    if (options.limit) {
+      params.set('limit', String(options.limit));
+    }
+
+    const endpoint = `/rest/v1/${table}?${params.toString()}`;
+    const result = await this.proxy<T[]>(endpoint, 'GET');
+
+    if (options.single && result.data) {
+      const arr = result.data as unknown as T[];
+      return { data: arr.length > 0 ? arr[0] : null, error: result.error };
+    }
+
+    return result as { data: T | null; error: any };
+  }
+
+  private async insert<T>(table: string, data: Record<string, any>, returnData = true): Promise<{ data: T | null; error: any }> {
+    const params = new URLSearchParams();
+    if (returnData) {
+      params.set('select', '*');
+    }
+
+    const endpoint = `/rest/v1/${table}?${params.toString()}`;
+    const result = await this.proxy<T[]>(endpoint, 'POST', data);
+
+    if (result.data && Array.isArray(result.data) && result.data.length > 0) {
+      return { data: result.data[0], error: null };
+    }
+
+    return { data: null, error: result.error };
+  }
+
+  private async upsert(table: string, data: Record<string, any>): Promise<{ error: any }> {
+    const endpoint = `/rest/v1/${table}?on_conflict=*`;
+    const result = await this.proxy(endpoint, 'POST', data);
+    return { error: result.error };
+  }
+
+  // ==========================================
+  // Authentication
+  // ==========================================
+
   async authWithPin(pin: string): Promise<AuthResponse> {
     try {
       const response = await fetch('/.netlify/functions/pin-login', {
@@ -171,7 +249,6 @@ export class SupabaseService {
   }
 
   private handleAuthSuccess(data: any): AuthResponse {
-
     const response = data as AuthResponse & {
       access_token?: string;
       expires_in?: number;
@@ -185,7 +262,6 @@ export class SupabaseService {
     if (response.success && response.user && response.story && response.access_token) {
       this.currentUser.set(response.user);
       this.currentStory.set(response.story);
-
       this.currentAccessToken.set(response.access_token);
       this.storeAccessToken(response.access_token);
       this.scheduleTokenExpiry(response.access_token);
@@ -195,80 +271,70 @@ export class SupabaseService {
   }
 
   async getSessionContext(): Promise<AuthResponse> {
-    const { data, error } = await this.supabase.rpc('get_session_context');
+    const { data, error } = await this.rpc<AuthResponse>('get_session_context');
     if (error) {
       return { success: false, error: error.message };
     }
     return data as AuthResponse;
   }
 
-  /**
-   * Get current story state and events
-   */
-  async getStoryState(storyId: string): Promise<{
-    state: DbStoryState | null;
-  }> {
-    const { data } = await this.supabase
-      .from('story_state')
-      .select('*')
-      .eq('story_id', storyId)
-      .single();
+  // ==========================================
+  // Story State & Events
+  // ==========================================
 
-    return {
-      state: data
-    };
+  async getStoryState(storyId: string): Promise<{ state: DbStoryState | null }> {
+    const { data } = await this.query<DbStoryState>('story_state', {
+      select: '*',
+      eq: { story_id: storyId },
+      single: true,
+    });
+    return { state: data };
   }
 
   async getMyReaderLastSeenEventId(storyId: string): Promise<number> {
     const user = this.currentUser();
     if (!user) return 0;
 
-    const { data, error } = await this.supabase
-      .from('reader_positions')
-      .select('last_seen_event_id')
-      .eq('story_id', storyId)
-      .single();
+    const { data, error } = await this.query<{ last_seen_event_id: number }>('reader_positions', {
+      select: 'last_seen_event_id',
+      eq: { story_id: storyId },
+      single: true,
+    });
 
-    if (error) {
-      return 0;
-    }
-
-    return (data?.last_seen_event_id as number) || 0;
+    if (error) return 0;
+    return data?.last_seen_event_id || 0;
   }
 
   async getStoryEventsPage(storyId: string, afterId: number, limit = 500): Promise<DbStoryEvent[]> {
-    const { data, error } = await this.supabase
-      .from('story_events')
-      .select('*')
-      .eq('story_id', storyId)
-      .gt('id', afterId)
-      .order('id', { ascending: true })
-      .limit(limit);
+    const { data, error } = await this.query<DbStoryEvent[]>('story_events', {
+      select: '*',
+      eq: { story_id: storyId },
+      gt: { id: afterId },
+      order: { column: 'id', ascending: true },
+      limit,
+    });
 
     if (error) {
       console.error('Get story events page error:', error);
       return [];
     }
 
-    return data || [];
+    return (data as unknown as DbStoryEvent[]) || [];
   }
 
   async getStoryEventById(storyId: string, eventId: number): Promise<DbStoryEvent | null> {
     if (!eventId) return null;
-    const { data, error } = await this.supabase
-      .from('story_events')
-      .select('*')
-      .eq('story_id', storyId)
-      .eq('id', eventId)
-      .single();
+
+    const { data, error } = await this.query<DbStoryEvent>('story_events', {
+      select: '*',
+      eq: { story_id: storyId, id: eventId },
+      single: true,
+    });
 
     if (error) return null;
     return data;
   }
 
-  /**
-   * Record a story event (player only)
-   */
   async recordEvent(event: {
     storyId: string;
     nodeId: string;
@@ -282,15 +348,15 @@ export class SupabaseService {
       return { success: false, error: 'Unauthorized' };
     }
 
-    const { data, error } = await this.supabase.from('story_events').insert({
+    const { data, error } = await this.insert<DbStoryEvent>('story_events', {
       story_id: event.storyId,
       node_id: event.nodeId,
       choice_id: event.choiceId ?? null,
       choice_text: event.choiceText ?? null,
       answer: event.answer ?? null,
       collected_items: event.collectedItems ?? null,
-      created_by: user.id
-    }).select('*').single();
+      created_by: user.id,
+    });
 
     if (error) {
       console.error('Record event error:', error);
@@ -300,9 +366,6 @@ export class SupabaseService {
     return { success: true, event: data ?? undefined };
   }
 
-  /**
-   * Update story state (player only)
-   */
   async updateStoryState(
     storyId: string,
     currentNodeId: string,
@@ -313,26 +376,21 @@ export class SupabaseService {
       return { success: false, error: 'Unauthorized' };
     }
 
-    const { error } = await this.supabase
-      .from('story_state')
-      .upsert({
-        story_id: storyId,
-        current_node_id: currentNodeId,
-        collected_items: collectedItems,
-        updated_at: new Date().toISOString()
-      });
+    const { error } = await this.upsert('story_state', {
+      story_id: storyId,
+      current_node_id: currentNodeId,
+      collected_items: collectedItems,
+      updated_at: new Date().toISOString(),
+    });
 
     if (error) {
-      console.error('Update reader position error:', error);
+      console.error('Update story state error:', error);
       return { success: false, error: error.message };
     }
 
     return { success: true };
   }
 
-  /**
-   * Update reader position
-   */
   async updateReaderPosition(
     storyId: string,
     lastSeenEventId: number
@@ -342,14 +400,12 @@ export class SupabaseService {
       return { success: false, error: 'Not authenticated' };
     }
 
-    const { error } = await this.supabase
-      .from('reader_positions')
-      .upsert({
-        user_id: user.id,
-        story_id: storyId,
-        last_seen_event_id: lastSeenEventId,
-        updated_at: new Date().toISOString()
-      });
+    const { error } = await this.upsert('reader_positions', {
+      user_id: user.id,
+      story_id: storyId,
+      last_seen_event_id: lastSeenEventId,
+      updated_at: new Date().toISOString(),
+    });
 
     if (error) {
       console.error('Update reader position error:', error);
@@ -359,68 +415,19 @@ export class SupabaseService {
     return { success: true };
   }
 
-  /**
-   * Subscribe to real-time story events
-   */
-  subscribeToEvents(
-    storyId: string,
-    onNewEvent: (event: DbStoryEvent) => void,
-    onStateChange: (state: DbStoryState) => void
-  ): void {
-    // Unsubscribe from previous channel if exists
-    this.unsubscribeFromEvents();
+  // ==========================================
+  // Admin Functions
+  // ==========================================
 
-    this.realtimeChannel = this.supabase
-      .channel(`story:${storyId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'story_events',
-          filter: `story_id=eq.${storyId}`
-        },
-        (payload: RealtimePostgresChangesPayload<DbStoryEvent>) => {
-          onNewEvent(payload.new as DbStoryEvent);
-        }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'story_state',
-          filter: `story_id=eq.${storyId}`
-        },
-        (payload: RealtimePostgresChangesPayload<DbStoryState>) => {
-          onStateChange(payload.new as DbStoryState);
-        }
-      )
-      .subscribe();
-  }
-
-  /**
-   * Unsubscribe from real-time events
-   */
-  unsubscribeFromEvents(): void {
-    if (this.realtimeChannel) {
-      this.supabase.removeChannel(this.realtimeChannel);
-      this.realtimeChannel = null;
-    }
-  }
-
-  /**
-   * Generate a new reader PIN (admin only)
-   */
   async generateReaderPin(name: string, storyId: string): Promise<GeneratePinResponse> {
     const user = this.currentUser();
     if (!user || user.role !== 'admin') {
       return { success: false, error: 'Unauthorized' };
     }
 
-    const { data, error } = await this.supabase.rpc('admin_generate_reader_pin', {
+    const { data, error } = await this.rpc<GeneratePinResponse>('admin_generate_reader_pin', {
       p_name: name,
-      p_story_id: storyId
+      p_story_id: storyId,
     });
 
     if (error) {
@@ -431,16 +438,13 @@ export class SupabaseService {
     return data as GeneratePinResponse;
   }
 
-  /**
-   * Get all users (admin only)
-   */
   async getUsers(): Promise<GetUsersResponse> {
     const user = this.currentUser();
     if (!user || user.role !== 'admin') {
       return { success: false, error: 'Unauthorized' };
     }
 
-    const { data, error } = await this.supabase.rpc('admin_get_all_users');
+    const { data, error } = await this.rpc<GetUsersResponse>('admin_get_all_users');
 
     if (error) {
       console.error('Get users error:', error);
@@ -450,47 +454,41 @@ export class SupabaseService {
     return data as GetUsersResponse;
   }
 
-  /**
-   * Get reader positions for a story (admin only)
-   */
   async getReaderPositions(storyId: string): Promise<ReaderPositionInfo[]> {
     const user = this.currentUser();
     if (!user || user.role !== 'admin') return [];
 
-    const { data, error } = await this.supabase.rpc('admin_get_reader_positions_jwt', {
-      p_story_id: storyId
-    });
+    const { data, error } = await this.rpc<{ success: boolean; error?: string; positions?: ReaderPositionInfo[] }>(
+      'admin_get_reader_positions_jwt',
+      { p_story_id: storyId }
+    );
 
     if (error) {
       console.error('Get reader positions error:', error);
       return [];
     }
 
-    const response = data as { success: boolean; error?: string; positions?: ReaderPositionInfo[] } | null;
-    if (!response?.success) {
-      console.error('Get reader positions failed:', response?.error);
+    if (!data?.success) {
+      console.error('Get reader positions failed:', data?.error);
       return [];
     }
 
-    return (response.positions || []).map(p => ({
+    return (data.positions || []).map(p => ({
       id: p.id,
       name: p.name || 'Unbenannt',
       lastSeenEventId: p.lastSeenEventId || 0,
-      nodeId: p.nodeId ?? null
+      nodeId: p.nodeId ?? null,
     }));
   }
 
-  /**
-   * Delete a user (admin only)
-   */
   async deleteUser(userId: string): Promise<{ success: boolean; error?: string }> {
     const user = this.currentUser();
     if (!user || user.role !== 'admin') {
       return { success: false, error: 'Unauthorized' };
     }
 
-    const { data, error } = await this.supabase.rpc('admin_delete_user', {
-      p_user_id: userId
+    const { data, error } = await this.rpc<{ success: boolean; error?: string }>('admin_delete_user', {
+      p_user_id: userId,
     });
 
     if (error) {
@@ -505,9 +503,6 @@ export class SupabaseService {
   // Lock Management (Admin only)
   // ==========================================
 
-  /**
-   * Get all locked nodes for a story
-   */
   async getLockedNodes(storyId: string): Promise<{
     success: boolean;
     error?: string;
@@ -518,8 +513,8 @@ export class SupabaseService {
       return { success: false, error: 'Unauthorized' };
     }
 
-    const { data, error } = await this.supabase.rpc('admin_get_locked_nodes_jwt', {
-      p_story_id: storyId
+    const { data, error } = await this.rpc<any>('admin_get_locked_nodes_jwt', {
+      p_story_id: storyId,
     });
 
     if (error) {
@@ -527,12 +522,9 @@ export class SupabaseService {
       return { success: false, error: error.message };
     }
 
-    return data as any;
+    return data;
   }
 
-  /**
-   * Get all nodes with their lock status
-   */
   async getAllNodesLockStatus(storyId: string): Promise<Array<{
     id: string;
     title: string;
@@ -542,32 +534,25 @@ export class SupabaseService {
     const user = this.currentUser();
     if (!user || user.role !== 'admin') return [];
 
-    const { data, error } = await this.supabase.rpc('admin_get_all_nodes_lock_status_jwt', {
-      p_story_id: storyId
-    });
+    const { data, error } = await this.rpc<{
+      success: boolean;
+      error?: string;
+      nodes?: Array<{ id: string; title: string; is_locked: boolean; locked_until: string | null }>;
+    }>('admin_get_all_nodes_lock_status_jwt', { p_story_id: storyId });
 
     if (error) {
       console.error('Get all nodes lock status error:', error);
       return [];
     }
 
-    const response = data as {
-      success: boolean;
-      error?: string;
-      nodes?: Array<{ id: string; title: string; is_locked: boolean; locked_until: string | null }>;
-    } | null;
-
-    if (!response?.success) {
-      console.error('Get all nodes lock status failed:', response?.error);
+    if (!data?.success) {
+      console.error('Get all nodes lock status failed:', data?.error);
       return [];
     }
 
-    return response.nodes || [];
+    return data.nodes || [];
   }
 
-  /**
-   * Set lock status for a node (admin only)
-   */
   async setNodeLock(
     storyId: string,
     nodeId: string,
@@ -579,11 +564,11 @@ export class SupabaseService {
       return { success: false, error: 'Unauthorized' };
     }
 
-    const { data, error } = await this.supabase.rpc('admin_set_node_lock_jwt', {
+    const { data, error } = await this.rpc<{ success: boolean; error?: string }>('admin_set_node_lock_jwt', {
       p_story_id: storyId,
       p_node_id: nodeId,
       p_is_locked: isLocked,
-      p_locked_until: lockedUntil || null
+      p_locked_until: lockedUntil || null,
     });
 
     if (error) {
@@ -594,11 +579,33 @@ export class SupabaseService {
     return data as { success: boolean; error?: string };
   }
 
-  /**
-   * Logout - clear session state
-   */
+  // ==========================================
+  // Story Content
+  // ==========================================
+
+  async getStoryContent(storyId: string): Promise<Story | null> {
+    const { data, error } = await this.rpc<{ success: boolean; error?: string; story?: Story }>('get_story_content', {
+      p_story_id: storyId,
+    });
+
+    if (error) {
+      console.error('Get story content error:', error);
+      return null;
+    }
+
+    if (!data?.success) {
+      console.error('Get story content failed:', data?.error);
+      return null;
+    }
+
+    return data.story as Story;
+  }
+
+  // ==========================================
+  // Session Management
+  // ==========================================
+
   logout(): void {
-    this.unsubscribeFromEvents();
     if (this.tokenExpiryTimer) {
       clearTimeout(this.tokenExpiryTimer);
       this.tokenExpiryTimer = null;
@@ -619,7 +626,6 @@ export class SupabaseService {
     }
 
     const delayMs = Math.max(0, expMs - Date.now());
-    // Use a minimum delay to avoid immediate tight loops if the clock is skewed.
     const safeDelayMs = Math.max(1000, delayMs);
 
     this.tokenExpiryTimer = setTimeout(() => {
@@ -630,7 +636,6 @@ export class SupabaseService {
   private isJwtValidAndNotExpired(token: string): boolean {
     const expMs = this.getJwtExpiryMs(token);
     if (!expMs) return false;
-    // Small skew to avoid edge-of-expiry flakiness.
     return Date.now() < expMs - 30_000;
   }
 
@@ -693,48 +698,20 @@ export class SupabaseService {
     }
   }
 
-  /**
-   * Check if user is admin
-   */
+  // ==========================================
+  // Role Checks
+  // ==========================================
+
   isAdmin(): boolean {
     return this.currentUser()?.role === 'admin';
   }
 
-  /**
-   * Check if user is player (admin or player role)
-   */
   isPlayer(): boolean {
     const role = this.currentUser()?.role;
     return role === 'admin' || role === 'player';
   }
 
-  /**
-   * Check if user is reader
-   */
   isReader(): boolean {
     return this.currentUser()?.role === 'reader';
   }
-
-  /**
-   * Get full story content from database
-   * Returns the story in the same shape as story.json
-   */
-  async getStoryContent(storyId: string): Promise<Story | null> {
-    const { data, error } = await this.supabase.rpc('get_story_content', {
-      p_story_id: storyId
-    });
-
-    if (error) {
-      console.error('Get story content error:', error);
-      return null;
-    }
-
-    if (!data?.success) {
-      console.error('Get story content failed:', data?.error);
-      return null;
-    }
-
-    return data.story as Story;
-  }
-
 }
