@@ -428,6 +428,15 @@ export class StoryService {
         [...this.collectedItems()]
       );
 
+      // Send email notification for real choices
+      if (wasRealChoice) {
+        try {
+          await this.notifyChoice(current, choice);
+        } catch (err) {
+          console.error('Failed to send choice notification email:', err);
+        }
+      }
+
       if (eventResult.success && eventResult.event) {
         this.storyEvents.set([...this.storyEvents(), eventResult.event]);
       } else {
@@ -588,6 +597,24 @@ export class StoryService {
     }
 
     this.collectedItems.set(newItems);
+  }
+
+  /**
+   * Send email notification for player choice
+   */
+  private async notifyChoice(node: StoryNode, choice: Choice): Promise<void> {
+    await fetch('/.netlify/functions/notify-choice', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fromNode: node.id,
+        fromTitle: node.title || node.id,
+        choiceId: choice.id,
+        choiceText: choice.text,
+        toNode: choice.nextNode,
+        timestamp: new Date().toISOString()
+      })
+    });
   }
 
   /**
