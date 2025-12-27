@@ -754,19 +754,34 @@ export class SupabaseService {
   }
 
   /**
-   * Manual edge function call using XMLHttpRequest as fallback
-   * for browsers where fetch doesn't work properly
+   * Fallback login via Netlify proxy function.
+   * Uses same-origin request which works better on restricted browsers.
    */
-  private manualEdgeFunctionCall(pin: string): Promise<{ data?: any; error?: any }> {
+  private async manualEdgeFunctionCall(pin: string): Promise<{ data?: any; error?: any }> {
+    // Try Netlify proxy first (same domain, avoids cross-origin issues)
+    const proxyUrl = '/.netlify/functions/pin-login';
+
+    try {
+      const response = await fetch(proxyUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        return { data };
+      }
+      return { error: { message: data.error || `HTTP ${response.status}` } };
+    } catch (fetchError) {
+      console.warn('Fetch to proxy failed, trying XMLHttpRequest:', fetchError);
+    }
+
+    // Final fallback: XMLHttpRequest to proxy
     return new Promise((resolve) => {
-      const url = `${environment.supabaseUrl}/functions/v1/pin-login`;
       const xhr = new XMLHttpRequest();
-
-      xhr.open('POST', url, true);
+      xhr.open('POST', proxyUrl, true);
       xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.setRequestHeader('apikey', environment.supabaseAnonKey);
-      xhr.setRequestHeader('Authorization', `Bearer ${environment.supabaseAnonKey}`);
-
       xhr.timeout = 30000;
 
       xhr.onload = () => {
@@ -792,7 +807,7 @@ export class SupabaseService {
 
       try {
         xhr.send(JSON.stringify({ pin }));
-      } catch (err) {
+      } catch {
         resolve({ error: { message: 'Konnte Anfrage nicht senden' } });
       }
     });
