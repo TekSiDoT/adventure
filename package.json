@@ -7,8 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "seed:story": "npx tsx scripts/seed-story-content.ts",
-    "seed:story:dev": "SUPABASE_URL=https://tbibfauxuqdhjyiptran.supabase.co SUPABASE_SERVICE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRiaWJmYXV4dXFkaGp5aXB0cmFuIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2Njg2MDQyNSwiZXhwIjoyMDgyNDM2NDI1fQ.iCDoAEqQS3DLlDMeMhHKietqKHk0GzU0o9rz_28fPDM npx tsx scripts/seed-story-content.ts"
+    "seed:story": "npx tsx scripts/seed-story-content.ts"
   },
   "private": true,
   "dependencies": {
