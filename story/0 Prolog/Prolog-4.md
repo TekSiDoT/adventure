@@ -1,7 +1,6 @@
-# Jenseits des Regals
+# Prolog - Kapitel 4: Jenseits des Regals
 
----
-
+<!-- id: der-durchbruch -->
 ## Der Durchbruch
 
 Odo wischte sich den Schweiß von der Stirn und betrachtete sein Werk.
@@ -62,8 +61,11 @@ Er atmete ein, machte sich so schmal wie möglich –
 
 Und schob sich durch den Spalt.
 
+→ die-zweite-kammer
+
 ---
 
+<!-- id: die-zweite-kammer -->
 ## Die zweite Kammer
 
 Es war enger als der erste Durchgang.
@@ -118,8 +120,11 @@ Im Zusammenspiel von goldenem Lampenlicht und silbernem Schachtlicht sah Odo, wa
 
 Eine Schatulle.
 
+→ das-kaestchen
+
 ---
 
+<!-- id: das-kaestchen -->
 ## Das Kästchen
 
 Sie war klein – etwa so groß wie der Brotkasten seiner Mutter, aber länglicher, mit abgerundeten Kanten und einem gewölbten Deckel. Das Material schimmerte in einem dunklen Ton, den Odo nicht einordnen konnte – nicht ganz Holz, nicht ganz Metall, etwas dazwischen.
@@ -178,8 +183,11 @@ Und dann, ganz plötzlich, berührte er alle drei gleichzeitig.
 
 Der Deckel sprang auf.
 
+→ der-fund
+
 ---
 
+<!-- id: der-fund -->
 ## Der Fund
 
 Odo starrte in das Kästchen.
@@ -206,6 +214,22 @@ Er hielt den Gegenstand näher an die Flamme.
 
 Die Linien wurden deutlicher. Heller. Sie formten... Zeichen.
 
+→ der-fund-zeichen
+
+---
+
+<!-- id: der-fund-zeichen -->
+## Die Zeichen
+
+_[Enthüllung durch die Lampe]_
+
+→ der-fund-2
+
+---
+
+<!-- id: der-fund-2 -->
+## Der Fund
+
 Keine Zeichen, die Odo kannte. Nicht die Buchstaben, die sein Vater ihm beigebracht hatte. Etwas anderes. Etwas Älteres. Geschwungene Linien, die ineinander übergingen, Punkte, die über und unter den Linien schwebten.
 
 Die Zeichen leuchteten golden im Lampenschein.
@@ -228,8 +252,11 @@ Er wusste nicht, was es war. Er wusste nicht, wozu man es benutzte.
 
 Aber er wusste, dass es wichtig war.
 
+→ die-tuer
+
 ---
 
+<!-- id: die-tuer -->
 ## Die Tür
 
 Odo stand auf und schaute sich um.
@@ -314,8 +341,11 @@ Er trat aus der Speisekammer –
 
 Direkt in die Arme seiner Mutter.
 
+→ die-ausrede
+
 ---
 
+<!-- id: die-ausrede -->
 ## Die Ausrede
 
 "Odo!"
@@ -346,44 +376,14 @@ Odo öffnete den Mund.
 
 Drei Geschichten formten sich gleichzeitig in seinem Kopf, drängten nach vorne, jede mit ihren eigenen Stärken und Schwächen. Er musste sich entscheiden. Schnell.
 
-**Das Rezept.**
+Das Rezept. Er könnte sagen, er hätte nach einem alten Rezept gesucht. Von Urgroßtante Belladonna, für diesen besonderen Kuchen, den sie immer zu Mittsommer gemacht hatte. Dora hatte einmal erwähnt, dass es irgendwo ein Kochbuch gab... Er wollte es als Überraschung finden. Eine harmlose Geschichte. Seine Mutter würde gerührt sein von dem Gedanken. Aber was, wenn sie nachfragte? Was, wenn sie das Kochbuch sehen wollte?
 
-Er könnte sagen, er hätte nach einem alten Rezept gesucht. Von Urgroßtante Belladonna, für diesen besonderen Kuchen, den sie immer zu Mittsommer gemacht hatte. Dora hatte einmal erwähnt, dass es irgendwo ein Kochbuch gab... Er wollte es als Überraschung finden.
+Die Maus. Er könnte sagen, er hätte eine Maus gesehen. Eine große, freche Maus, die in die Speisekammer gehuscht war. Er war ihr gefolgt, um sie zu fangen, bevor sie die Vorräte anknabbern konnte. Es würde erklären, warum er so schmutzig war. Aber was, wenn sie jetzt nach der Maus suchen wollte? Was, wenn sie die Speisekammer durchforsten würde?
 
-*Vorteile:* Eine harmlose Geschichte. Seine Mutter würde gerührt sein von dem Gedanken. Und es würde erklären, warum er so lange gesucht hatte.
-
-*Nachteile:* Was, wenn sie nachfragte? Was, wenn sie das Kochbuch sehen wollte? Er hatte keines. Und Dora würde verwirrt sein, wenn sie davon hörte – sie hatte so etwas nie gesagt.
-
-**Die Maus.**
-
-Er könnte sagen, er hätte eine Maus gesehen. Eine große, freche Maus, die in die Speisekammer gehuscht war. Er war ihr gefolgt, um sie zu fangen, bevor sie die Vorräte anknabbern konnte. Sie war ihm entwischt, immer wieder, hatte sich zwischen den Regalen versteckt...
-
-*Vorteile:* Es würde erklären, warum er so schmutzig war. Mäuse waren ein echtes Problem in Vorratskammern. Seine Mutter würde seine Hilfsbereitschaft loben.
-
-*Nachteile:* Was, wenn sie jetzt nach der Maus suchen wollte? Was, wenn sie die Speisekammer durchforsten würde, auf der Suche nach dem Eindringling? Sie könnte Dinge bemerken. Die Tür. Das Regal. Den alten Schmalztopf.
-
-**Die halbe Wahrheit.**
-
-Er könnte sagen, dass er einen Luftzug gespürt hatte. In seinem Zimmer. Dass er neugierig geworden war, nachgeschaut hatte, einem Gang gefolgt war. Dass er sich verlaufen hatte im Labyrinth der Tuckberge und schließlich hier herausgekommen war, in der Speisekammer, ohne zu wissen wie.
-
-*Vorteile:* Es war fast wahr. Es würde erklären, warum er so aussah. Und seine Familie wusste, dass die Tuckberge voller vergessener Gänge waren – niemand würde überrascht sein.
-
-*Nachteile:* Sie würden Fragen stellen. Viele Fragen. Wo genau? Welcher Gang? Können wir ihn sehen? Sein Vater würde es auf einer Karte eintragen wollen. Die Zwillinge würden sofort losstürmen, um selbst nachzuschauen.
+Die halbe Wahrheit. Er könnte sagen, dass er einen Luftzug gespürt hatte. In seinem Zimmer. Dass er neugierig geworden war, nachgeschaut hatte, einem Gang gefolgt war. Es war fast wahr. Aber sie würden Fragen stellen. Viele Fragen. Wo genau? Welcher Gang?
 
 Seine Mutter wartete. Ihr Fuß tippte ungeduldig auf den Steinboden.
 
 Odo musste sich entscheiden.
 
----
-
-**Was sagt Odo?**
-
-**[A]** Die Geschichte mit dem Rezept – harmlos und rührend, aber riskant, wenn jemand nachfragt.
-
-**[B]** Die Geschichte mit der Maus – erklärt seinen Zustand, aber könnte zu einer Suche führen.
-
-**[C]** Die halbe Wahrheit über den Luftzug – fast ehrlich, aber wird viele Fragen aufwerfen.
-
----
-
-*[Fortsetzung folgt je nach Wahl...]*
+- Das Rezept → ausrede-rezept

@@ -1,8 +1,7 @@
-# Der ungeplante Pfad
+# Prolog - Kapitel 1: Die Entdeckung
 
-## Einleitung
-
----
+<!-- id: start -->
+## Der ungeplante Pfad
 
 Es gibt Orte auf der Welt, von denen die meisten Menschen nichts wissen.
 
@@ -16,13 +15,18 @@ Die Sonne geht auf über Feldern voller Gerste und Weizen. Sie wandert langsam �
 
 Denn in diesem Land leben die Hobbits. Und Hobbits leben in Hügeln.
 
+→ hobbits
+
 ---
+
+<!-- id: hobbits -->
+## Die Hobbits
 
 Hobbits sind ein merkwürdiges Volk, wenn man sie von außen betrachtet. Aber da sie fast nie von außen betrachtet werden, macht ihnen das nichts aus.
 
 Sie sind kleiner als Menschen – ein großer Hobbit reicht einem durchschnittlichen Menschen etwa bis zur Brust. Aber das fällt den Hobbits selbst nicht auf, weil sie fast nie Menschen treffen. Für einen Hobbit ist ein Hobbit genau die richtige Größe.
 
-Ihre Füße sind groß und pelzig, mit dickem Fell auf der Oberseite, das sie warm hält. Schuhe sind im Auenland praktisch unbekannt. Wozu auch? Hobbit-Füße sind zäher als jedes Leder und bequemer als jeder Stiefel. Ein Hobbit kann barfuß über Kieselsteine laufen, ohne es zu merken, und im Winter durch Schnee stapfen, ohne zu frieren.
+Ihre Füße sind groß und pelzig, mit dickem Fell auf der Oberseite, das sie warm hält. Schuhe sind im Auenland praktisch unbekannt. Wozu auch? Hobbit-Füße sind zäher als jedes Leder und bequemer als jeder Stiefel.
 
 Ihre Bäuche sind rund und gemütlich, und das aus gutem Grund: Hobbits essen gern. Nicht aus Gier, sondern aus Überzeugung. Ein ordentliches Frühstück, so sagen die Hobbits, ist die Grundlage eines ordentlichen Tages. Und nach dem Frühstück kommt das zweite Frühstück. Und dann der Imbiss am Vormittag. Und dann das Mittagessen. Und der Nachmittagstee. Und das Abendessen. Und das späte Abendbrot.
 
@@ -38,7 +42,12 @@ So denken die Hobbits. Und meistens haben sie damit recht.
 
 Meistens.
 
+→ tuks
+
 ---
+
+<!-- id: tuks -->
+## Die Tuks
 
 Aber selbst im Auenland gibt es Unterschiede.
 
@@ -50,11 +59,7 @@ Und im Westen, wo der größte Hügel des Auenlands steht, leben die Tuks.
 
 Die Tuks sind… nun ja. Die Tuks sind die Tuks.
 
----
-
-Es heißt, vor vielen Generationen habe ein Tuk eine Elbin geheiratet.
-
-Das ist natürlich Unsinn, sagen die anderen Hobbits. Vollkommener Unsinn. Elben sind groß und geheimnisvoll und leben irgendwo weit weg, wo alles magisch ist und niemand vernünftiges Essen kocht. Kein Elb würde einen Hobbit heiraten. Kein Hobbit würde einen Elben heiraten wollen. Die Geschichte ist erfunden, eine Legende, ein Märchen.
+Es heißt, vor vielen Generationen habe ein Tuk eine Elbin geheiratet. Das ist natürlich Unsinn, sagen die anderen Hobbits. Vollkommener Unsinn. Elben sind groß und geheimnisvoll und leben irgendwo weit weg, wo alles magisch ist und niemand vernünftiges Essen kocht. Kein Elb würde einen Hobbit heiraten. Kein Hobbit würde einen Elben heiraten wollen. Die Geschichte ist erfunden, eine Legende, ein Märchen.
 
 Aber die Hobbits erzählen sie trotzdem.
 
@@ -72,7 +77,12 @@ Die Familie redet nicht darüber. Es gehört sich nicht. Aber tief in den Tuckbe
 
 Es sind mehr, als man denken würde.
 
+→ tuckberge
+
 ---
+
+<!-- id: tuckberge -->
+## Die Tuckberge
 
 Die Tuckberge selbst sind ein Wunder.
 
@@ -92,7 +102,12 @@ Die Tuckberge sind so alt, dass niemand mehr genau weiß, wo alles ist. Es gibt 
 
 Die Hobbits, die dort leben, denken nicht viel darüber nach. Man kennt die Wege, die man braucht, und die anderen Wege sind eben die anderen Wege. So ist das nun mal.
 
+→ familie
+
 ---
+
+<!-- id: familie -->
+## Eine Familie in Tuckbergen
 
 In diesem Labyrinth aus Tunneln und Zimmern und vergessenen Ecken lebt eine Familie.
 
@@ -112,11 +127,16 @@ Der vierte ist Largo, zehn Jahre alt und immer hungrig. Largo interessiert sich 
 
 Und dann ist da Odo.
 
+→ odo
+
 ---
+
+<!-- id: odo -->
+## Odo
 
 Odo ist zwölf.
 
-Er ist der zweitjüngste, eingeklemmt zwischen Largo und niemandem, denn nach Odo kamen keine weiteren Kinder. Manchmal nennt seine Mutter ihn “mein Nesthäkchen”, und Odo verdreht jedes Mal die Augen, aber heimlich mag er es.
+Er ist der zweitjüngste, eingeklemmt zwischen den Zwillingen und Largo.
 
 Odo sieht aus wie ein Tuk. Braunes, leicht widerspenstiges Haar. Grüne Augen, ein bisschen zu groß für sein Gesicht, was ihm einen wachen, aufmerksamen Ausdruck gibt. Er ist nicht besonders groß und nicht besonders klein, nicht besonders dick und nicht besonders dünn. Ein normaler Hobbitjunge, würde man denken.
 
@@ -126,35 +146,32 @@ Es ist nichts Dramatisches. Nichts, worüber die Leute reden würden. Es ist ehe
 
 Die anderen Hobbit-Kinder spielen, und Odo spielt mit. Er rennt und lacht und schreit, wie sie alle. Aber zwischendurch hält er inne. Sieht etwas. Denkt an etwas. Während die anderen weiterspielen, steht Odo da und betrachtet einen Käfer, der über ein Blatt krabbelt. Oder er hebt einen Stein auf und dreht ihn im Licht. Oder er schaut einfach nur, ohne dass jemand wüsste, was er sieht.
 
-“Träumer”, sagt sein Vater manchmal, liebevoll und ein bisschen ratlos.
+"Träumer", sagt sein Vater manchmal, liebevoll und ein bisschen ratlos.
 
 Aber das stimmt nicht ganz. Träumer schauen nach innen. Odo schaut nach außen. Er schaut so genau nach außen, dass er Dinge sieht, die andere übersehen.
 
+→ gabe
+
 ---
+
+<!-- id: gabe -->
+## Die Gabe des Sehens
 
 Es begann, als er klein war.
 
 Mit vier Jahren fand er den Ehering seines Großvaters, der seit Wochen verschwunden war. Alle hatten gesucht. Unter Möbeln, in Schubladen, zwischen Kissen. Odo schaute einmal durchs Zimmer, ging zum Bücherregal, zog einen bestimmten Band heraus, und da lag der Ring. Im Buchrücken. Wo er beim Lesen hineingerutscht sein musste.
 
-“Woher wusstest du das?”, fragte sein Großvater verblüfft.
+"Woher wusstest du das?", fragte sein Großvater verblüfft.
 
-Odo zuckte die Schultern. “Er musste da sein.”
+Odo zuckte die Schultern. "Er musste da sein."
 
-Mit sechs Jahren sagte er seiner Mutter, dass es bald regnen würde, obwohl der Himmel blau war. Zwei Stunden später brach ein Gewitter los. “Die Vögel”, erklärte Odo, als wäre es selbstverständlich. “Sie flogen alle nach Süden.”
+Mit sechs Jahren sagte er seiner Mutter, dass es bald regnen würde, obwohl der Himmel blau war. Zwei Stunden später brach ein Gewitter los. "Die Vögel", erklärte Odo, als wäre es selbstverständlich. "Sie flogen alle nach Süden."
 
 Mit acht Jahren fand er den geheimen Tunnel, den die Zwillinge als Versteck benutzten, obwohl er sie nie hatte hineingehen sehen. Die Zwillinge sprachen drei Tage nicht mit ihm. Dann gaben sie auf und nahmen ihn stattdessen in ihren Geheimbund auf.
 
 Es ist keine Magie. Es ist nichts Übernatürliches. Es ist nur… Odo sieht hin. Wirklich hin. Während andere Hobbits durch die Welt gehen und sehen, was sie erwarten, schaut Odo, was tatsächlich da ist. Und manchmal, oft sogar, ist das nicht dasselbe.
 
----
-
-Seine Familie liebt ihn.
-
-Das klingt selbstverständlich, aber es ist wichtig. In manchen Geschichten ist das besondere Kind einsam, unverstanden, ein Außenseiter im eigenen Heim. Odo ist keines davon.
-
-Sein Vater regt sich auf, wenn Odo schon wieder etwas auseinandernimmt, um zu sehen, wie es funktioniert. Aber dann setzt er sich dazu und hilft beim Zusammenbauen. Seine Mutter seufzt, wenn Odo mit zerrissenen Kleidern und Erde unter den Fingernägeln nach Hause kommt. Aber dann wärmt sie ihm Wasser für ein Bad und fragt, was er gefunden hat.
-
-Esmeralda, die älteste Schwester, hält Odo für unpraktisch und weltfremd, aber sie bringt ihm trotzdem bei, wie man Hemden flickt und Knöpfe annäht. Die Zwillinge behandeln ihn wie einen gleichwertigen Verschwörer, eingeweiht in ihre Geheimnisse. Und Largo, der jüngere Bruder, verehrt Odo auf die unkomplizierte Art, wie jüngere Brüder ältere verehren.
+Seine Familie liebt ihn. Das klingt selbstverständlich, aber es ist wichtig. In manchen Geschichten ist das besondere Kind einsam, unverstanden, ein Außenseiter im eigenen Heim. Odo ist keines davon.
 
 Odo gehört hierher. In diese Familie, in diesen Hügel, in dieses Land.
 
@@ -164,7 +181,12 @@ Er würde nie weggehen. Nicht wirklich. Er liebt sein Zuhause zu sehr.
 
 Aber fragen darf man ja.
 
+→ taschen
+
 ---
+
+<!-- id: taschen -->
+## Odos Taschen
 
 Die andere Sache, die man über Odo wissen muss, sind seine Taschen.
 
@@ -172,9 +194,9 @@ Odos Taschen sind wie kleine Werkstätten. Während andere Hobbit-Kinder Murmeln
 
 Es begann mit einem Draht. Ein Stück Draht, das er auf dem Boden fand, als er sieben war. Er hob es auf, ohne zu wissen warum, und steckte es ein. Tage später, als seine Schwester ihren Schlüssel verloren hatte und vor verschlossener Tür stand, zog Odo den Draht heraus. Er bog ihn zurecht. Probierte ein bisschen. Das Schloss klickte auf.
 
-“Woher kannst du das?”, fragte Esmeralda, halb empört, halb beeindruckt.
+"Woher kannst du das?", fragte Esmeralda, halb empört, halb beeindruckt.
 
-Odo überlegte. “Es machte Sinn”, sagte er schließlich. Und das war die einzige Erklärung, die er hatte.
+Odo überlegte. "Es machte Sinn", sagte er schließlich. Und das war die einzige Erklärung, die er hatte.
 
 Seitdem sammelt er. Sein Draht – inzwischen mehrfach ersetzt und verbessert – ist immer dabei. Dazu eine Schnur, die er selbst geflochten hat, dünner und stärker als alles, was man kaufen kann. Ein kleiner Spiegel, so groß wie ein Daumennagel, mit dem man um Ecken schauen kann. Eine Klappmesserklinge, ein Stück Kreide, drei Streichhölzer in einer winzigen Dose, ein gefaltetes Blatt Papier, ein Stift.
 
@@ -184,7 +206,12 @@ Odo weiß es selbst nicht immer. Manchmal steckt er etwas ein und fragt sich ers
 
 So ist das mit Odo.
 
+→ herbst
+
 ---
+
+<!-- id: herbst -->
+## Herbst im Auenland
 
 Es ist Herbst im Auenland.
 
@@ -202,7 +229,12 @@ Der Herbst ist eine Zwischenzeit. Eine Wartezeit.
 
 Odo hasst Warten.
 
+→ zimmer
+
 ---
+
+<!-- id: zimmer -->
+## Odos Zimmer
 
 Sein Zimmer liegt ganz hinten in Tuckbergen.
 
@@ -212,11 +244,16 @@ Odo wählte das Zimmer am Ende des Gangs, der einen Knick macht und dann noch ei
 
 Das Zimmer selbst ist klein, aber Odo hat es sich gemütlich gemacht. Ein Bett unter dem runden Fenster. Ein Regal an der Wand, voll mit Fundstücken: Steine mit interessanten Mustern, eine Vogelfeder, die schillert wie Öl auf Wasser, ein verrostetes Zahnrad, dessen Herkunft er nie herausgefunden hat. Ein kleiner Schreibtisch, auf dem immer irgendetwas liegt, das er gerade untersucht.
 
-An der Decke hängt eine Karte des Auenlands, die er selbst gezeichnet hat. Sie ist genauer als die meisten Karten, die man kaufen kann, weil Odo jeden Weg selbst abgelaufen ist. Aber an den Rändern hört sie auf. Weiße Flächen, unbeschrieben. “Hier nicht gewesen”, steht dort in Odos ordentlicher Handschrift.
+An der Decke hängt eine Karte des Auenlands, die er selbst gezeichnet hat. Sie ist genauer als die meisten Karten, die man kaufen kann, weil Odo jeden Weg selbst abgelaufen ist. Aber an den Rändern hört sie auf. Weiße Flächen, unbeschrieben. "Hier nicht gewesen", steht dort in Odos ordentlicher Handschrift.
 
 Noch nicht.
 
+→ entdeckung
+
 ---
+
+<!-- id: entdeckung -->
+## Die Entdeckung
 
 Es ist später Nachmittag, und der Regen trommelt gegen das Fenster.
 
@@ -262,14 +299,4 @@ Und zum ersten Mal seit Wochen spürt Odo dieses Kribbeln. Dieses Gefühl, das e
 
 Er lächelt.
 
----
-
-**Was tut Odo?**
-
-**[A]** Er schiebt das Regal zur Seite und untersucht die Wand sofort.
-
-**[B]** Er erzählt den Zwillingen davon
-
-**[C]** Er geht seine Mutter suchen
-
-**[D]** Er wartet bis zur Nacht, wenn alle schlafen, um ungestört zu sein.
+- Durch den Spalt → durch-den-spalt

@@ -172,23 +172,8 @@
       "choices": [
         {
           "id": "durch-den-spalt",
-          "text": "Das Regal zur Seite schieben und die Wand untersuchen",
+          "text": "Durch den Spalt",
           "nextNode": "durch-den-spalt"
-        },
-        {
-          "id": "zwillinge",
-          "text": "Den Zwillingen davon erzählen",
-          "nextNode": "zwillinge"
-        },
-        {
-          "id": "mutter",
-          "text": "Die Mutter suchen",
-          "nextNode": "mutter"
-        },
-        {
-          "id": "nacht",
-          "text": "Bis zur Nacht warten, wenn alle schlafen",
-          "nextNode": "nacht"
         }
       ]
     },
@@ -246,39 +231,6 @@
           "nextNode": "zurueck-ins-zimmer"
         }
       ]
-    },
-    "zwillinge": {
-      "id": "zwillinge",
-      "title": "Die Zwillinge einweihen",
-      "text": "",
-      "teaser": "Odo beschließt, den Zwillingen von dem seltsamen Luftzug zu erzählen. Wenn jemand die verborgenen Gänge der Tuckberge kennt, dann sie...",
-      "media": {
-        "image": null,
-        "audio": null
-      },
-      "choices": []
-    },
-    "mutter": {
-      "id": "mutter",
-      "title": "Mutter suchen",
-      "text": "",
-      "teaser": "Odo macht sich auf den Weg zur Küche, wo seine Mutter bestimmt gerade einen ihrer berühmten Kuchen backt. Sie würde wissen, was dieser Luftzug bedeutet...",
-      "media": {
-        "image": null,
-        "audio": null
-      },
-      "choices": []
-    },
-    "nacht": {
-      "id": "nacht",
-      "title": "Nächtliche Erkundung",
-      "text": "",
-      "teaser": "Odo beschließt zu warten. Diese Entdeckung ist zu wichtig, um sie zu überstürzen. Heute Nacht, wenn alle schlafen, wird er zurückkommen...",
-      "media": {
-        "image": null,
-        "audio": null
-      },
-      "choices": []
     },
     "weiter-erkunden": {
       "id": "weiter-erkunden",
@@ -585,16 +537,6 @@
           "id": "ausrede-rezept",
           "text": "Das Rezept – harmlos und rührend, aber riskant",
           "nextNode": "ausrede-rezept"
-        },
-        {
-          "id": "ausrede-maus",
-          "text": "Die Maus – erklärt seinen Zustand, könnte zu Suche führen",
-          "nextNode": "ausrede-maus"
-        },
-        {
-          "id": "ausrede-wahrheit",
-          "text": "Die halbe Wahrheit – fast ehrlich, wird Fragen aufwerfen",
-          "nextNode": "ausrede-wahrheit"
         }
       ]
     },
@@ -709,28 +651,6 @@
           "nextNode": "largo-vertrauen"
         }
       ]
-    },
-    "ausrede-maus": {
-      "id": "ausrede-maus",
-      "title": "Die Geschichte mit der Maus",
-      "text": "",
-      "teaser": "Odo berichtet von einer frechen Maus, der er gefolgt ist, um sie zu fangen bevor sie die Vorräte anknabbert...",
-      "media": {
-        "image": null,
-        "audio": null
-      },
-      "choices": []
-    },
-    "ausrede-wahrheit": {
-      "id": "ausrede-wahrheit",
-      "title": "Die halbe Wahrheit",
-      "text": "",
-      "teaser": "Odo erzählt, dass er einem Luftzug gefolgt ist und sich in den vergessenen Gängen der Tuckberge verlaufen hat...",
-      "media": {
-        "image": null,
-        "audio": null
-      },
-      "choices": []
     },
     "largo-wahrheit": {
       "id": "largo-wahrheit",

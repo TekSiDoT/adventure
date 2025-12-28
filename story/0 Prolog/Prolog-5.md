@@ -1,16 +1,42 @@
-# Die Rezept-Geschichte
+# Prolog - Kapitel 5: Die Rezept-Geschichte
 
 _Fortsetzung von Prolog-4, wenn Odo die Geschichte mit dem Rezept wählt._
 
+<!-- id: ausrede-rezept -->
+## Die Geschichte mit dem Rezept
+
+"Das Rezept", sagte Odo.
+
+Seine Mutter blinzelte. "Welches Rezept?"
+
+"Von Urgroßtante Belladonna." Die Worte kamen schneller, als Odo sie denken konnte. "Für ihren besonderen Kuchen. Den mit Honig und Walnüssen, den sie immer zu Mittsommer gemacht hat. Ich wollte... ich wollte ihn als Überraschung finden. Das Rezept, meine ich. Ich dachte, es wäre vielleicht hier irgendwo, in einem alten Kochbuch oder so."
+
+Er hielt den Atem an.
+
+Mirabellas Gesicht veränderte sich. Die strenge Falte zwischen ihren Augenbrauen glättete sich. Ihre Augen wurden weicher, und für einen Moment sah sie aus, als würde sie etwas sehen, das weit weg war und lange her.
+
+"Belladonnas Honigkuchen", sagte sie leise. "Oh, Odo."
+
+Sie streckte die Hand aus und strich ihm eine staubige Haarsträhne aus der Stirn. Ihre Finger waren warm und rochen nach Mehl und Bratäpfeln.
+
+"Weißt du", sagte sie, "als ich neu in diese Familie kam – gerade erst verheiratet, kaum älter als Esmeralda jetzt – da hat Belladonna mir beigebracht, wie man diesen Kuchen macht. Wir standen zusammen in der Küche, sie und ich, und sie summte dabei. Immer dasselbe Lied, obwohl sie nie gesagt hat, was es war. Und der Geruch..." Sie schloss kurz die Augen. "Honig und geröstete Walnüsse und ein bisschen Zimt. Es roch nach Herbst, auch mitten im Sommer."
+
+Odo nickte, obwohl er diesen Kuchen nie gegessen hatte. Belladonna war gestorben, als er fünf war. Er erinnerte sich kaum an sie – nur an weißes Haar und eine Stimme, die nach fernen Orten klang.
+
+"Komm", sagte Mirabella plötzlich. "Wir suchen zusammen."
+
+→ rezept-suche
+
 ---
 
+<!-- id: rezept-suche -->
 ## Die Suche
 
 "Was?"
 
-"Das Rezept. Wenn es irgendwo hier ist, finden wir es." Sie drehte sich um und ging tiefer in die Speisekammer hinein. "Belladonna hat nie viel aufgeschrieben, aber sie hatte ein Buch. Ein altes Buch mit Ledereinband, in das sie manchmal Dinge gekritzelt hat. Es muss hier irgendwo sein."
+"Das Rezept. Wenn es irgendwo hier ist, finden wir es." Sie drehte sich um und ging tiefer in die Vorratskammer hinein. "Belladonna hat nie viel aufgeschrieben, aber sie hatte ein Buch. Ein altes Buch mit Ledereinband, in das sie manchmal Dinge gekritzelt hat. Es muss hier irgendwo sein."
 
-Odos Magen zog sich zusammen. Seine Mutter bewegte sich direkt auf die Ecke zu, in der – hinter dem großen Regal mit den Einmachgläsern – der geheime Spalt in der Wand lag. Der Spalt, durch den er vor gerade gekrochen war.
+Odos Magen zog sich zusammen. Seine Mutter bewegte sich direkt auf die Ecke zu, in der – hinter dem großen Regal mit den Einmachgläsern – der geheime Spalt in der Wand lag. Der Spalt, durch den er vor weniger als einer Stunde gekrochen war.
 
 "Ich glaube, da hinten habe ich schon geschaut", sagte er schnell. "Vielleicht eher hier drüben?"
 
@@ -28,8 +54,11 @@ Minute um Minute verging. Mirabella fand getrocknete Kräuter, deren Namen niema
 
 Aber sie kam näher. Langsam, aber unaufhaltsam, wie Wasser, das bergab fließt.
 
+→ rezept-gefahr
+
 ---
 
+<!-- id: rezept-gefahr -->
 ## Der Luftzug
 
 "Seltsam", sagte sie plötzlich.
@@ -48,12 +77,15 @@ Largo stand im Türrahmen. Sein rundes Gesicht glänzte, als hätte er gerannt, 
 
 "Was denn?", fragte Mirabella und ließ das Regal los.
 
-"Das Rezept!" Largo watschelte in die Speisekammer, vorbei an Odo, der wie angewurzelt dastand. "Ihr hättet mich einfach fragen können. Ich kenne alle ihre Rezepte auswendig."
+"Das Rezept!" Largo watschelte in die Vorratskammer, vorbei an Odo, der wie angewurzelt dastand. "Ihr hättet mich einfach fragen können. Ich kenne alle ihre Rezepte auswendig."
 
 "Alle... was?"
 
+→ rezept-largo-rettet
+
 ---
 
+<!-- id: rezept-largo-rettet -->
 ## Largos Geheimnis
 
 "Belladonnas Rezepte." Largo strahlte. "Den Honigkuchen. Die Holunderblütenkekse. Die berühmte Pilzpastete, die sie nur gemacht hat, wenn der Tuk selbst zu Besuch kam." Er schloss die Augen und begann zu rezitieren: "Zwei Tassen Mehl, gesiebt. Eine halbe Tasse Butter, weich. Vier Esslöffel Honig, aber nur vom ersten Schleudern, nicht vom zweiten, weil der zu dunkel ist. Sechs Walnüsse, grob gehackt. Eine Prise Zimt – und ich meine eine richtige Prise, nicht diese winzigen Prisen, die manche Leute nehmen. Dann –"
@@ -80,11 +112,14 @@ Sie nahm Largos Hand und zog ihn zur Tür. Im Gehen drehte sie sich noch einmal 
 
 Dann waren sie weg.
 
+→ rezept-allein
+
 ---
 
+<!-- id: rezept-allein -->
 ## Allein
 
-Odo stand allein in der Speisekammer. Sein Herz hämmerte noch immer gegen seine Rippen. Er hatte es geschafft. Er hatte –
+Odo stand allein in der Vorratskammer. Sein Herz hämmerte noch immer gegen seine Rippen. Er hatte es geschafft. Er hatte –
 
 Largos Blick.
 
@@ -94,23 +129,17 @@ Odo schluckte.
 
 Dann ging er in sein Zimmer.
 
-Er schloss die Tür hinter sich und lehnte sich dagegen. Sein Herz hämmerte noch immer.
+Er schloss die Tür hinter sich und ließ sich aufs Bett fallen.
 
-Zuerst das Wichtigste.
+Endlich. Endlich allein.
 
-Er griff unter sein Hemd und zog den seltsamen Gegenstand hervor, der noch immer an der Lederschnur um seinen Hals hing. Dann das silberne Tuch aus seiner Hosentasche. Beides fühlte sich warm an, fast lebendig.
-
-Er ging zum Fenster, kniete sich hin und tastete nach der losen Diele – seinem geheimen Versteck seit Jahren, das nicht einmal die Zwillinge kannten. Das Holz gab nach, und Odo legte die beiden Gegenstände vorsichtig hinein. Dann schob er die Diele zurück und stand auf.
-
-Erst jetzt ließ er sich aufs Bett fallen.
-
-Endlich. Endlich allein. Er war so nah daran gewesen, entdeckt zu werden. So unglaublich nah.
+Sein Blick wanderte zu seinem Versteck – der losen Diele unter dem Fenster, unter der er das silberne Tuch und den seltsamen Gegenstand verborgen hatte. Er war so nah daran gewesen, entdeckt zu werden. So unglaublich nah.
 
 Aber er hatte es geschafft. Die Geschichte mit dem Rezept hatte funktioniert – besser, als er gehofft hatte. Und Largo...
 
 Largo hatte ihn gerettet. Ohne zu wissen, warum. Ohne Fragen zu stellen. Er war einfach aufgetaucht, genau im richtigen Moment, mit genau der richtigen Ablenkung.
 
-Odo setzte sich auf. Die Schuldgefühle, die er in der Speisekammer unterdrückt hatte, meldeten sich jetzt. Er hatte seine Mutter angelogen. Direkt ins Gesicht. Und sie hatte ihm geglaubt. Sie hatte ihm vertraut.
+Odo setzte sich auf. Die Schuldgefühle, die er in der Vorratskammer unterdrückt hatte, meldeten sich jetzt. Er hatte seine Mutter angelogen. Direkt ins Gesicht. Und sie hatte ihm geglaubt. Sie hatte ihm vertraut.
 
 Er schob den Gedanken beiseite. Später. Er würde später darüber nachdenken.
 
@@ -120,8 +149,11 @@ Er stand auf und ging zur losen Diele. Seine Finger fanden die Kante, hoben sie 
 
 Es klopfte an der Tür.
 
+→ rezept-largo-kommt
+
 ---
 
+<!-- id: rezept-largo-kommt -->
 ## Largo
 
 Odo ließ die Diele fallen. Zu schnell, zu laut. Das Holz schlug auf Holz mit einem dumpfen Knall.
@@ -138,13 +170,13 @@ Sein Gesicht war noch immer rund und freundlich. Noch immer das Gesicht eines ze
 
 Seine Augen waren scharf.
 
-"Du warst nicht wirklich wegen dem Rezept in der Speisekammer", sagte Largo.
+"Du warst nicht wirklich wegen dem Rezept in der Vorratskammer", sagte Largo.
 
 Es war keine Frage.
 
 "Ich... was meinst du?" Odo versuchte zu lachen. Es klang falsch. "Natürlich war ich –"
 
-"Odo." Largo kam einen Schritt näher. "Ich hab dich in der Speisekammer beobachtet. Du hast die ganze Zeit zu diesem einen Regal geschaut – dem großen hinten in der Ecke. Und du warst schmutzig und nervös, als hättest du etwas zu verbergen." Er legte den Kopf schief. "Und gerade eben, als ich geklopft habe – du hast etwas versteckt. Ich hab die Bewegung gesehen, unter der Tür durch."
+"Odo." Largo kam einen Schritt näher. "Ich hab dich vorhin gesehen. Bevor du in der Vorratskammer warst. Du kamst aus der falschen Richtung, und du warst schmutzig, und du hast dich umgesehen, als ob du nicht wolltest, dass dich jemand sieht." Er legte den Kopf schief. "Und gerade eben, als ich geklopft habe – du hast etwas versteckt. Ich hab die Bewegung gesehen, unter der Tür durch."
 
 Odo öffnete den Mund. Schloss ihn wieder.
 
@@ -164,18 +196,45 @@ Largo hatte ihn nicht verraten. Er hätte es tun können – hätte zur Mutter g
 
 Die Frage war: Was sollte Odo ihm sagen?
 
----
-
 **Was sagt Odo?**
 
-**[A]** Die Wahrheit – alles erzählen (den geheimen Gang, den verborgenen Raum, die seltsamen Gegenstände)
-
-**[B]** Die halbe Wahrheit – den Gang erwähnen, aber nicht alles (zugeben, dass es einen verborgenen Gang gibt, aber verschweigen, was er dort gefunden hat)
-
-**[C]** Ablenkung – ihm etwas anderes anbieten (vielleicht das geheime Versteck der Winteräpfel...)
-
-**[D]** Vertrauen fordern – erst soll er versprechen zu schweigen (bevor Odo etwas verrät, will er wissen, ob Largo wirklich schweigen kann)
+- **[A]** Die Wahrheit – alles erzählen → largo-wahrheit
+- **[B]** Die halbe Wahrheit – den Gang erwähnen, aber nicht alles → largo-halbe-wahrheit
+- **[C]** Ablenkung – ihm etwas anderes anbieten → largo-ablenkung
+- **[D]** Vertrauen fordern – erst soll er versprechen zu schweigen → largo-vertrauen
 
 ---
 
-_[Fortsetzung folgt je nach Wahl...]_
+<!-- id: largo-wahrheit -->
+## Die ganze Wahrheit
+
+_[Ausstehend]_
+
+Odo entscheidet sich, Largo alles zu erzählen – den geheimen Gang, den verborgenen Raum, die seltsamen Gegenstände...
+
+---
+
+<!-- id: largo-halbe-wahrheit -->
+## Nur die halbe Wahrheit
+
+_[Ausstehend]_
+
+Odo gibt zu, dass es einen verborgenen Gang gibt, aber verschweigt, was er dort gefunden hat...
+
+---
+
+<!-- id: largo-ablenkung -->
+## Die Ablenkung
+
+_[Ausstehend]_
+
+Odo versucht, Largo mit etwas anderem abzulenken – vielleicht dem geheimen Versteck der Winteräpfel...
+
+---
+
+<!-- id: largo-vertrauen -->
+## Das Versprechen
+
+_[Ausstehend]_
+
+Bevor Odo etwas verrät, will er wissen, ob Largo wirklich schweigen kann...

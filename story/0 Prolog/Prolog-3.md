@@ -1,20 +1,7 @@
-# Der verborgene Raum
+# Prolog - Kapitel 3: Die Lampe und die Erkundung
 
-Odo stand vor dem zusammengestürzten Regal und betrachtete das Chaos aus Brettern und Balken.
-
-Zu schwer. Viel zu schwer für einen zwölfjährigen Hobbit allein.
-
-Er brauchte einen Hebel. Oder eine Idee. Oder beides.
-
-Aber zuerst brauchte er Licht.
-
-Seine Kerze war nur noch ein Stummel, kaum länger als sein Daumen. Die Flamme zitterte bei jeder Bewegung, warf tanzende Schatten an die Wände, drohte bei jedem Luftzug zu verlöschen. Noch vielleicht zehn Minuten, schätzte Odo. Dann Dunkelheit.
-
-Er kniete sich hin, legte die Lampe vor sich auf den staubigen Boden und betrachtete sie im schwachen Kerzenlicht.
-
-Sie war anders als alles, was er kannte.
-
-Die Lampen in Tuckbergen waren aus Messing oder Eisen, praktisch und solide, mit Griffen aus Holz und Tanks aus dickem Glas. Diese hier war... filigraner. Das Metall schimmerte silbrig, aber nicht wie Silber – es hatte einen wärmeren Ton, fast wie Mondlicht auf Wasser. Keine Schweißnähte, keine Nieten, keine sichtbaren Verbindungen. Als wäre die ganze Lampe aus einem einzigen Stück geformt worden.
+<!-- id: lampe-anzuenden -->
+## Die Lampe
 
 Odo drehte sie in seinen Händen.
 
@@ -36,6 +23,13 @@ Einen Herzschlag lang passierte nichts.
 
 Dann fasste die Flamme, fraß sich in den Docht, wuchs – und Licht strömte durch den Raum.
 
+→ licht-im-raum
+
+---
+
+<!-- id: licht-im-raum -->
+## Das Licht
+
 Aber es war kein gewöhnliches Licht.
 
 Es war weicher als Kerzenschein, gleichmäßiger, ohne das nervöse Flackern, das Odo von allen Lampen kannte. Die Flamme brannte ruhig und stetig, als gäbe es keinen Luftzug, keine Bewegung, keine Welt außerhalb dieses kleinen Kreises aus Wärme. Und die Farbe – nicht das gelbliche Orange von Talg oder Öl, sondern ein warmes Gold mit einem Hauch von Silber, wie der letzte Streifen Himmel nach Sonnenuntergang.
@@ -54,39 +48,40 @@ Und er sah Details, die er vorher übersehen hatte.
 
 Die Wände waren nicht nur rau behauen – hier und da erkannte er Muster im Stein. Linien, die sich kreuzten und wieder trennten, zu regelmäßig für Zufall, zu verwittert, um sie klar zu lesen. Schriftzeichen? Verzierungen? Odo konnte es nicht sagen. Aber jemand hatte sich Mühe gegeben mit diesem Raum, vor langer, langer Zeit.
 
+→ erkunden-hub
+
+---
+
+<!-- id: erkunden-hub -->
+## Was untersucht Odo?
+
 Er drehte sich langsam um die eigene Achse und musterte, was der Raum ihm bot.
 
-**Die Werkzeuge an der Wand.** Sie hingen an Haken, die in den Stein geschlagen waren – ein Hammer mit langem Stiel, eine Säge mit feinen Zähnen, etwas, das wie eine Zange aussah, aber mit seltsam gebogenen Enden. Und andere Dinge, die Odo nicht erkannte: ein gebogenes Metallstück, fast wie ein Halbmond; ein Stab mit einer Spitze, die in mehrere Zinken auslief; ein Werkzeug, das aussah wie zwei Löffel, die am Stiel zusammengewachsen waren. Vielleicht war etwas dabei, das als Hebel taugte.
+Die Werkzeuge an der Wand. Sie hingen an Haken, die in den Stein geschlagen waren – ein Hammer mit langem Stiel, eine Säge mit feinen Zähnen, etwas, das wie eine Zange aussah, aber mit seltsam gebogenen Enden. Und andere Dinge, die Odo nicht erkannte: ein gebogenes Metallstück, fast wie ein Halbmond; ein Stab mit einer Spitze, die in mehrere Zinken auslief; ein Werkzeug, das aussah wie zwei Löffel, die am Stiel zusammengewachsen waren. Vielleicht war etwas dabei, das als Hebel taugte.
 
-**Die leeren Fässer.** Zwei standen aufrecht an der Wand, bauchig und massiv, die Dauben dunkel vor Alter. Das dritte lag auf der Seite, der obere Rand eingedrückt, als hätte jemand es umgestoßen und nie wieder aufgerichtet. Alle drei waren leer – Odo hatte dagegen geklopft, hohles Echo – aber sie waren noch stabil. Schwer genug, um etwas zu stützen? Oder als Rolle zu benutzen?
+Die leeren Fässer. Zwei standen aufrecht an der Wand, bauchig und massiv, die Dauben dunkel vor Alter. Das dritte lag auf der Seite, der obere Rand eingedrückt, als hätte jemand es umgestoßen und nie wieder aufgerichtet. Alle drei waren leer – Odo hatte dagegen geklopft, hohles Echo – aber sie waren noch stabil. Schwer genug, um etwas zu stützen? Oder als Rolle zu benutzen?
 
-**Die Krüge auf den Regalen.** Dutzende davon, in allen Größen, von winzigen Fläschchen bis zu bauchigen Gefäßen, die Odo mit beiden Händen hätte umfassen müssen. Manche standen noch aufrecht, andere waren umgekippt, einige zerbrochen auf dem Boden darunter. Und da war noch der Metallkasten, aus dem er die Lampe geholt hatte – flach und rechteckig, mit dem geölten Tuch darin. War noch etwas anderes darin gewesen, das er übersehen hatte?
+Die Krüge auf den Regalen. Dutzende davon, in allen Größen, von winzigen Fläschchen bis zu bauchigen Gefäßen, die Odo mit beiden Händen hätte umfassen müssen. Manche standen noch aufrecht, andere waren umgekippt, einige zerbrochen auf dem Boden darunter. Und da war noch der Metallkasten, aus dem er die Lampe geholt hatte – flach und rechteckig, mit dem geölten Tuch darin. War noch etwas anderes darin gewesen, das er übersehen hatte?
 
-**Der Boden vor dem Regal.** Diese halbmondförmige Fläche, wo der Staub dünner war, fast wie weggefegt. Der Luftzug, der durch den Spalt strömte, hielt den Staub fern – aber vielleicht verriet die Form auch etwas anderes. Vielleicht, wie sich das Regal bewegen ließ. Oder was dahinter lag.
+Der Boden vor dem Regal. Diese halbmondförmige Fläche, wo der Staub dünner war, fast wie weggefegt. Der Luftzug, der durch den Spalt strömte, hielt den Staub fern – aber vielleicht verriet die Form auch etwas anderes. Vielleicht, wie sich das Regal bewegen ließ. Oder was dahinter lag.
 
 Odo hob die Lampe höher. Das seltsame, sanfte Licht fiel auf seine Hände, ließ seine Haut golden schimmern.
 
 Wo sollte er zuerst nachschauen?
 
----
-
 **Was untersucht Odo genauer?**
 
-**[A]** Die Werkzeuge an der Wand
+_[Erkunde alle vier Bereiche, um fortzufahren]_
 
-**[B]** Die leeren Fässer
-
-**[C]** Die Krüge und den Metallkasten
-
-**[D]** Den Boden vor dem Regal
-
----
-
-Ich werde die vier Beschreibungen nacheinander erstellen – jeweils als eigenständige Textabschnitte, die erscheinen, wenn Nathanael die entsprechende Option wählt. So kann er sie in beliebiger Reihenfolge erkunden.
+- **[A]** Die Werkzeuge an der Wand → erkunden-werkzeuge
+- **[B]** Die leeren Fässer → erkunden-faesser
+- **[C]** Die Krüge und den Metallkasten → erkunden-kruege
+- **[D]** Den Boden vor dem Regal → erkunden-boden
 
 ---
 
-## [A] Die Werkzeuge an der Wand
+<!-- id: erkunden-werkzeuge -->
+## Die Werkzeuge
 
 Odo trat näher an die Wand heran, wo die Werkzeuge an ihren Haken hingen.
 
@@ -124,17 +119,20 @@ Er wog die Stange in der Hand.
 
 Das könnte funktionieren.
 
+→ erkunden-hub
+
 ---
 
-## [B] Die leeren Fässer
+<!-- id: erkunden-faesser -->
+## Die Fässer
 
-Odo ging zu den Fässern hinüber und kniete sich vor dem um, das auf der Seite lag.
+Odo ging zu den Fässern hinüber und kniete sich vor dem Fass hin hin, das auf der Seite lag.
 
 Es war groß – größer als er selbst, wenn es aufrecht stünde. Die Dauben waren aus dunklem Holz, fast schwarz vor Alter, zusammengehalten von drei breiten Eisenreifen. Einer der Reifen hatte sich gelöst und hing schief herab, aber die anderen beiden hielten noch.
 
 Odo klopfte dagegen. Hohl. Leer.
 
-Er kroch um das Fass herum und untersuchte es von allen Seiten. Die obere Seite – jetzt die Seite – war eingedrückt, das Holz gesplittert. Etwas war dagegen gefallen, oder jemand hatte es umgestoßen. Vor langer Zeit. Der Staub in den Rillen war dick und fest wie Filz.
+Er kroch um das Fass herum und untersuchte es von allen Seiten. Der obere Teil – jetzt die Seite – war eingedrückt, das Holz gesplittert. Etwas war dagegen gefallen, oder jemand hatte es umgestoßen. Vor langer Zeit. Der Staub in den Rillen war dick und fest wie Filz.
 
 Aber die Unterseite war noch intakt. Stabil.
 
@@ -164,9 +162,12 @@ Er schaute zurück zu dem umgekippten Fass.
 
 Das könnte funktionieren.
 
+→ erkunden-hub
+
 ---
 
-## [C] Die Krüge und der Metallkasten
+<!-- id: erkunden-kruege -->
+## Die Krüge
 
 Odo trat an das Regal mit den Krügen heran und hob die Lampe höher.
 
@@ -214,9 +215,12 @@ Die Kante war scharf genug zum Schneiden. Zum Kratzen. Wenn er an einer bestimmt
 
 Er steckte die Scherbe in seine Tasche. Man wusste nie.
 
+→ erkunden-hub
+
 ---
 
-## [D] Der Boden vor dem Regal
+<!-- id: erkunden-boden -->
+## Der Boden
 
 Odo kniete sich vor dem zusammengestürzten Regal nieder und hielt die Lampe dicht über den Boden.
 
@@ -260,21 +264,22 @@ Odo setzte sich zurück auf seine Fersen und dachte nach.
 
 Er musste nicht das ganze Regal bewegen. Nur genug, um den Spalt zu vergrößern. Nur genug, um hindurchzupassen.
 
-Er brauchte einen Hebel. Einen Drehpunkt. Und einen Plan.
+→ erkunden-hub
 
 ---
 
-## Zusammenfassung
+<!-- id: erkunden-zusammenfassung -->
+## Die Funde
 
 Odo stand in der Mitte des Raumes und überblickte, was er gefunden hatte.
 
-**Bei den Werkzeugen:** Eine lange Brechstange aus dunklem Metall, schlank und elegant, mit feinen Gravuren an der Seite. Schwer genug, um als Hebel zu dienen.
+Bei den Werkzeugen: Eine lange Brechstange aus dunklem Metall, schlank und elegant, mit feinen Gravuren an der Seite. Schwer genug, um als Hebel zu dienen.
 
-**Bei den Fässern:** Ein langes Brett, schmal und stabil, an einem Ende angeschrägt wie ein Keil. Und ein umgestürztes Fass, das er rollen konnte – ein möglicher Drehpunkt.
+Bei den Fässern: Ein langes Brett, schmal und stabil, an einem Ende angeschrägt wie ein Keil. Und ein umgestürztes Fass, das er rollen konnte – ein möglicher Drehpunkt.
 
-**Bei den Krügen:** Eine scharfe Scherbe mit gezackter Kante. Und ein fest verschlossener Glaskrug mit einer trägen, dunklen Flüssigkeit – vielleicht Öl, um etwas geschmeidig zu machen?
+Bei den Krügen: Eine scharfe Scherbe mit gezackter Kante. Und ein fest verschlossener Glaskrug mit einer trägen, dunklen Flüssigkeit – vielleicht Öl, um etwas geschmeidig zu machen?
 
-**Am Boden:** Die Erkenntnis, dass das Regal nach vorne gekippt war und einen Durchgang versperrte. Und ein schmaler Spalt am unteren Rand, aus dem der Luftzug strömte.
+Am Boden: Die Erkenntnis, dass das Regal nach vorne gekippt war und einen Durchgang versperrte. Und ein schmaler Spalt am unteren Rand, aus dem der Luftzug strömte.
 
 Das Lampenlicht flackerte nicht, aber Odo spürte trotzdem, wie die Zeit verrann. Oben in Tuckbergen würde seine Familie bald zum Abendessen zusammenkommen. Sein leerer Platz würde auffallen.
 
@@ -282,10 +287,19 @@ Aber er war so nah.
 
 Odo kaute auf seiner Unterlippe.
 
-Was sollte er versuchen?
+→ regal-loesen
 
 ---
+
+<!-- id: regal-loesen -->
+## Das Regal bewegen
+
+Odo schaute auf die Werkzeuge, die er gefunden hatte. Die Brechstange. Das lange Brett. Das Fass als möglicher Drehpunkt. Die Scherbe. Das Öl.
+
+Was sollte er versuchen?
 
 **Wie will Odo das Regal bewegen?**
 
 _[Freitexteingabe: Beschreibe, welche Gegenstände Odo wie benutzen soll, um den Durchgang freizulegen.]_
+
+→ der-durchbruch

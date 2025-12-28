@@ -1,8 +1,7 @@
-# Durch den Spalt
+# Prolog - Kapitel 2: Durch den Spalt
 
+<!-- id: durch-den-spalt -->
 ## Durch den Spalt
-
----
 
 Odo stand reglos vor der Wand.
 
@@ -76,8 +75,11 @@ Er bedeckte alles wie eine graue Decke. Als Odo einen Schritt machte, wirbelten 
 
 Vielleicht nicht seit noch viel länger.
 
+→ der-verborgene-raum
+
 ---
 
+<!-- id: der-verborgene-raum -->
 ## Der verborgene Raum
 
 Der Luftzug kam von vorn, aus der Dunkelheit jenseits des Kerzenlichts. Odo folgte ihm.
@@ -128,8 +130,11 @@ Odo lächelte unwillkürlich.
 
 Er hatte Recht gehabt. Hier war etwas. Hier ging es weiter.
 
+→ die-alte-lampe
+
 ---
 
+<!-- id: die-alte-lampe -->
 ## Die alte Lampe
 
 Aber das Regal war schwer. Zu schwer für einen zwölfjährigen Hobbit allein. Er würde Zeit brauchen. Kraft. Vielleicht einen Hebel.
@@ -162,11 +167,39 @@ Oder er konnte zurückgehen. Die Lampe mitnehmen, den Spalt markieren, morgen wi
 
 Was sollte er tun?
 
----
-
 **Was tut Odo?**
 
-**[A]** Die Lampe anzünden und das Regal beiseite räumen. Er kann jetzt nicht aufhören.
+- **[A]** Die Lampe anzünden und das Regal beiseite räumen. Er kann jetzt nicht aufhören. → weiter-erkunden
+- **[B]** Mit der Lampe zurückgehen damit er nicht vermisst wird, am nächsten Tag mit mehr Zeit wiederkommen. → zurueck-ins-zimmer
 
-**[B]** Mit der Lampe zurückgehen damit er nicht vermisst wird, am nächsten Tag mit mehr Zeit wiederkommen.
+---
 
+<!-- id: weiter-erkunden -->
+## Der verborgene Raum
+
+Odo stand vor dem zusammengestürzten Regal und betrachtete das Chaos aus Brettern und Balken.
+
+Zu schwer. Viel zu schwer für einen zwölfjährigen Hobbit allein.
+
+Er brauchte einen Hebel. Oder eine Idee. Oder beides.
+
+Aber zuerst brauchte er Licht.
+
+Seine Kerze war nur noch ein Stummel, kaum länger als sein Daumen. Die Flamme zitterte bei jeder Bewegung, warf tanzende Schatten an die Wände, drohte bei jedem Luftzug zu verlöschen. Noch vielleicht zehn Minuten, schätzte Odo. Dann Dunkelheit.
+
+Er kniete sich hin, legte die Lampe vor sich auf den staubigen Boden und betrachtete sie im schwachen Kerzenlicht.
+
+Sie war anders als alles, was er kannte.
+
+Die Lampen in Tuckbergen waren aus Messing oder Eisen, praktisch und solide, mit Griffen aus Holz und Tanks aus dickem Glas. Diese hier war... filigraner. Das Metall schimmerte silbrig, aber nicht wie Silber – es hatte einen wärmeren Ton, fast wie Mondlicht auf Wasser. Keine Schweißnähte, keine Nieten, keine sichtbaren Verbindungen. Als wäre die ganze Lampe aus einem einzigen Stück geformt worden.
+
+→ lampe-anzuenden
+
+---
+
+<!-- id: zurueck-ins-zimmer -->
+## Zurück ins Zimmer
+
+_[Ausstehend]_
+
+Odo steckt die Lampe vorsichtig in seine Tasche. Diese Entdeckung wird nicht weglaufen. Morgen kommt er zurück – besser vorbereitet...
