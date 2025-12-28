@@ -3,6 +3,7 @@
 _Fortsetzung von Prolog-4, wenn Odo die Geschichte mit dem Rezept wählt._
 
 <!-- id: ausrede-rezept -->
+
 ## Die Geschichte mit dem Rezept
 
 "Das Rezept", sagte Odo.
@@ -21,7 +22,7 @@ Sie streckte die Hand aus und strich ihm eine staubige Haarsträhne aus der Stir
 
 "Weißt du", sagte sie, "als ich neu in diese Familie kam – gerade erst verheiratet, kaum älter als Esmeralda jetzt – da hat Belladonna mir beigebracht, wie man diesen Kuchen macht. Wir standen zusammen in der Küche, sie und ich, und sie summte dabei. Immer dasselbe Lied, obwohl sie nie gesagt hat, was es war. Und der Geruch..." Sie schloss kurz die Augen. "Honig und geröstete Walnüsse und ein bisschen Zimt. Es roch nach Herbst, auch mitten im Sommer."
 
-Odo nickte, obwohl er diesen Kuchen nie gegessen hatte. Belladonna war gestorben, als er fünf war. Er erinnerte sich kaum an sie – nur an weißes Haar und eine Stimme, die nach fernen Orten klang.
+Odo nickte, obwohl er diesen Kuchen nie gegessen hatte. Belladonna war gestorben, als er acht war. Er erinnerte sich kaum an sie – nur an weißes Haar und eine Stimme, die nach fernen Orten klang.
 
 "Komm", sagte Mirabella plötzlich. "Wir suchen zusammen."
 
@@ -30,13 +31,14 @@ Odo nickte, obwohl er diesen Kuchen nie gegessen hatte. Belladonna war gestorben
 ---
 
 <!-- id: rezept-suche -->
+
 ## Die Suche
 
 "Was?"
 
 "Das Rezept. Wenn es irgendwo hier ist, finden wir es." Sie drehte sich um und ging tiefer in die Vorratskammer hinein. "Belladonna hat nie viel aufgeschrieben, aber sie hatte ein Buch. Ein altes Buch mit Ledereinband, in das sie manchmal Dinge gekritzelt hat. Es muss hier irgendwo sein."
 
-Odos Magen zog sich zusammen. Seine Mutter bewegte sich direkt auf die Ecke zu, in der – hinter dem großen Regal mit den Einmachgläsern – der geheime Spalt in der Wand lag. Der Spalt, durch den er vor weniger als einer Stunde gekrochen war.
+Odos Magen zog sich zusammen. Seine Mutter bewegte sich direkt auf die Ecke zu, in der – hinter dem großen Regal mit den Einmachgläsern – der geheime Spalt in der Wand lag. Der Spalt, durch den er gerade erst gekrochen war.
 
 "Ich glaube, da hinten habe ich schon geschaut", sagte er schnell. "Vielleicht eher hier drüben?"
 
@@ -59,6 +61,7 @@ Aber sie kam näher. Langsam, aber unaufhaltsam, wie Wasser, das bergab fließt.
 ---
 
 <!-- id: rezept-gefahr -->
+
 ## Der Luftzug
 
 "Seltsam", sagte sie plötzlich.
@@ -73,7 +76,7 @@ Ihre Finger berührten das Holz. Sie würde schieben. Sie würde nachsehen. Sie 
 
 Die Stimme kam von der Tür. Laut und triumphierend und absolut unerwartet.
 
-Largo stand im Türrahmen. Sein rundes Gesicht glänzte, als hätte er gerannt, und seine Augen leuchteten.
+Largo stand im Türrahmen. Sein rundes Gesicht glänzte, als wäre er gerannt, und seine Augen leuchteten.
 
 "Was denn?", fragte Mirabella und ließ das Regal los.
 
@@ -86,6 +89,7 @@ Largo stand im Türrahmen. Sein rundes Gesicht glänzte, als hätte er gerannt, 
 ---
 
 <!-- id: rezept-largo-rettet -->
+
 ## Largos Geheimnis
 
 "Belladonnas Rezepte." Largo strahlte. "Den Honigkuchen. Die Holunderblütenkekse. Die berühmte Pilzpastete, die sie nur gemacht hat, wenn der Tuk selbst zu Besuch kam." Er schloss die Augen und begann zu rezitieren: "Zwei Tassen Mehl, gesiebt. Eine halbe Tasse Butter, weich. Vier Esslöffel Honig, aber nur vom ersten Schleudern, nicht vom zweiten, weil der zu dunkel ist. Sechs Walnüsse, grob gehackt. Eine Prise Zimt – und ich meine eine richtige Prise, nicht diese winzigen Prisen, die manche Leute nehmen. Dann –"
@@ -117,6 +121,7 @@ Dann waren sie weg.
 ---
 
 <!-- id: rezept-allein -->
+
 ## Allein
 
 Odo stand allein in der Vorratskammer. Sein Herz hämmerte noch immer gegen seine Rippen. Er hatte es geschafft. Er hatte –
@@ -129,11 +134,23 @@ Odo schluckte.
 
 Dann ging er in sein Zimmer.
 
-Er schloss die Tür hinter sich und ließ sich aufs Bett fallen.
+Er schloss die Tür hinter sich.
+
+Als erstes das Versteck. Er ging zum Fenster, kniete sich hin und tastete nach der losen Diele – die dritte von links, die sich ein wenig hob, wenn man an der richtigen Stelle drückte. Er hatte sie vor Jahren entdeckt, als er nach einer Spinne suchte. Seitdem bewahrte er dort Dinge auf, die niemand sehen sollte.
+
+Odo zog den Gegenstand von seinem Hals und betrachtete ihn einen Moment im grauen Nachmittagslicht. Das seltsame Material schimmerte matt. Dann holte er das silbrige Tuch aus seiner Tasche – es war noch immer kühl, noch immer weicher als alles, was er kannte. Er wickelte den Gegenstand darin ein, hob die Diele an und legte das Bündel in die dunkle Öffnung darunter. Dann ließ er die Diele zurückgleiten.
+
+Niemand würde dort nachschauen.
+
+Jetzt der Rest. Er ging zur Waschschüssel auf der Kommode und betrachtete sein Spiegelbild im trüben Wasser. Staub in den Haaren, Schmutzstreifen auf den Wangen, ein Riss im Hemd. Seine Mutter hatte recht gehabt – er sah aus, als hätte er in einem Kohlenkessel geschlafen.
+
+Er wusch sich Gesicht und Hände, kämmte sich die gröbsten Spinnweben aus den Haaren und wechselte das zerrissene Hemd gegen ein sauberes. Das alte stopfte er unter sein Bett. Er würde es später waschen, wenn niemand hinsah, und den Riss flicken.
+
+Dann ließ er sich aufs Bett fallen.
 
 Endlich. Endlich allein.
 
-Sein Blick wanderte zu seinem Versteck – der losen Diele unter dem Fenster, unter der er das silberne Tuch und den seltsamen Gegenstand verborgen hatte. Er war so nah daran gewesen, entdeckt zu werden. So unglaublich nah.
+Sein Blick wanderte zu seinem Versteck – der losen Diele unter dem Fenster. Er war so nah daran gewesen, entdeckt zu werden. So unglaublich nah.
 
 Aber er hatte es geschafft. Die Geschichte mit dem Rezept hatte funktioniert – besser, als er gehofft hatte. Und Largo...
 
@@ -154,6 +171,7 @@ Es klopfte an der Tür.
 ---
 
 <!-- id: rezept-largo-kommt -->
+
 ## Largo
 
 Odo ließ die Diele fallen. Zu schnell, zu laut. Das Holz schlug auf Holz mit einem dumpfen Knall.
@@ -206,6 +224,7 @@ Die Frage war: Was sollte Odo ihm sagen?
 ---
 
 <!-- id: largo-wahrheit -->
+
 ## Die ganze Wahrheit
 
 _[Ausstehend]_
@@ -215,6 +234,7 @@ Odo entscheidet sich, Largo alles zu erzählen – den geheimen Gang, den verbor
 ---
 
 <!-- id: largo-halbe-wahrheit -->
+
 ## Nur die halbe Wahrheit
 
 _[Ausstehend]_
@@ -224,6 +244,7 @@ Odo gibt zu, dass es einen verborgenen Gang gibt, aber verschweigt, was er dort 
 ---
 
 <!-- id: largo-ablenkung -->
+
 ## Die Ablenkung
 
 _[Ausstehend]_
@@ -233,6 +254,7 @@ Odo versucht, Largo mit etwas anderem abzulenken – vielleicht dem geheimen Ver
 ---
 
 <!-- id: largo-vertrauen -->
+
 ## Das Versprechen
 
 _[Ausstehend]_

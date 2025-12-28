@@ -307,11 +307,11 @@ Odo spähte durch den Spalt.
 
 Er sah Regale. Gefüllt mit Gläsern und Krügen und Säcken. Getrocknete Kräuter, die von der Decke hingen. Der Geruch von Gewürzen und eingelegtem Gemüse.
 
-Die Speisekammer.
+Die Vorratskammer.
 
-Er war hinter der Speisekammer, hinter einem Regal, das die Tür verdeckte. Die Tür, die niemand kannte.
+Er war hinter der Vorratskammer, hinter einem Regal, das die Tür verdeckte. Die Tür, die niemand kannte.
 
-Und auf der anderen Seite der Speisekammer hörte er seine Mutter wieder rufen:
+Und auf der anderen Seite der Vorratskammer hörte er seine Mutter wieder rufen:
 
 "Odo! Odo, wo steckst du?"
 
@@ -321,13 +321,13 @@ Das Regal vor der Tür war massiv, vollgepackt mit schweren Vorratsgläsern. Er 
 
 Odo löschte die Lampe und zwängte sich auf den Boden. Schob sich unter das Regal hindurch. Sein Hemd riss weiter an der Stelle, die schon vorher gelitten hatte, sein Ellbogen schrammte über Stein, aber dann war er durch, rollte sich ab, kam auf die Füße –
 
-Und stand in der Speisekammer.
+Und stand in der Vorratskammer.
 
 Er griff hinter sich und zog die Tür zu. Es brauchte all seine Kraft, aber schließlich klickte sie ins Schloss. Das Regal verdeckte sie vollständig.
 
 Jetzt die Lampe.
 
-Odo schaute sich um. Die Speisekammer war vollgestopft mit Vorräten – Säcke mit Mehl, Fässer mit eingelegtem Gemüse, Regale voller Einmachgläser. In der hintersten Ecke, halb verborgen hinter einem Stapel alter Holzkisten, stand ein verstaubter Steinguttopf, der aussah, als hätte ihn seit Jahren niemand angerührt. Der Deckel war angeschlagen, und auf der Seite stand in verblasster Schrift "Schmalz – Herbst 1403".
+Odo schaute sich um. Die Vorratskammer war vollgestopft mit Vorräten – Säcke mit Mehl, Fässer mit eingelegtem Gemüse, Regale voller Einmachgläser. In der hintersten Ecke, halb verborgen hinter einem Stapel alter Holzkisten, stand ein verstaubter Steinguttopf, der aussah, als hätte ihn seit Jahren niemand angerührt. Der Deckel war angeschlagen, und auf der Seite stand in verblasster Schrift "Schmalz – Herbst 832".
 
 Dreißig Jahre alt. Perfekt.
 
