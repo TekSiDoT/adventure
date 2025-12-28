@@ -138,7 +138,7 @@ Er schloss die Tür hinter sich.
 
 Als erstes das Versteck. Er ging zum Fenster, kniete sich hin und tastete nach der losen Diele – die dritte von links, die sich ein wenig hob, wenn man an der richtigen Stelle drückte. Er hatte sie vor Jahren entdeckt, als er nach einer Spinne suchte. Seitdem bewahrte er dort Dinge auf, die niemand sehen sollte.
 
-Odo zog den Gegenstand von seinem Hals und betrachtete ihn einen Moment im grauen Nachmittagslicht. Das seltsame Material schimmerte matt. Dann holte er das silbrige Tuch aus seiner Tasche – es war noch immer kühl, noch immer weicher als alles, was er kannte. Er wickelte den Gegenstand darin ein, hob die Diele an und legte das Bündel in die dunkle Öffnung darunter. Dann ließ er die Diele zurückgleiten.
+Odo zog den Gegenstand von seinem Hals und betrachtete ihn einen Moment im grauen Nachmittagslicht. Das seltsame Material schimmerte matt. Dann holte er das silbrige Tuch aus seiner Tasche – es war noch immer kühl, noch immer weicher als alles, was er kannte. Er wickelte den Gegenstand darin ein, hob die Diele an und legte das Bündel in die dunkle Öffnung darunter. Dann ließ er die Diele vorsichtig zurückgleiten.
 
 Niemand würde dort nachschauen.
 
@@ -194,7 +194,7 @@ Es war keine Frage.
 
 "Ich... was meinst du?" Odo versuchte zu lachen. Es klang falsch. "Natürlich war ich –"
 
-"Odo." Largo kam einen Schritt näher. "Ich hab dich vorhin gesehen. Bevor du in der Vorratskammer warst. Du kamst aus der falschen Richtung, und du warst schmutzig, und du hast dich umgesehen, als ob du nicht wolltest, dass dich jemand sieht." Er legte den Kopf schief. "Und gerade eben, als ich geklopft habe – du hast etwas versteckt. Ich hab die Bewegung gesehen, unter der Tür durch."
+"Odo." Largo kam einen Schritt näher. "Du warst nervös in der Vorratskammer. Du hast ständig zu dieser einen Ecke geschaut, als ob du Angst hättest, dass Mama etwas findet." Er legte den Kopf schief.
 
 Odo öffnete den Mund. Schloss ihn wieder.
 
@@ -206,7 +206,7 @@ Largo wartete. Er drängte nicht. Er drohte nicht. Er stand einfach da, mit sein
 
 Wie ein Tuk, dachte Odo. Neugierig. Geduldig. Und verdammt schwer abzuwimmeln.
 
-"Was hast du gefunden, Odo?", fragte Largo leise. "Was hast du gefunden, und warum willst du nicht, dass es jemand weiß?"
+"Was hast du entdeckt, Odo?", fragte Largo leise. "Was hast du entdeckt, und warum willst du nicht, dass es jemand weiß?"
 
 Odo sah seinen kleinen Bruder an. Den Bruder, der ihn gerade vor der Entdeckung bewahrt hatte. Der seine eigene Freude über das Backen mit der Mutter unterbrochen hatte, um hierherzukommen. Der die Tür geschlossen hatte, damit niemand mithörte.
 
