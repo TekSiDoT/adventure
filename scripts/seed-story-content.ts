@@ -106,6 +106,17 @@ const nodeChapterMap: Record<string, { akt: number; teil: string; kapitel: numbe
   'ausrede-rezept': { akt: 1, teil: 'Prolog', kapitel: 4 },
   'ausrede-maus': { akt: 1, teil: 'Prolog', kapitel: 4 },
   'ausrede-wahrheit': { akt: 1, teil: 'Prolog', kapitel: 4 },
+
+  // Prolog-5: rezept branch - Largo's involvement
+  'rezept-suche': { akt: 1, teil: 'Prolog', kapitel: 5 },
+  'rezept-gefahr': { akt: 1, teil: 'Prolog', kapitel: 5 },
+  'rezept-largo-rettet': { akt: 1, teil: 'Prolog', kapitel: 5 },
+  'rezept-allein': { akt: 1, teil: 'Prolog', kapitel: 5 },
+  'rezept-largo-kommt': { akt: 1, teil: 'Prolog', kapitel: 5 },
+  'largo-wahrheit': { akt: 1, teil: 'Prolog', kapitel: 5 },
+  'largo-halbe-wahrheit': { akt: 1, teil: 'Prolog', kapitel: 5 },
+  'largo-ablenkung': { akt: 1, teil: 'Prolog', kapitel: 5 },
+  'largo-vertrauen': { akt: 1, teil: 'Prolog', kapitel: 5 },
 };
 
 async function seedStoryContent() {

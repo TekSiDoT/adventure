@@ -1,7 +1,7 @@
 import type { Handler, HandlerEvent } from "@netlify/functions";
 
-const SUPABASE_URL = "https://pnnteiwvfyltusrrcmbf.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBubnRlaXd2ZnlsdHVzcnJjbWJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzNDU4NDcsImV4cCI6MjA4MDkyMTg0N30.p0FqSUu_u4OBg5rfy5iJvvU77kWWLcs-3FgAbKNfGYI";
+const SUPABASE_URL = process.env.SUPABASE_URL || "https://tbibfauxuqdhjyiptran.supabase.co";
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRiaWJmYXV4dXFkaGp5aXB0cmFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4NjA0MjUsImV4cCI6MjA4MjQzNjQyNX0.pzJN0XOEYVVmT4yidd1RAodIH4hNJ3m_2FaTXI7jpuU";
 
 interface ProxyRequest {
   endpoint: string;
